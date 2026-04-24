@@ -356,22 +356,32 @@ function calcZScores(allRows) {
 }
 
 // ── MAP CSV ROW → SESSION OBJECT ──────────────────────────────────────────────
+// Handles both old template (Accelerations/Decelerations) and new (High Intensity Acc/Dec)
 function mapRow(r) {
+  // Debug: log first row headers once
+  if (!mapRow._logged) {
+    mapRow._logged = true;
+    console.log('CSV headers:', Object.keys(r));
+    console.log('Sample MAX Speed value:', r['MAX Speed(km/h)']);
+  }
+  // HI Acc: try new name first, fallback to old
+  const ac = parseInt(r['High Intensity Acc (count)'] || r['Accelerations']) || 0;
+  const dc = parseInt(r['High Intensity Dec (count)'] || r['Decelerations']) || 0;
   return {
-    p:   r['Player'] ? r['Player'].trim() : '',
-    pos: r['Position'] ? r['Position'].trim() : '',
-    d:   r['Date'] || '',
-    w:   parseInt(r['Week Team']) || 0,
-    ts:  r['Type Session'] || '',
-    md:  r['Match Day'] || '',
-    sel: r['Selection'] || '',
+    p:    (r['Player'] || '').trim(),
+    pos:  (r['Position'] || '').trim(),
+    d:    r['Date'] || '',
+    w:    parseInt(r['Week Team']) || 0,
+    ts:   r['Type Session'] || '',
+    md:   r['Match Day'] || '',
+    sel:  r['Selection'] || '',
     dist: parseFloat(r['Distance(m)']) || 0,
-    ha:  parseFloat(r['Abs HSR(m)']) || 0,
-    hr:  parseFloat(r['HSR Rel (m)']) || 0,
-    ac:  parseInt(r['High Intensity Acc (count)']) || 0,
-    dc:  parseInt(r['High Intensity Dec (count)']) || 0,
-    ms:  parseFloat(r['MAX Speed(km/h)']) || 0,
-    pl:  parseFloat(r['Player Load (a.u.)']) || 0,
+    ha:   parseFloat(r['Abs HSR(m)']) || 0,
+    hr:   parseFloat(r['HSR Rel (m)']) || 0,
+    ac:   ac,
+    dc:   dc,
+    ms:   parseFloat(r['MAX Speed(km/h)']) || 0,
+    pl:   parseFloat(r['Player Load (a.u.)']) || 0,
   };
 }
 
@@ -638,7 +648,19 @@ async function loadData() {
     const resp = await fetch(CSV_URL);
     if (!resp.ok) throw new Error('HTTP ' + resp.status);
     const text = await resp.text();
-    const rows = parseCSV(text).filter(r => r['Player'] && r['Player'] !== 'Club San Martin' && r['Selection'] !== 'Session');
+    const allRows = parseCSV(text);
+    
+    // DEBUG: show first data row
+    const firstRow = allRows[0];
+    if (firstRow) {
+      console.log('=== DEBUG FIRST ROW ===');
+      Object.entries(firstRow).forEach(([k,v]) => console.log(`  "${k}": "${v}"`));
+      console.log('MAX Speed raw:', firstRow['MAX Speed(km/h)']);
+      console.log('Distance raw:', firstRow['Distance(m)']);
+      console.log('Player raw:', firstRow['Player']);
+    }
+    
+    const rows = allRows.filter(r => r['Player'] && r['Player'] !== 'Club San Martin' && r['Selection'] !== 'Session');
     S = rows.map(mapRow);
     Z = calcZScores(S);
     document.getElementById('loading').style.display = 'none';
