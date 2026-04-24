@@ -289,20 +289,31 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 <script>
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRB7aw4-hU56u9hhv6U5ObpM1H776enwVSiPwflG1ct4AIcHrB6KwPgjQ86xVCIAk5q8Q53o-LmASrx/pub?gid=1873673764&single=true&output=csv';
 
-// ── CSV PARSER ────────────────────────────────────────────────────────────────
+// ── CSV PARSER (handles quoted fields with commas) ────────────────────────────
+function parseCSVLine(line) {
+  const vals = []; let cur = ''; let inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') {
+      if (inQ && line[i+1] === '"') { cur += '"'; i++; } // escaped quote
+      else { inQ = !inQ; }
+    } else if (c === ',' && !inQ) {
+      vals.push(cur.trim()); cur = '';
+    } else {
+      cur += c;
+    }
+  }
+  vals.push(cur.trim());
+  return vals;
+}
+
 function parseCSV(text) {
   const lines = text.trim().split('\n');
-  const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g, '').trim());
-  return lines.slice(1).map(line => {
-    const vals = []; let cur = ''; let inQ = false;
-    for (let c of line) {
-      if (c === '"') { inQ = !inQ; }
-      else if (c === ',' && !inQ) { vals.push(cur); cur = ''; }
-      else { cur += c; }
-    }
-    vals.push(cur);
+  const headers = parseCSVLine(lines[0]);
+  return lines.slice(1).filter(l => l.trim()).map(line => {
+    const vals = parseCSVLine(line);
     const obj = {};
-    headers.forEach((h, i) => { obj[h] = vals[i] ? vals[i].replace(/^"|"$/g,'').trim() : ''; });
+    headers.forEach((h, i) => { obj[h] = vals[i] !== undefined ? vals[i] : ''; });
     return obj;
   });
 }
