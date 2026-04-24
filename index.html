@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Club San Martín — Performance Dashboard</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.13/flatpickr.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d1117;color:#e6edf3;font-size:14px}
+.dash{max-width:1500px;margin:0 auto;padding:1.5rem}
+
+/* HEADER */
+.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid #21262d}
+.hdr-title{font-size:20px;font-weight:700;letter-spacing:-.02em}
+.hdr-sub{font-size:12px;color:#7d8590;margin-top:3px}
+.tabs{display:flex;gap:6px}
+.tab{padding:6px 16px;border-radius:6px;border:1px solid #30363d;background:transparent;cursor:pointer;font-size:13px;color:#7d8590;font-family:inherit;transition:all .15s}
+.tab:hover{border-color:#58a6ff;color:#58a6ff}
+.tab.active{background:#1f6feb;color:#fff;border-color:#1f6feb}
+
+/* FILTERS */
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.25rem;align-items:flex-end}
+.f-group{display:flex;flex-direction:column;gap:4px}
+.f-label{font-size:10px;font-weight:600;color:#7d8590;text-transform:uppercase;letter-spacing:.06em}
+.filters select, .filters input{
+  background:#161b22;border:1px solid #30363d;color:#e6edf3;
+  padding:6px 10px;border-radius:6px;font-size:12px;font-family:inherit;
+  cursor:pointer;height:32px;min-width:140px
+}
+.filters select:focus,.filters input:focus{outline:none;border-color:#58a6ff}
+.filters input{min-width:180px;cursor:pointer}
+.f-date-wrap{position:relative;display:flex;align-items:center;gap:6px}
+.f-date-wrap svg{position:absolute;right:8px;pointer-events:none;opacity:.4}
+
+/* flatpickr dark override */
+.flatpickr-calendar{background:#161b22!important;border:1px solid #30363d!important;box-shadow:0 8px 24px rgba(0,0,0,.5)!important}
+.flatpickr-day{color:#e6edf3!important}
+.flatpickr-day:hover{background:#21262d!important}
+.flatpickr-day.selected,.flatpickr-day.startRange,.flatpickr-day.endRange{background:#1f6feb!important;border-color:#1f6feb!important}
+.flatpickr-day.inRange{background:#1c2128!important;border-color:transparent!important;box-shadow:-5px 0 0 #1c2128,5px 0 0 #1c2128!important}
+.flatpickr-months,.flatpickr-weekdays,.flatpickr-weekday{background:#161b22!important;color:#7d8590!important;fill:#7d8590!important}
+.flatpickr-current-month{color:#e6edf3!important}
+.flatpickr-current-month .flatpickr-monthDropdown-months{background:#161b22!important;color:#e6edf3!important}
+.flatpickr-prev-month svg,.flatpickr-next-month svg{fill:#7d8590!important}
+.flatpickr-day.flatpickr-disabled{color:#484f58!important}
+.numInput{background:#161b22!important;color:#e6edf3!important;border:1px solid #30363d!important}
+
+/* RESET BTN */
+.reset-btn{padding:6px 12px;border-radius:6px;border:1px solid #30363d;background:transparent;cursor:pointer;font-size:12px;color:#7d8590;font-family:inherit;height:32px;align-self:flex-end}
+.reset-btn:hover{border-color:#f85149;color:#f85149}
+
+/* KPIs */
+
+
+/* LAYOUT */
+.two-col{display:grid;grid-template-columns:1fr 1.1fr;gap:1rem}
+.card{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:1rem}
+.card-title{font-size:11px;font-weight:600;color:#7d8590;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem}
+
+/* SORT BUTTONS */
+.sort-btns{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:.6rem}
+.sort-btn{padding:3px 10px;border-radius:5px;border:1px solid #30363d;background:transparent;cursor:pointer;font-size:11px;font-family:inherit;color:#7d8590}
+.sort-btn.active{background:#21262d;color:#e6edf3;font-weight:600;border-color:#58a6ff}
+
+/* TABLE */
+.tbl-wrap{overflow-x:auto;max-height:420px;overflow-y:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead{position:sticky;top:0;background:#161b22;z-index:1}
+th{text-align:left;padding:5px 8px;color:#7d8590;font-weight:600;border-bottom:1px solid #21262d;white-space:nowrap;cursor:pointer;user-select:none;font-size:11px}
+th:hover{color:#e6edf3}
+th.act{color:#58a6ff}
+td{padding:5px 8px;border-bottom:1px solid #0d1117}
+tr:hover td{background:#1c2128}
+td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono','Fira Mono',monospace;font-size:11px}
+.rk{color:#484f58;font-size:11px}
+.pill{font-size:10px;padding:1px 6px;border-radius:4px;background:#21262d;color:#7d8590;white-space:nowrap}
+
+/* CHARTS */
+.bar-wrap{position:relative;height:280px}
+.line-wrap{position:relative;height:240px;margin-bottom:.75rem}
+.legend{display:flex;flex-wrap:wrap;gap:5px 12px;font-size:11px;color:#7d8590;margin-top:.5rem}
+.leg-item{display:flex;align-items:center;gap:4px}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.leg-bars{display:flex;gap:14px;margin-bottom:.5rem;font-size:11px;color:#7d8590}
+.leg-bar{display:flex;align-items:center;gap:5px}
+.leg-box{width:12px;height:10px;border-radius:2px}
+
+/* Z-SCORES */
+.z-hdr,.z-row{display:grid;grid-template-columns:170px 95px repeat(6,1fr);gap:4px;padding:4px 2px;border-bottom:1px solid #21262d;align-items:center}
+.z-hdr{font-size:11px;font-weight:600;color:#7d8590;position:sticky;top:0;background:#161b22}
+.z-cell{text-align:center;border-radius:4px;padding:2px 5px;font-variant-numeric:tabular-nums;font-size:12px}
+.zg{background:#1a4731;color:#3fb950;font-weight:600}
+.zr{background:#3d1c1c;color:#f85149;font-weight:600}
+.z0{text-align:center;color:#484f58;font-size:12px}
+.z-name{font-size:12px;font-weight:500}
+.z-pos{font-size:10px;color:#7d8590}
+.note{font-size:11px;color:#7d8590;margin-bottom:.75rem;padding:.5rem;background:#0d1117;border-radius:5px;border-left:2px solid #30363d}
+
+/* ACTIVE FILTERS PILLS */
+.active-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.75rem;min-height:20px}
+.af-pill{font-size:11px;padding:2px 8px;border-radius:10px;background:#1c2128;border:1px solid #30363d;color:#7d8590;display:flex;align-items:center;gap:4px}
+.af-pill span{cursor:pointer;color:#484f58}
+.af-pill span:hover{color:#f85149}
+
+/* SOURCE BADGES */
+.src-md{font-size:10px;padding:1px 5px;border-radius:3px;background:#1a3a5c;color:#58a6ff;font-weight:600;white-space:nowrap}
+.src-tr{font-size:10px;padding:1px 5px;border-radius:3px;background:#1a3a1a;color:#3fb950;font-weight:600;white-space:nowrap}
+/* NO DATA */
+.no-data{text-align:center;padding:2rem;color:#484f58;font-size:13px}
+
+@media(max-width:900px){.two-col{grid-template-columns:1fr}.z-hdr,.z-row{grid-template-columns:120px 70px repeat(6,1fr)}}
+</style>
+</head>
+<body>
+<div class="dash">
+  <div class="hdr">
+    <div>
+      <div class="hdr-title">Club San Martín · Performance Dashboard</div>
+      <div class="hdr-sub" id="hdr-range">Temporada 2026 · GPS Data</div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" id="btn-c" onclick="setTab('c')">Gestión de Carga</button>
+      <button class="tab" id="btn-z" onclick="setTab('z')">Z-Scores</button>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters">
+
+    <!-- DATE RANGE -->
+    <div class="f-group">
+      <div class="f-label">Período</div>
+      <div class="f-date-wrap">
+        <input type="text" id="f-dates" placeholder="Seleccioná un período..." readonly>
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor">
+          <path d="M4 1a1 1 0 0 1 1 1v.25h6V2a1 1 0 0 1 2 0v.25h.5A1.5 1.5 0 0 1 15 3.75v9.5A1.5 1.5 0 0 1 13.5 14.75h-11A1.5 1.5 0 0 1 1 13.25v-9.5A1.5 1.5 0 0 1 2.5 2.25H3V2a1 1 0 0 1 1-1zm0 3.25H2.5a.5.5 0 0 0-.5.5v1.5h12v-1.5a.5.5 0 0 0-.5-.5H13v.25a1 1 0 0 1-2 0V4.25H5v.25a1 1 0 0 1-2 0V4.25zm-1.5 4v6a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5v-6H2.5z"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- PLAYER -->
+    <div class="f-group">
+      <div class="f-label">Player</div>
+      <select id="f-player" onchange="render()">
+        <option value="All">Todos los jugadores</option>
+        <option value="Agustin Ferraro">Agustin Ferraro</option>
+<option value="Bernardo Novak">Bernardo Novak</option>
+<option value="Bruno  Zurniewicz">Bruno  Zurniewicz</option>
+<option value="Diego Lorenzo">Diego Lorenzo</option>
+<option value="Franco Cammarata">Franco Cammarata</option>
+<option value="Franco Feltrinelli">Franco Feltrinelli</option>
+<option value="Franco Sgroi">Franco Sgroi</option>
+<option value="Gianluca Gianolli">Gianluca Gianolli</option>
+<option value="Ian  Verba">Ian  Verba</option>
+<option value="Ignacio Marino">Ignacio Marino</option>
+<option value="Juan  Almandoz">Juan  Almandoz</option>
+<option value="Juan Bugge">Juan Bugge</option>
+<option value="Juan Cruz Prokopic">Juan Cruz Prokopic</option>
+<option value="Julian Papa">Julian Papa</option>
+<option value="Luca Guadagno">Luca Guadagno</option>
+<option value="Lucca Santero">Lucca Santero</option>
+<option value="Manuel Bianco">Manuel Bianco</option>
+<option value="Mateo Gonzalez">Mateo Gonzalez</option>
+<option value="Roman  Osella">Roman  Osella</option>
+<option value="Santiago Aguilera">Santiago Aguilera</option>
+<option value="Santiago Berdomas">Santiago Berdomas</option>
+<option value="Santiago Speroni">Santiago Speroni</option>
+<option value="Tomas Aguirre">Tomas Aguirre</option>
+<option value="Tomas Alonso">Tomas Alonso</option>
+<option value="Tomas Lemes">Tomas Lemes</option>
+      </select>
+    </div>
+
+    <!-- POSITION (grouped) -->
+    <div class="f-group">
+      <div class="f-label">Position</div>
+      <select id="f-pos" onchange="render()">
+        <option value="All">Todas las posiciones</option>
+        <optgroup label="1–5 FW">
+          <option value="PROP">PROP</option>
+          <option value="HOOKER">HOOKER</option>
+          <option value="SECOND ROW">SECOND ROW</option>
+        </optgroup>
+        <optgroup label="BACK ROW">
+          <option value="FLANKER">FLANKER</option>
+          <option value="NUMBER 8">NUMBER 8</option>
+        </optgroup>
+        <optgroup label="BACKS">
+          <option value="SCRUM-HALF">SCRUM-HALF</option>
+          <option value="FLY-HALF">FLY-HALF</option>
+          <option value="CENTRE">CENTRE</option>
+          <option value="WING">WING</option>
+          <option value="FULLBACK">FULLBACK</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <!-- TYPE SESSION -->
+    <div class="f-group">
+      <div class="f-label">Type Session</div>
+      <select id="f-type" onchange="syncTasks();render()">
+        <option value="All">Todos</option>
+        <option value="Tactical">Entrenamiento</option>
+        <option value="Friendly game">Partido Amistoso</option>
+        <option value="Official game">Partido Oficial</option>
+      </select>
+    </div>
+
+    <!-- TASKS (grouped, dynamic) -->
+    <div class="f-group">
+      <div class="f-label">Tasks</div>
+      <select id="f-sel" onchange="render()">
+        <option value="All">Todas las tasks</option>
+        <optgroup label="ENTRENAMIENTO" id="tg-tac">
+          <option value="Drills">Drills</option>
+          <option value="SPEED">SPEED</option>
+          <option value="RUGBY">RUGBY</option>
+          <option value="UNIDADES">UNIDADES</option>
+          <option value="CONDITIONING">CONDITIONING</option>
+          <option value="WARM-UP">WARM-UP</option>
+          <option value="PHYSICAL-TECHNICAL">PHYSICAL-TECHNICAL</option>
+        </optgroup>
+        <optgroup label="PARTIDO OFICIAL" id="tg-off">
+          <option value="Drills">Drills</option>
+          <option value="1st time">1st time</option>
+          <option value="2nd time">2nd time</option>
+        </optgroup>
+        <optgroup label="PARTIDO AMISTOSO" id="tg-fri">
+          <option value="Drills">Drills</option>
+          <option value="1st time">1st time</option>
+          <option value="2nd time">2nd time</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <button class="reset-btn" onclick="resetFilters()">✕ Limpiar</button>
+  </div>
+
+  <!-- ACTIVE FILTER PILLS -->
+  <div class="active-filters" id="af"></div>
+
+  <!-- KPIs -->
+  
+
+  <!-- PANEL CARGA -->
+  <div id="panel-c">
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">Ranking de jugadores — máximo registrado</div>
+        <div class="sort-btns" id="sbts"></div>
+        <div class="tbl-wrap"><table id="rtbl"></table></div>
+      </div>
+      <div class="card">
+        <div class="card-title">HSR por jugador</div>
+        <div class="leg-bars">
+          <span class="leg-bar"><span class="leg-box" style="background:#1f6feb"></span>HSR Abs (m)</span>
+          <span class="leg-bar"><span class="leg-box" style="background:#2ea043"></span>HSR Rel (m)</span>
+        </div>
+        <div class="bar-wrap"><canvas id="bch"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PANEL Z-SCORES -->
+  <div id="panel-z" style="display:none">
+    <div class="card" style="margin-bottom:1rem">
+      <div class="card-title">Velocidad máxima por partido (Drills MD)</div>
+      <div class="line-wrap"><canvas id="lch"></canvas></div>
+      <div class="legend" id="spleg"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Z-Scores · Último partido vs 4 anteriores</div>
+      <div class="note">🟢 Z ≥ 1.0 rendimiento por encima del historial &nbsp;·&nbsp; 🔴 Z ≤ −1.0 por debajo &nbsp;·&nbsp; — sin datos suficientes</div>
+      <div id="ztbl"></div>
+    </div>
+  </div>
+
+  <!-- LOADING OVERLAY -->
+  <div id="loading" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(13,17,23,.85);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:12px">
+    <div style="width:40px;height:40px;border:3px solid #30363d;border-top-color:#1f6feb;border-radius:50%;animation:spin .8s linear infinite"></div>
+    <div style="color:#7d8590;font-size:13px">Cargando datos desde Google Sheets...</div>
+  </div>
+  <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+</div>
+
+<script>
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRB7aw4-hU56u9hhv6U5ObpM1H776enwVSiPwflG1ct4AIcHrB6KwPgjQ86xVCIAk5q8Q53o-LmASrx/pub?gid=1873673764&single=true&output=csv';
+
+// ── CSV PARSER ────────────────────────────────────────────────────────────────
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.replace(/^"|"$/g, '').trim());
+  return lines.slice(1).map(line => {
+    const vals = []; let cur = ''; let inQ = false;
+    for (let c of line) {
+      if (c === '"') { inQ = !inQ; }
+      else if (c === ',' && !inQ) { vals.push(cur); cur = ''; }
+      else { cur += c; }
+    }
+    vals.push(cur);
+    const obj = {};
+    headers.forEach((h, i) => { obj[h] = vals[i] ? vals[i].replace(/^"|"$/g,'').trim() : ''; });
+    return obj;
+  });
+}
+
+// ── PARSE DATE DD/MM/YYYY → Date ──────────────────────────────────────────────
+function pd(s) {
+  if (!s) return null;
+  const p = s.split('/');
+  return p.length === 3 ? new Date(+p[2], +p[1]-1, +p[0]) : null;
+}
+
+// ── Z-SCORE CALCULATION (rolling: last match vs prev 4) ───────────────────────
+function calcZScores(allRows) {
+  const md = allRows.filter(r => r.md === 'MD' && r.sel === 'Drills');
+  md.sort((a,b) => pd(a.d) - pd(b.d));
+  const byPlayer = {};
+  md.forEach(r => { if (!byPlayer[r.p]) byPlayer[r.p] = []; byPlayer[r.p].push(r); });
+  const zMetrics = [
+    {z:'Z_Distance', k:'dist'}, {z:'Z_HSR_Abs', k:'ha'},
+    {z:'Z_HSR_Rel', k:'hr'}, {z:'Z_HI_Acc', k:'ac'},
+    {z:'Z_HI_Dec', k:'dc'}, {z:'Z_PlayerLoad', k:'pl'}
+  ];
+  const results = [];
+  Object.entries(byPlayer).forEach(([player, games]) => {
+    if (games.length < 2) return;
+    const last = games[games.length - 1];
+    const prev = games.slice(Math.max(0, games.length - 5), games.length - 1);
+    if (prev.length < 2) return;
+    const row = { player: last.p, position: last.pos, date: last.d, type_session: last.ts };
+    zMetrics.forEach(m => {
+      const vals = prev.map(g => parseFloat(g[m.k]) || 0);
+      const mu = vals.reduce((a,b) => a+b, 0) / vals.length;
+      const std = Math.sqrt(vals.reduce((s,v) => s + (v-mu)**2, 0) / (vals.length - 1));
+      const cur = parseFloat(last[m.k]) || 0;
+      row[m.z] = std > 0 ? Math.round((cur - mu) / std * 100) / 100 : null;
+    });
+    results.push(row);
+  });
+  return results;
+}
+
+// ── MAP CSV ROW → SESSION OBJECT ──────────────────────────────────────────────
+function mapRow(r) {
+  return {
+    p:   r['Player'] ? r['Player'].trim() : '',
+    pos: r['Position'] ? r['Position'].trim() : '',
+    d:   r['Date'] || '',
+    w:   parseInt(r['Week Team']) || 0,
+    ts:  r['Type Session'] || '',
+    md:  r['Match Day'] || '',
+    sel: r['Selection'] || '',
+    dist: parseFloat(r['Distance(m)']) || 0,
+    ha:  parseFloat(r['Abs HSR(m)']) || 0,
+    hr:  parseFloat(r['HSR Rel (m)']) || 0,
+    ac:  parseInt(r['High Intensity Acc (count)']) || 0,
+    dc:  parseInt(r['High Intensity Dec (count)']) || 0,
+    ms:  parseFloat(r['MAX Speed(km/h)']) || 0,
+    pl:  parseFloat(r['Player Load (a.u.)']) || 0,
+  };
+}
+
+let S = [], Z = [];
+
+
+const SORTS=[{k:'ms',l:'Top Speed'},{k:'dist',l:'Distancia'},{k:'ha',l:'HSR Abs'},{k:'hr',l:'HSR Rel'}];
+const PC=['#1f6feb','#2ea043','#d29922','#e85151','#a371f7','#58a6ff','#3fb950','#f78166','#d2a8ff','#ffa657','#79c0ff','#56d364','#ff7b72','#e3b341','#bc8cff','#6cb6ff','#85e89d','#ff6b6b','#ffe566','#b69bf8','#7ec8e3','#95d5b2','#ff9999','#ffc56d','#8dd'];
+
+let tab='c', sk='pl', bc=null, lc=null;
+let dateFrom=null, dateTo=null;
+
+// ── DATE PICKER ────────────────────────────────────────────────────────────────
+const fp = flatpickr('#f-dates', {
+  mode: 'range',
+  dateFormat: 'd/m/Y',
+  minDate: '13/02/2026',
+  maxDate: '14/04/2026',
+  locale: {
+    firstDayOfWeek: 1,
+    weekdays: {shorthand:['Do','Lu','Ma','Mi','Ju','Vi','Sa'],longhand:['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado']},
+    months: {shorthand:['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
+             longhand:['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']}
+  },
+  onClose(sel){
+    if(sel.length===2){
+      dateFrom=sel[0]; dateTo=sel[1];
+    } else if(sel.length===1){
+      dateFrom=sel[0]; dateTo=sel[0];
+    } else {
+      dateFrom=null; dateTo=null;
+    }
+    render();
+  }
+});
+
+// ── TASK GROUPS: sync visibility based on Type Session ─────────────────────────
+function syncTasks(){
+  const t = document.getElementById('f-type').value;
+  document.getElementById('tg-tac').style.display = (t==='All'||t==='Tactical') ? '' : 'none';
+  document.getElementById('tg-off').style.display = (t==='All'||t==='Official game') ? '' : 'none';
+  document.getElementById('tg-fri').style.display = (t==='All'||t==='Friendly game') ? '' : 'none';
+  // reset task selection when type changes
+  document.getElementById('f-sel').value = 'All';
+}
+
+// ── DATE PARSE: DD/MM/YYYY → Date object ───────────────────────────────────────
+function parseDate(str){
+  if(!str) return null;
+  const p = str.split('/');
+  return new Date(parseInt(p[2]), parseInt(p[1])-1, parseInt(p[0]));
+}
+
+// ── FILTER ─────────────────────────────────────────────────────────────────────
+function filt(){
+  const fp = document.getElementById('f-player').value;
+  const fpo= document.getElementById('f-pos').value;
+  const ft = document.getElementById('f-type').value;
+  const fs = document.getElementById('f-sel').value;
+  return S.filter(r=>{
+    if(fp!=='All' && r.p !== fp) return false;
+    if(fpo!=='All' && r.pos !== fpo) return false;
+    if(ft!=='All' && r.ts !== ft) return false;
+    if(fs!=='All' && r.sel !== fs) return false;
+    if(dateFrom && dateTo){
+      const rd = parseDate(r.d);
+      if(rd < dateFrom || rd > dateTo) return false;
+    }
+    return true;
+  });
+}
+
+// ── AGGREGATE ──────────────────────────────────────────────────────────────────
+function agg(rows){
+  const m={};
+  rows.forEach(r=>{
+    if(!m[r.p]) m[r.p]={p:r.p,pos:r.pos,n:0,dist:0,ha:0,hr:0,ac:0,dc:0,ms:0,pl:0};
+    const x=m[r.p]; x.n++;
+    x.dist+=r.dist; x.ha+=r.ha; x.hr+=r.hr;
+    x.ac+=r.ac; x.dc+=r.dc; x.pl+=r.pl;
+    x.ms=Math.max(x.ms,r.ms);
+  });
+  return Object.values(m).map(x=>({
+    p:x.p, pos:x.pos, n:x.n,
+    dist:Math.round(x.dist/x.n),
+    ha:+(x.ha/x.n).toFixed(0),
+    hr:+(x.hr/x.n).toFixed(0),
+    ac:+(x.ac/x.n).toFixed(1),
+    dc:+(x.dc/x.n).toFixed(1),
+    ms:+x.ms.toFixed(1),
+    pl:+(x.pl/x.n).toFixed(1)
+  }));
+}
+
+// ── ACTIVE FILTERS PILLS ───────────────────────────────────────────────────────
+function renderPills(){
+  const fp = document.getElementById('f-player').value;
+  const fpo= document.getElementById('f-pos').value;
+  const ft = document.getElementById('f-type').value;
+  const fs = document.getElementById('f-sel').value;
+  const pills=[];
+  if(dateFrom && dateTo){
+    const from=dateFrom.toLocaleDateString('es-AR',{day:'2-digit',month:'short'});
+    const to  =dateTo.toLocaleDateString('es-AR',{day:'2-digit',month:'short'});
+    const lbl = from===to ? from : `${from} → ${to}`;
+    pills.push(`<div class="af-pill">📅 ${lbl} <span onclick="clearDate()">✕</span></div>`);
+  }
+  if(fp!=='All') pills.push(`<div class="af-pill">👤 ${fp} <span onclick="clearSel('f-player')">✕</span></div>`);
+  if(fpo!=='All') pills.push(`<div class="af-pill">🏉 ${fpo} <span onclick="clearSel('f-pos')">✕</span></div>`);
+  const typeMap={'Tactical':'Entrenamiento','Friendly game':'Amistoso','Official game':'Oficial'};
+  if(ft!=='All') pills.push(`<div class="af-pill">📋 ${typeMap[ft]||ft} <span onclick="clearSel('f-type');syncTasks()">✕</span></div>`);
+  if(fs!=='All') pills.push(`<div class="af-pill">🎯 ${fs} <span onclick="clearSel('f-sel')">✕</span></div>`);
+  document.getElementById('af').innerHTML=pills.join('');
+  // Update header subtitle
+  if(dateFrom && dateTo){
+    const from=dateFrom.toLocaleDateString('es-AR',{day:'2-digit',month:'long'});
+    const to  =dateTo.toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});
+    document.getElementById('hdr-range').textContent=`Temporada 2026 · ${from} → ${to}`;
+  } else {
+    document.getElementById('hdr-range').textContent='Temporada 2026 · GPS Data';
+  }
+}
+
+function clearDate(){ fp.clear(); dateFrom=null; dateTo=null; render(); }
+function clearSel(id){ document.getElementById(id).value='All'; if(id==='f-type') syncTasks(); render(); }
+
+function resetFilters(){
+  document.getElementById('f-player').value='All';
+  document.getElementById('f-pos').value='All';
+  document.getElementById('f-type').value='All';
+  document.getElementById('f-sel').value='All';
+  fp.clear(); dateFrom=null; dateTo=null;
+  syncTasks();
+  render();
+}
+
+
+
+// ── RANKING TABLE — MAX VALUES ─────────────────────────────────────────────────
+function renderRank(rows){
+  document.getElementById('sbts').innerHTML=SORTS.map(o=>`<button class="sort-btn${o.k===sk?' active':''}" onclick="setSk('${o.k}')">${o.l}</button>`).join('');
+  // Drills = true daily total (sum of all task cuts) → use for ALL metrics
+  const drills=rows.filter(r=>r.sel==='Drills');
+  const map={};
+  drills.forEach(r=>{
+    if(!map[r.p]) map[r.p]={p:r.p,pos:r.pos,ms:0,ms_src:'',dist:0,dist_src:'',ha:0,ha_src:'',hr:0,hr_src:''};
+    const x=map[r.p];
+    const src=r.md==='MD'?'Match Day':'Training';
+    if(r.ms>x.ms){x.ms=r.ms;x.ms_src=src;}
+    if(r.dist>x.dist){x.dist=r.dist;x.dist_src=src;}
+    if(r.ha>x.ha){x.ha=r.ha;x.ha_src=src;}
+    if(r.hr>x.hr){x.hr=r.hr;x.hr_src=src;}
+  });
+  const srt=Object.values(map).sort((a,b)=>b[sk]-a[sk]);
+  const t=document.getElementById('rtbl');
+  if(!srt.length){t.innerHTML=`<tr><td class="no-data" colspan="7">Sin datos para los filtros seleccionados</td></tr>`;return;}
+  const srcBadge=(s)=>s==='Match Day'
+    ?'<span class="src-md">MD</span>'
+    :'<span class="src-tr">TR</span>';
+  t.innerHTML=`<thead><tr>
+    <th>#</th><th>Jugador</th><th>Pos</th>
+    ${SORTS.map(o=>`<th class="num${o.k===sk?' act':''}" onclick="setSk('${o.k}')" colspan="2">${o.l}</th>`).join('')}
+  </tr></thead>`;
+  const tb=document.createElement('tbody');
+  srt.forEach((p,i)=>{
+    const tr=document.createElement('tr');
+    const fmt=(v)=>v>0?v.toLocaleString():'—';
+    tr.innerHTML=`<td class="rk">${i+1}</td>
+      <td style="font-weight:500;white-space:nowrap">${p.p}</td>
+      <td><span class="pill">${p.pos}</span></td>
+      <td class="num">${p.ms.toFixed(1)}</td><td>${srcBadge(p.ms_src)}</td>
+      <td class="num">${p.dist.toLocaleString()}</td><td>${srcBadge(p.dist_src)}</td>
+      <td class="num">${fmt(p.ha)}</td><td>${srcBadge(p.ha_src)}</td>
+      <td class="num">${fmt(p.hr)}</td><td>${srcBadge(p.hr_src)}</td>`;
+    tb.appendChild(tr);
+  });
+  t.appendChild(tb);
+}
+
+// ── BAR CHART ──────────────────────────────────────────────────────────────────
+function renderBar(stats){
+  const s=[...stats].sort((a,b)=>b.ha-a.ha).slice(0,16);
+  if(bc) bc.destroy();
+  if(!s.length){document.getElementById('bch').getContext('2d').clearRect(0,0,9999,9999);return;}
+  bc=new Chart(document.getElementById('bch'),{type:'bar',
+    data:{labels:s.map(p=>p.p.split(' ')[0]),datasets:[
+      {label:'HSR Abs (m)',data:s.map(p=>p.ha),backgroundColor:'#1f6feb',borderRadius:3},
+      {label:'HSR Rel (m)',data:s.map(p=>p.hr),backgroundColor:'#2ea043',borderRadius:3}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{title:i=>[s[i[0].dataIndex].p,s[i[0].dataIndex].pos]}}},
+      scales:{x:{ticks:{color:'#7d8590',font:{size:10},maxRotation:45},grid:{display:false},border:{color:'#30363d'}},
+        y:{ticks:{color:'#7d8590',font:{size:10}},grid:{color:'rgba(255,255,255,.07)'},border:{color:'#30363d'}}}}});
+}
+
+// ── LINE CHART (speed over time) ───────────────────────────────────────────────
+function renderLine(){
+  const mdDrills=S.filter(r=>r.md==='MD'&&r.sel==='Drills');
+  const dates=[...new Set(mdDrills.map(r=>r.d))].sort((a,b)=>parseDate(a)-parseDate(b));
+  const players=[...new Set(S.map(r=>r.p))].sort();
+  const datasets=players.map((p,i)=>({
+    label:p, borderColor:PC[i%PC.length], backgroundColor:'transparent',
+    data:dates.map(d=>{const m=mdDrills.find(r=>r.p===p&&r.d===d);return m?m.ms:null;}),
+    borderWidth:1.5, pointRadius:3, spanGaps:true, tension:0.3
+  }));
+  if(lc) lc.destroy();
+  lc=new Chart(document.getElementById('lch'),{type:'line',
+    data:{labels:dates.map(d=>d.slice(0,5)),datasets},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{x:{ticks:{color:'#7d8590',font:{size:10}},grid:{display:false},border:{color:'#30363d'}},
+        y:{min:15,max:36,ticks:{color:'#7d8590',font:{size:10}},
+          grid:{color:'rgba(255,255,255,.07)'},border:{color:'#30363d'},
+          title:{display:true,text:'km/h',color:'#7d8590',font:{size:10}}}}}});
+  document.getElementById('spleg').innerHTML=players.map((p,i)=>
+    `<span class="leg-item"><span class="leg-dot" style="background:${PC[i%PC.length]}"></span>${p.split(' ')[0]}</span>`).join('');
+}
+
+// ── Z-SCORE TABLE ──────────────────────────────────────────────────────────────
+function renderZ(){
+  const cols=['Z_Distance','Z_HSR_Abs','Z_HSR_Rel','Z_HI_Acc','Z_HI_Dec','Z_PlayerLoad'];
+  const lbls=['Z Dist','Z HSR Abs','Z HSR Rel','Z HI Acc','Z HI Dec','Z Carga'];
+  const fp = document.getElementById('f-player').value;
+  const fpo= document.getElementById('f-pos').value;
+  const zData = Z.filter(r=>(fp==='All'||r.player===fp)&&(fpo==='All'||r.position===fpo));
+  let h=`<div class="z-hdr"><div>Jugador</div><div>Posición</div>${lbls.map(l=>`<div style="text-align:center">${l}</div>`).join('')}</div>`;
+  if(!zData.length){h+=`<div class="no-data">Sin datos para los filtros seleccionados</div>`;document.getElementById('ztbl').innerHTML=h;return;}
+  zData.forEach(r=>{
+    const cells=cols.map(c=>{
+      const v=r[c];
+      if(v===null||v===undefined) return `<div class="z0">—</div>`;
+      const cls=v>=1?'z-cell zg':v<=-1?'z-cell zr':'z-cell';
+      return `<div class="${cls}">${v>0?'+':''}${v.toFixed(2)}</div>`;
+    }).join('');
+    h+=`<div class="z-row"><div class="z-name">${r.player}</div><div class="z-pos">${r.position}</div>${cells}</div>`;
+  });
+  document.getElementById('ztbl').innerHTML=h;
+}
+
+// ── MAIN RENDER ────────────────────────────────────────────────────────────────
+function setTab(t){
+  tab=t;
+  document.getElementById('btn-c').className='tab'+(t==='c'?' active':'');
+  document.getElementById('btn-z').className='tab'+(t==='z'?' active':'');
+  document.getElementById('panel-c').style.display=t==='c'?'':'none';
+  document.getElementById('panel-z').style.display=t==='z'?'':'none';
+  render();
+}
+
+function setSk(k){sk=k;render();}
+
+function render(){
+  const rows=filt();
+  const stats=agg(rows);
+  renderPills();
+  if(tab==='c'){renderRank(rows);renderBar(agg(rows));}
+  else{renderLine();renderZ();}
+}
+
+// ── LOAD DATA FROM GOOGLE SHEETS ─────────────────────────────────────────────
+async function loadData() {
+  document.getElementById('loading').style.display = 'flex';
+  try {
+    const resp = await fetch(CSV_URL);
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    const text = await resp.text();
+    const rows = parseCSV(text).filter(r => r['Player'] && r['Player'] !== 'Club San Martin' && r['Selection'] !== 'Session');
+    S = rows.map(mapRow);
+    Z = calcZScores(S);
+    document.getElementById('loading').style.display = 'none';
+    syncTasks();
+    render();
+  } catch(e) {
+    document.getElementById('loading').innerHTML = `
+      <div style="text-align:center;color:#f85149">
+        <div style="font-size:18px;margin-bottom:8px">⚠ Error cargando datos</div>
+        <div style="font-size:13px;color:#7d8590">${e.message}</div>
+        <button onclick="loadData()" style="margin-top:12px;padding:8px 16px;background:#1f6feb;border:none;border-radius:6px;color:#fff;cursor:pointer;font-size:13px">Reintentar</button>
+      </div>`;
+  }
+}
+
+loadData();
+</script>
+</body>
+</html>
