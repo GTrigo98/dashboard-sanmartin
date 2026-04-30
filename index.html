@@ -82,10 +82,10 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
   <div class="hdr">
     <div>
       <div class="hdr-title" style="text-transform:uppercase">Club San Martín · Performance Dashboard</div>
-      <div class="hdr-sub" id="hdr-range">Temporada 2026 · GPS Data</div>
+      <div class="hdr-sub" id="hdr-range">Season 2026 · GPS Data</div>
     </div>
     <div class="tabs">
-      <button class="tab active" id="btn-c" onclick="setTab('c')">Gestión de Carga</button>
+      <button class="tab active" id="btn-c" onclick="setTab('c')">Load Management</button>
       <button class="tab" id="btn-z" onclick="setTab('z')">Z-Scores</button>
     </div>
   </div>
@@ -94,13 +94,13 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
     <div class="f-group">
       <div class="f-label">Período</div>
       <div class="f-date-wrap">
-        <input type="text" id="f-dates" placeholder="Seleccioná un período..." readonly>
+        <input type="text" id="f-dates" placeholder="Select a period..." readonly>
       </div>
     </div>
     <div class="f-group">
       <div class="f-label">Player</div>
       <select id="f-player" onchange="render()">
-        <option value="All">Todos los jugadores</option>
+        <option value="All">All players</option>
         <option value="Agustin Ferraro">Agustin Ferraro</option>
 <option value="Bernardo Novak">Bernardo Novak</option>
 <option value="Bruno  Zurniewicz">Bruno  Zurniewicz</option>
@@ -133,27 +133,27 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
       <div class="f-label">Position</div>
       <div id="pos-display" onclick="togglePosDropdown()" 
            style="background:#161b22;border:1px solid #30363d;color:#e6edf3;padding:6px 10px;border-radius:6px;font-size:12px;cursor:pointer;height:32px;min-width:160px;display:flex;align-items:center;justify-content:space-between;user-select:none">
-        <span id="pos-label">Todas las posiciones</span>
+        <span id="pos-label">All positions</span>
         <span style="color:#484f58;font-size:10px;margin-left:8px">▼</span>
       </div>
       <div id="pos-dropdown" style="display:none;position:absolute;top:54px;left:0;z-index:100;background:#161b22;border:1px solid #30363d;border-radius:8px;min-width:200px;box-shadow:0 8px 24px rgba(0,0,0,.6);overflow:hidden">
-        <div class="pos-opt" data-val="All" onclick="selectPos('All','Todas las posiciones')" style="padding:7px 12px;cursor:pointer;font-size:12px;color:#7d8590;border-bottom:1px solid #21262d">Todas las posiciones</div>
+        <div class="pos-opt" data-val="All" onclick="selectPos('All','All positions')" style="padding:7px 12px;cursor:pointer;font-size:12px;color:#7d8590;border-bottom:1px solid #21262d">All positions</div>
         <!-- 1-5 FW GROUP -->
         <div class="pos-group-hdr" onclick="selectPos('GROUP_FW','1–5 FW')" style="padding:7px 12px;cursor:pointer;font-size:11px;font-weight:700;color:#58a6ff;background:#0d1117;display:flex;align-items:center;justify-content:space-between" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='#0d1117'">
-          <span>1–5 FW</span><span style="font-size:10px;opacity:.6">▶ grupo completo</span>
+          <span>1–5 FW</span><span style="font-size:10px;opacity:.6">▶ full group</span>
         </div>
         <div class="pos-opt" data-val="PROP" onclick="selectPos('PROP','PROP')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">PROP</div>
         <div class="pos-opt" data-val="HOOKER" onclick="selectPos('HOOKER','HOOKER')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">HOOKER</div>
         <div class="pos-opt" data-val="SECOND ROW" onclick="selectPos('SECOND ROW','SECOND ROW')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">SECOND ROW</div>
         <!-- BACK ROW GROUP -->
         <div class="pos-group-hdr" onclick="selectPos('GROUP_BR','Back Row')" style="padding:7px 12px;cursor:pointer;font-size:11px;font-weight:700;color:#58a6ff;background:#0d1117;display:flex;align-items:center;justify-content:space-between" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='#0d1117'">
-          <span>BACK ROW</span><span style="font-size:10px;opacity:.6">▶ grupo completo</span>
+          <span>BACK ROW</span><span style="font-size:10px;opacity:.6">▶ full group</span>
         </div>
         <div class="pos-opt" data-val="FLANKER" onclick="selectPos('FLANKER','FLANKER')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">FLANKER</div>
         <div class="pos-opt" data-val="NUMBER 8" onclick="selectPos('NUMBER 8','NUMBER 8')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">NUMBER 8</div>
         <!-- BACKS GROUP -->
         <div class="pos-group-hdr" onclick="selectPos('GROUP_BK','Backs')" style="padding:7px 12px;cursor:pointer;font-size:11px;font-weight:700;color:#58a6ff;background:#0d1117;display:flex;align-items:center;justify-content:space-between" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='#0d1117'">
-          <span>BACKS</span><span style="font-size:10px;opacity:.6">▶ grupo completo</span>
+          <span>BACKS</span><span style="font-size:10px;opacity:.6">▶ full group</span>
         </div>
         <div class="pos-opt" data-val="SCRUM-HALF" onclick="selectPos('SCRUM-HALF','SCRUM-HALF')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">SCRUM-HALF</div>
         <div class="pos-opt" data-val="FLY-HALF" onclick="selectPos('FLY-HALF','FLY-HALF')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">FLY-HALF</div>
@@ -165,17 +165,17 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
     <div class="f-group">
       <div class="f-label">Type Session</div>
       <select id="f-type" onchange="syncTasks();render()">
-        <option value="All">Todos</option>
-        <option value="Tactical">Entrenamiento</option>
-        <option value="Friendly game">Partido Amistoso</option>
-        <option value="Official game">Partido Oficial</option>
+        <option value="All">All</option>
+        <option value="Tactical">Training</option>
+        <option value="Friendly game">Friendly Match</option>
+        <option value="Official game">Official Match</option>
       </select>
     </div>
     <div class="f-group">
       <div class="f-label">Tasks</div>
       <select id="f-sel" onchange="render()">
-        <option value="All">Todas las tasks</option>
-        <optgroup label="ENTRENAMIENTO" id="tg-tac">
+        <option value="All">All tasks</option>
+        <optgroup label="TRAINING" id="tg-tac">
           <option value="Drills">Drills</option>
           <option value="SPEED">SPEED</option>
           <option value="RUGBY">RUGBY</option>
@@ -184,19 +184,19 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
           <option value="WARM-UP">WARM-UP</option>
           <option value="PHYSICAL-TECHNICAL">PHYSICAL-TECHNICAL</option>
         </optgroup>
-        <optgroup label="PARTIDO OFICIAL" id="tg-off">
+        <optgroup label="OFFICIAL MATCH" id="tg-off">
           <option value="Drills">Drills</option>
           <option value="1st time">1st time</option>
           <option value="2nd time">2nd time</option>
         </optgroup>
-        <optgroup label="PARTIDO AMISTOSO" id="tg-fri">
+        <optgroup label="FRIENDLY MATCH" id="tg-fri">
           <option value="Drills">Drills</option>
           <option value="1st time">1st time</option>
           <option value="2nd time">2nd time</option>
         </optgroup>
       </select>
     </div>
-    <button class="reset-btn" onclick="resetFilters()">✕ Limpiar</button>
+    <button class="reset-btn" onclick="resetFilters()">✕ Clear</button>
   </div>
 
   <div class="active-filters" id="af"></div>
@@ -204,12 +204,12 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
   <div id="panel-c">
     <div class="two-col">
       <div class="card">
-        <div class="card-title">Ranking — máximo registrado por jugador</div>
+        <div class="card-title">Ranking — máximo registrado per player</div>
         <div class="sort-btns" id="sbts"></div>
         <div class="tbl-wrap"><table id="rtbl"></table></div>
       </div>
       <div class="card">
-        <div class="card-title" id="bar-title">HSR Abs por jugador</div>
+        <div class="card-title" id="bar-title">HSR Abs per player</div>
         <div id="bar-subtitle" style="font-size:11px;color:#58a6ff;margin-bottom:.4rem;min-height:16px"></div>
         <div class="bar-wrap"><canvas id="bch"></canvas></div>
       </div>
@@ -218,26 +218,26 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 
   <div id="panel-z" style="display:none">
     <div class="card" style="margin-bottom:1rem">
-      <div class="card-title">Velocidad máxima por partido (Drills MD)</div>
+      <div class="card-title">Top Speed per match (Drills MD)</div>
       <div class="line-wrap"><canvas id="lch"></canvas></div>
       <div class="legend" id="spleg"></div>
     </div>
     <div class="card">
-      <div class="card-title">Z-Scores · Último partido vs 4 anteriores</div>
-      <div class="note">🟢 Z ≥ 1.0 por encima del historial &nbsp;·&nbsp; 🔴 Z ≤ −1.0 por debajo &nbsp;·&nbsp; — sin datos suficientes</div>
+      <div class="card-title">Z-Scores · Last match vs previous 4</div>
+      <div class="note">🟢 Z ≥ 1.0 above historical average &nbsp;·&nbsp; 🔴 Z ≤ −1.0 below &nbsp;·&nbsp; — insufficient data</div>
       <div id="ztbl"></div>
     </div>
   </div>
 
   <div id="loading" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(13,17,23,.85);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:12px">
     <div style="width:40px;height:40px;border:3px solid #30363d;border-top-color:#1f6feb;border-radius:50%;animation:spin .8s linear infinite"></div>
-    <div style="color:#7d8590;font-size:13px">Cargando datos desde Google Sheets...</div>
+    <div style="color:#7d8590;font-size:13px">Loading data from Google Sheets...</div>
   </div>
 </div>
 
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ_u4pAxUSP94hzf6T5afS5TGa7mFotJ-9ngpEZ9QG2QqF-FHzEaiysadZ6A1a31A/pub?gid=175231250&single=true&output=csv";
-const SORTS=[{k:'ms',l:'Top Speed'},{k:'dist',l:'Distancia'},{k:'ha',l:'HSR Abs'},{k:'hr',l:'HSR Rel'}];
+const SORTS=[{k:'ms',l:'Top Speed'},{k:'dist',l:'Distance'},{k:'ha',l:'HSR Abs'},{k:'hr',l:'HSR Rel'}];
 const POS_GROUPS={
   'GROUP_FW':['PROP','HOOKER','SECOND ROW'],
   'GROUP_BR':['FLANKER','NUMBER 8'],
@@ -274,9 +274,9 @@ const fp = flatpickr('#f-dates',{
   mode:'range', dateFormat:'d/m/Y',
   minDate:'11/02/2026', maxDate:'25/04/2026',
   locale:{firstDayOfWeek:1,
-    weekdays:{shorthand:['Do','Lu','Ma','Mi','Ju','Vi','Sa'],longhand:['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado']},
-    months:{shorthand:['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'],
-            longhand:['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']}
+    weekdays:{shorthand:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],longhand:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']},
+    months:{shorthand:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+            longhand:['January','February','March','April','May','June','July','August','September','October','November','December']}
   },
   onClose(sel){
     dateFrom=sel.length>=1?sel[0]:null;
@@ -378,9 +378,9 @@ async function loadData(){
   }catch(e){
     document.getElementById('loading').innerHTML=`
       <div style="text-align:center;color:#f85149">
-        <div style="font-size:18px;margin-bottom:8px">⚠ Error cargando datos</div>
+        <div style="font-size:18px;margin-bottom:8px">⚠ Error loading data</div>
         <div style="font-size:13px;color:#7d8590">${e.message}</div>
-        <button onclick="loadData()" style="margin-top:12px;padding:8px 16px;background:#1f6feb;border:none;border-radius:6px;color:#fff;cursor:pointer;font-size:13px">Reintentar</button>
+        <button onclick="loadData()" style="margin-top:12px;padding:8px 16px;background:#1f6feb;border:none;border-radius:6px;color:#fff;cursor:pointer;font-size:13px">Retry</button>
       </div>`;
   }
 }
@@ -444,9 +444,9 @@ function renderPills(){
   if(currentPosVal!=='All'){
     const posLabels={'GROUP_FW':'1–5 FW','GROUP_BR':'Back Row','GROUP_BK':'Backs'};
     const posLbl=posLabels[currentPosVal]||currentPosVal;
-    pills.push(`<div class="af-pill">🏉 ${posLbl} <span onclick="selectPos('All','Todas las posiciones')">✕</span></div>`);
+    pills.push(`<div class="af-pill">🏉 ${posLbl} <span onclick="selectPos('All','All positions')">✕</span></div>`);
   }
-  const tm={'Tactical':'Entrenamiento','Friendly game':'Amistoso','Official game':'Oficial'};
+  const tm={'Tactical':'Training','Friendly game':'Friendly','Official game':'Official'};
   if(ft!=='All')pills.push(`<div class="af-pill">📋 ${tm[ft]||ft} <span onclick="clearSel('f-type');syncTasks()">✕</span></div>`);
   if(fs!=='All')pills.push(`<div class="af-pill">🎯 ${fs} <span onclick="clearSel('f-sel')">✕</span></div>`);
   document.getElementById('af').innerHTML=pills.join('');
@@ -455,14 +455,14 @@ function renderPills(){
     const to=dateTo.toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});
     document.getElementById('hdr-range').textContent=`Temporada 2026 · ${from} → ${to}`;
   }else{
-    document.getElementById('hdr-range').textContent='Temporada 2026 · GPS Data';
+    document.getElementById('hdr-range').textContent='Season 2026 · GPS Data';
   }
 }
 function clearDate(){fp.clear();dateFrom=null;dateTo=null;render();}
 function clearSel(id){document.getElementById(id).value='All';if(id==='f-type')syncTasks();render();}
 function resetFilters(){
   document.getElementById('f-player').value='All';
-  selectPos('All','Todas las posiciones');
+  selectPos('All','All positions');
   document.getElementById('f-type').value='All';
   document.getElementById('f-sel').value='All';
   fp.clear();dateFrom=null;dateTo=null;syncTasks();render();
@@ -484,9 +484,9 @@ function renderRank(rows){
   });
   const srt=Object.values(map).sort((a,b)=>b[sk]-a[sk]);
   const t=document.getElementById('rtbl');
-  if(!srt.length){t.innerHTML=`<tr><td class="no-data" colspan="11">Sin datos</td></tr>`;return;}
+  if(!srt.length){t.innerHTML=`<tr><td class="no-data" colspan="11">No data</td></tr>`;return;}
   const badge=s=>s==='Match Day'?'<span class="src-md">MD</span>':'<span class="src-tr">TR</span>';
-  t.innerHTML=`<thead><tr><th>#</th><th>Jugador</th><th>Pos</th>${SORTS.map(o=>`<th class="num${o.k===sk?' act':''}" onclick="setSk('${o.k}')" colspan="2">${o.l}</th>`).join('')}</tr></thead>`;
+  t.innerHTML=`<thead><tr><th>#</th><th>Player</th><th>Pos</th>${SORTS.map(o=>`<th class="num${o.k===sk?' act':''}" onclick="setSk('${o.k}')" colspan="2">${o.l}</th>`).join('')}</tr></thead>`;
   const tb=document.createElement('tbody');
   srt.forEach((p,i)=>{
     const tr=document.createElement('tr');
@@ -505,7 +505,7 @@ function renderRank(rows){
 // ── METRIC CONFIG ────────────────────────────────────────────────────────────
 const METRIC_CFG={
   ms:{key:'ms',label:'Top Speed',unit:'km/h',color:'#a371f7'},
-  dist:{key:'dist',label:'Distancia',unit:'m',color:'#1f6feb'},
+  dist:{key:'dist',label:'Distance',unit:'m',color:'#1f6feb'},
   ha:{key:'ha',label:'HSR Abs',unit:'m',color:'#1f6feb'},
   hr:{key:'hr',label:'HSR Rel',unit:'m',color:'#2ea043'},
 };
@@ -528,7 +528,7 @@ function renderBar(rows){
     const lastTeamDate=allDates.reduce((max,d)=>pd(d)>pd(max)?d:max,allDates[0]);
     const lastSessionRows=drills.filter(r=>r.d===lastTeamDate);
     const tsLabel=lastSessionRows.length?lastSessionRows[0].ts:'';
-    subtitle='Última sesión: '+lastTeamDate+' · '+tsLabel;
+    subtitle='Last session: '+lastTeamDate+' · '+tsLabel;
     chartData=[...lastSessionRows].sort((a,b)=>b[cfg.key]-a[cfg.key]);
   } else {
     const map={};
@@ -545,10 +545,10 @@ function renderBar(rows){
       ha:Math.round(x.ha/x.n),
       hr:Math.round(x.hr/x.n)
     })).sort((a,b)=>b[cfg.key]-a[cfg.key]);
-    subtitle='Promedio de sesiones filtradas';
+    subtitle='Average of filtered sessions';
   }
 
-  document.getElementById('bar-title').textContent=cfg.label+' por jugador';
+  document.getElementById('bar-title').textContent=cfg.label+' per player';
   document.getElementById('bar-subtitle').textContent=subtitle||'';
 
   if(bc)bc.destroy();
@@ -602,11 +602,11 @@ function renderLine(){
 // ── Z TABLE ───────────────────────────────────────────────────────────────────
 function renderZ(){
   const cols=['Z_Distance','Z_HSR_Abs','Z_HSR_Rel','Z_HI_Acc','Z_HI_Dec','Z_PlayerLoad'];
-  const lbls=['Z Dist','Z HSR Abs','Z HSR Rel','Z HI Acc','Z HI Dec','Z Carga'];
+  const lbls=['Z Dist','Z HSR Abs','Z HSR Rel','Z HI Acc','Z HI Dec','Z Load'];
   const fp=document.getElementById('f-player').value;
   const zData=Z.filter(r=>(fp==='All'||r.player===fp)&&(fpo==='All'||r.position===fpo));
-  let h=`<div class="z-hdr"><div>Jugador</div><div>Posición</div>${lbls.map(l=>`<div style="text-align:center">${l}</div>`).join('')}</div>`;
-  if(!zData.length){h+=`<div class="no-data">Sin datos</div>`;document.getElementById('ztbl').innerHTML=h;return;}
+  let h=`<div class="z-hdr"><div>Player</div><div>Position</div>${lbls.map(l=>`<div style="text-align:center">${l}</div>`).join('')}</div>`;
+  if(!zData.length){h+=`<div class="no-data">No data</div>`;document.getElementById('ztbl').innerHTML=h;return;}
   zData.forEach(r=>{
     const cells=cols.map(c=>{
       const v=r[c];
