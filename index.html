@@ -502,57 +502,79 @@ function renderRank(rows){
   t.appendChild(tb);
 }
 
+// ── METRIC CONFIG ────────────────────────────────────────────────────────────
+const METRIC_CFG={
+  ms:{key:'ms',label:'Top Speed',unit:'km/h',color:'#a371f7'},
+  dist:{key:'dist',label:'Distancia',unit:'m',color:'#1f6feb'},
+  ha:{key:'ha',label:'HSR Abs',unit:'m',color:'#1f6feb'},
+  hr:{key:'hr',label:'HSR Rel',unit:'m',color:'#2ea043'},
+};
+
 // ── BAR CHART ─────────────────────────────────────────────────────────────────
 function renderBar(rows){
   const drills=rows.filter(r=>r.sel==='Drills'&&r.dist>100);
   if(!drills.length){if(bc)bc.destroy();return;}
 
-  // Find last session date across all filtered rows
-  const lastDate=drills.reduce((max,r)=>pd(r.d)>pd(max)?r.d:max, drills[0].d);
-
-  // Check if filters are clean (showing all data) — use last session date per player
+  const cfg=METRIC_CFG[sk]||METRIC_CFG.ha;
   const fp=document.getElementById('f-player').value;
   const ft=document.getElementById('f-type').value;
   const fs=document.getElementById('f-sel').value;
   const filtersClean=fp==='All'&&currentPosVal==='All'&&ft==='All'&&fs==='All'&&!dateFrom&&!dateTo;
 
-  let chartData, subtitle;
+  let chartData,subtitle;
 
   if(filtersClean){
-    // Default: last team session date (most recent date in dataset)
     const allDates=drills.map(r=>r.d);
-    const lastTeamDate=allDates.reduce((max,d)=>pd(d)>pd(max)?d:max, allDates[0]);
-    // Only players who were in that session
+    const lastTeamDate=allDates.reduce((max,d)=>pd(d)>pd(max)?d:max,allDates[0]);
     const lastSessionRows=drills.filter(r=>r.d===lastTeamDate);
     const tsLabel=lastSessionRows.length?lastSessionRows[0].ts:'';
-    subtitle=`Última sesión: ${lastTeamDate} · ${tsLabel}`;
-    chartData=[...lastSessionRows].sort((a,b)=>b.ha-a.ha).slice(0,16);
+    subtitle='Última sesión: '+lastTeamDate+' · '+tsLabel;
+    chartData=[...lastSessionRows].sort((a,b)=>b[cfg.key]-a[cfg.key]);
   } else {
-    // With filters: average of filtered sessions
     const map={};
     drills.forEach(r=>{
-      if(!map[r.p])map[r.p]={p:r.p,pos:r.pos,n:0,ha:0,hr:0};
-      map[r.p].n++;map[r.p].ha+=r.ha;map[r.p].hr+=r.hr;
+      if(!map[r.p])map[r.p]={p:r.p,pos:r.pos,n:0,ms:0,dist:0,ha:0,hr:0};
+      const x=map[r.p]; x.n++;
+      x.ms=Math.max(x.ms,r.ms);
+      x.dist+=r.dist; x.ha+=r.ha; x.hr+=r.hr;
     });
-    chartData=Object.values(map).map(x=>({p:x.p,pos:x.pos,ha:+(x.ha/x.n).toFixed(0),hr:+(x.hr/x.n).toFixed(0)})).sort((a,b)=>b.ha-a.ha).slice(0,16);
+    chartData=Object.values(map).map(x=>({
+      p:x.p,pos:x.pos,
+      ms:+x.ms.toFixed(1),
+      dist:Math.round(x.dist/x.n),
+      ha:Math.round(x.ha/x.n),
+      hr:Math.round(x.hr/x.n)
+    })).sort((a,b)=>b[cfg.key]-a[cfg.key]);
     subtitle='Promedio de sesiones filtradas';
   }
 
-  // Update card subtitle
+  document.getElementById('bar-title').textContent=cfg.label+' por jugador';
   document.getElementById('bar-subtitle').textContent=subtitle||'';
 
   if(bc)bc.destroy();
   if(!chartData.length)return;
   bc=new Chart(document.getElementById('bch'),{type:'bar',
-    data:{labels:chartData.map(p=>p.p.split(' ')[0]),datasets:[
-      {label:'HSR Abs (m)',data:chartData.map(p=>p.ha),backgroundColor:'#1f6feb',borderRadius:3},
-      {label:'HSR Rel (m)',data:chartData.map(p=>p.hr),backgroundColor:'#2ea043',borderRadius:3}
-    ]},
+    data:{
+      labels:chartData.map(p=>p.p.split(' ')[0]),
+      datasets:[{
+        label:cfg.label+' ('+cfg.unit+')',
+        data:chartData.map(p=>p[cfg.key]),
+        backgroundColor:cfg.color,
+        borderRadius:3
+      }]
+    },
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{title:i=>[chartData[i[0].dataIndex].p,chartData[i[0].dataIndex].pos]}}},
-      scales:{x:{ticks:{color:'#7d8590',font:{size:10},maxRotation:45},grid:{display:false},border:{color:'#30363d'}},
-        y:{ticks:{color:'#7d8590',font:{size:10}},grid:{color:'rgba(255,255,255,.07)'},border:{color:'#30363d'}}}}});
+      plugins:{legend:{display:false},
+        tooltip:{callbacks:{
+          title:function(i){return[chartData[i[0].dataIndex].p,chartData[i[0].dataIndex].pos];},
+          label:function(i){return cfg.label+': '+i.raw+' '+cfg.unit;}
+        }}},
+      scales:{
+        x:{ticks:{color:'#7d8590',font:{size:10},maxRotation:45},grid:{display:false},border:{color:'#30363d'}},
+        y:{ticks:{color:'#7d8590',font:{size:10}},grid:{color:'rgba(255,255,255,.07)'},border:{color:'#30363d'}}
+      }}});
 }
+
 
 // ── LINE CHART ────────────────────────────────────────────────────────────────
 function renderLine(){
