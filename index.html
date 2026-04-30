@@ -224,11 +224,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
   </div>
 
   <div id="panel-z" style="display:none">
-    <div class="card" style="margin-bottom:1rem">
-      <div class="card-title">Top Speed Evolution</div>
-      <div class="line-wrap"><canvas id="lch"></canvas></div>
-      <div class="legend" id="spleg"></div>
-    </div>
+
     <div class="card">
       <div class="card-title">Z-Scores · Last match vs previous 4</div>
       <div class="note">🟢 Z ≥ 1.0 above historical average &nbsp;·&nbsp; 🔴 Z ≤ −1.0 below &nbsp;·&nbsp; — insufficient data</div>
@@ -611,14 +607,11 @@ function buildLineChart(canvasId, legendId, mdD){
 function renderLine(){
   const rows=filt();
   const mdD=rows.filter(r=>r.sel==='Drills'&&r.ms>0);
-  if(lc)lc.destroy();
   if(lc2)lc2.destroy();
   if(!mdD.length){
-    document.getElementById('spleg').innerHTML='';
     document.getElementById('spleg2').innerHTML='';
     return;
   }
-  lc=buildLineChart('lch','spleg',mdD);
   lc2=buildLineChart('lch2','spleg2',mdD);
 }
 
