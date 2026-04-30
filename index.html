@@ -1,4 +1,4 @@
-\<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -218,7 +218,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 
   <div id="panel-z" style="display:none">
     <div class="card" style="margin-bottom:1rem">
-      <div class="card-title">Top Speed per match (Drills MD)</div>
+      <div class="card-title">Top Speed Evolution</div>
       <div class="line-wrap"><canvas id="lch"></canvas></div>
       <div class="legend" id="spleg"></div>
     </div>
@@ -578,26 +578,36 @@ function renderBar(rows){
 
 // ── LINE CHART ────────────────────────────────────────────────────────────────
 function renderLine(){
-  const mdD=S.filter(r=>r.md==='MD'&&r.sel==='Drills');
+  // Apply all filters but always use Drills for line chart
+  const rows=filt();
+  const mdD=rows.filter(r=>r.sel==='Drills'&&r.ms>0);
+
+  if(!mdD.length){if(lc)lc.destroy();document.getElementById('spleg').innerHTML='';return;}
+
   const dates=[...new Set(mdD.map(r=>r.d))].sort((a,b)=>pd(a)-pd(b));
-  const players=[...new Set(S.map(r=>r.p))].sort();
+  const players=[...new Set(mdD.map(r=>r.p))].sort();
+
   const datasets=players.map((p,i)=>({
     label:p,borderColor:PC[i%PC.length],backgroundColor:'transparent',
     data:dates.map(d=>{const m=mdD.find(r=>r.p===p&&r.d===d);return m?m.ms:null;}),
     borderWidth:1.5,pointRadius:3,spanGaps:true,tension:0.3
-  }));
+  })).filter(ds=>ds.data.some(v=>v!==null));
+
   if(lc)lc.destroy();
   lc=new Chart(document.getElementById('lch'),{type:'line',
     data:{labels:dates.map(d=>d.slice(0,5)),datasets},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false}},
-      scales:{x:{ticks:{color:'#7d8590',font:{size:10}},grid:{display:false},border:{color:'#30363d'}},
+      scales:{
+        x:{ticks:{color:'#7d8590',font:{size:10}},grid:{display:false},border:{color:'#30363d'}},
         y:{min:15,max:40,ticks:{color:'#7d8590',font:{size:10}},
           grid:{color:'rgba(255,255,255,.07)'},border:{color:'#30363d'},
           title:{display:true,text:'km/h',color:'#7d8590',font:{size:10}}}}}});
-  document.getElementById('spleg').innerHTML=players.map((p,i)=>
-    `<span class="leg-item"><span class="leg-dot" style="background:${PC[i%PC.length]}"></span>${p.split(' ')[0]}</span>`).join('');
+  document.getElementById('spleg').innerHTML=players
+    .filter(p=>mdD.some(r=>r.p===p))
+    .map((p,i)=>`<span class="leg-item"><span class="leg-dot" style="background:${PC[i%PC.length]}"></span>${p.split(' ')[0]}</span>`).join('');
 }
+
 
 // ── Z TABLE ───────────────────────────────────────────────────────────────────
 function renderZ(){
