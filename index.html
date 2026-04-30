@@ -199,6 +199,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
       </div>
       <div class="card">
         <div class="card-title">HSR por jugador</div>
+        <div id="bar-subtitle" style="font-size:11px;color:#58a6ff;margin-bottom:.4rem;min-height:16px"></div>
         <div class="leg-bars">
           <span class="leg-bar"><span class="leg-box" style="background:#1f6feb"></span>HSR Abs (m)</span>
           <span class="leg-bar"><span class="leg-box" style="background:#2ea043"></span>HSR Rel (m)</span>
@@ -464,22 +465,59 @@ function renderRank(rows){
 // ── BAR CHART ─────────────────────────────────────────────────────────────────
 function renderBar(rows){
   const drills=rows.filter(r=>r.sel==='Drills'&&r.dist>100);
-  const map={};
-  drills.forEach(r=>{
-    if(!map[r.p])map[r.p]={p:r.p,pos:r.pos,n:0,ha:0,hr:0};
-    map[r.p].n++;map[r.p].ha+=r.ha;map[r.p].hr+=r.hr;
-  });
-  const stats=Object.values(map).map(x=>({p:x.p,pos:x.pos,ha:+(x.ha/x.n).toFixed(0),hr:+(x.hr/x.n).toFixed(0)}));
-  const s=[...stats].sort((a,b)=>b.ha-a.ha).slice(0,16);
+  if(!drills.length){if(bc)bc.destroy();return;}
+
+  // Find last session date across all filtered rows
+  const lastDate=drills.reduce((max,r)=>pd(r.d)>pd(max)?r.d:max, drills[0].d);
+
+  // Check if filters are clean (showing all data) — use last session date per player
+  const fp=document.getElementById('f-player').value;
+  const fpo=document.getElementById('f-pos').value;
+  const ft=document.getElementById('f-type').value;
+  const fs=document.getElementById('f-sel').value;
+  const filtersClean=fp==='All'&&fpo==='All'&&ft==='All'&&fs==='All'&&!dateFrom&&!dateTo;
+
+  let chartData, subtitle;
+
+  if(filtersClean){
+    // Default: last Drills session per player
+    const lastPerPlayer={};
+    drills.forEach(r=>{
+      if(!lastPerPlayer[r.p]||pd(r.d)>pd(lastPerPlayer[r.p].d)) lastPerPlayer[r.p]=r;
+    });
+    const entries=Object.values(lastPerPlayer).sort((a,b)=>b.ha-a.ha).slice(0,16);
+    // Find the most common last date for subtitle
+    const dates=Object.values(lastPerPlayer).map(r=>r.d);
+    const dateCount={};
+    dates.forEach(d=>{dateCount[d]=(dateCount[d]||0)+1;});
+    const dominantDate=Object.entries(dateCount).sort((a,b)=>b[1]-a[1])[0][0];
+    const dominantRow=Object.values(lastPerPlayer).find(r=>r.d===dominantDate);
+    const tsLabel=dominantRow?dominantRow.ts:'';
+    subtitle=`Última sesión: ${dominantDate} · ${tsLabel}`;
+    chartData=entries;
+  } else {
+    // With filters: average of filtered sessions
+    const map={};
+    drills.forEach(r=>{
+      if(!map[r.p])map[r.p]={p:r.p,pos:r.pos,n:0,ha:0,hr:0};
+      map[r.p].n++;map[r.p].ha+=r.ha;map[r.p].hr+=r.hr;
+    });
+    chartData=Object.values(map).map(x=>({p:x.p,pos:x.pos,ha:+(x.ha/x.n).toFixed(0),hr:+(x.hr/x.n).toFixed(0)})).sort((a,b)=>b.ha-a.ha).slice(0,16);
+    subtitle='Promedio de sesiones filtradas';
+  }
+
+  // Update card subtitle
+  document.getElementById('bar-subtitle').textContent=subtitle||'';
+
   if(bc)bc.destroy();
-  if(!s.length)return;
+  if(!chartData.length)return;
   bc=new Chart(document.getElementById('bch'),{type:'bar',
-    data:{labels:s.map(p=>p.p.split(' ')[0]),datasets:[
-      {label:'HSR Abs (m)',data:s.map(p=>p.ha),backgroundColor:'#1f6feb',borderRadius:3},
-      {label:'HSR Rel (m)',data:s.map(p=>p.hr),backgroundColor:'#2ea043',borderRadius:3}
+    data:{labels:chartData.map(p=>p.p.split(' ')[0]),datasets:[
+      {label:'HSR Abs (m)',data:chartData.map(p=>p.ha),backgroundColor:'#1f6feb',borderRadius:3},
+      {label:'HSR Rel (m)',data:chartData.map(p=>p.hr),backgroundColor:'#2ea043',borderRadius:3}
     ]},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{callbacks:{title:i=>[s[i[0].dataIndex].p,s[i[0].dataIndex].pos]}}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{title:i=>[chartData[i[0].dataIndex].p,chartData[i[0].dataIndex].pos]}}},
       scales:{x:{ticks:{color:'#7d8590',font:{size:10},maxRotation:45},grid:{display:false},border:{color:'#30363d'}},
         y:{ticks:{color:'#7d8590',font:{size:10}},grid:{color:'rgba(255,255,255,.07)'},border:{color:'#30363d'}}}}});
 }
