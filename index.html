@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+\<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -325,10 +325,10 @@ function calcZScores(rows){
             {z:'Z_HI_Acc',k:'ac'},{z:'Z_HI_Dec',k:'dc'},{z:'Z_PlayerLoad',k:'pl'}];
   const results=[];
   Object.entries(byPlayer).forEach(([player,games])=>{
-    if(games.length<2)return;
+    if(games.length<5)return;
     const last=games[games.length-1];
     const prev=games.slice(Math.max(0,games.length-5),games.length-1);
-    if(prev.length<2)return;
+    if(prev.length<4)return;
     const row={player:last.p,position:last.pos,date:last.d,type_session:last.ts};
     zM.forEach(m=>{
       const vals=prev.map(g=>parseFloat(g[m.k])||0);
