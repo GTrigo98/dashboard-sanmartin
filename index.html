@@ -80,27 +80,9 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 <body>
 <div class="dash">
   <div class="hdr">
-    <div style="display:flex;align-items:center;gap:14px">
-      <svg width="44" height="48" viewBox="0 0 44 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;opacity:0.45">
-  <!-- Shield shape -->
-  <path d="M22 2 L40 8 L40 26 C40 36 22 46 22 46 C22 46 4 36 4 26 L4 8 Z" 
-        stroke="#e6edf3" stroke-width="1.5" fill="none"/>
-  <!-- Vertical center line -->
-  <line x1="22" y1="5" x2="22" y2="43" stroke="#e6edf3" stroke-width="1"/>
-  <!-- Horizontal middle line -->
-  <line x1="6" y1="22" x2="38" y2="22" stroke="#e6edf3" stroke-width="1"/>
-  <!-- Torch/flame at top -->
-  <path d="M22 2 C20 0 19 -1 20.5 -2 C21 -1 22 0 22 2Z" stroke="#e6edf3" stroke-width="1" fill="none"/>
-  <line x1="22" y1="2" x2="22" y2="-4" stroke="#e6edf3" stroke-width="1.2"/>
-  <path d="M20 -4 C20 -7 22 -8 22 -6 C22 -8 24 -7 24 -4" stroke="#e6edf3" stroke-width="1" fill="none"/>
-  <!-- Letters A P R C suggestion (simplified cross lines) -->
-  <path d="M14 16 L14 28 M14 22 L19 22" stroke="#e6edf3" stroke-width="1" fill="none" opacity="0.7"/>
-  <path d="M25 16 L25 28 M25 16 L29 16 L29 22 L25 22" stroke="#e6edf3" stroke-width="1" fill="none" opacity="0.7"/>
-</svg>
-      <div>
-        <div class="hdr-title" style="text-transform:uppercase">Club San Martín · Performance Dashboard</div>
-        <div class="hdr-sub" id="hdr-range">Temporada 2026 · GPS Data</div>
-      </div>
+    <div>
+      <div class="hdr-title" style="text-transform:uppercase">Club San Martín · Performance Dashboard</div>
+      <div class="hdr-sub" id="hdr-range">Temporada 2026 · GPS Data</div>
     </div>
     <div class="tabs">
       <button class="tab active" id="btn-c" onclick="setTab('c')">Gestión de Carga</button>
@@ -536,7 +518,7 @@ function renderBar(rows){
   const fp=document.getElementById('f-player').value;
   const ft=document.getElementById('f-type').value;
   const fs=document.getElementById('f-sel').value;
-  const filtersClean=fp==='All'&&fpo==='All'&&ft==='All'&&fs==='All'&&!dateFrom&&!dateTo;
+  const filtersClean=fp==='All'&&currentPosVal==='All'&&ft==='All'&&fs==='All'&&!dateFrom&&!dateTo;
 
   let chartData, subtitle;
 
