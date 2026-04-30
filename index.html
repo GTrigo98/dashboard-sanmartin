@@ -655,8 +655,8 @@ function setSk(k){sk=k;render();}
 function render(){
   const rows=filt();
   renderPills();
-  if(tab==='c'){renderRank(rows);renderBar(rows);}
-  else{renderLine();renderZ();}
+  if(tab==='c'){renderRank(rows);renderBar(rows);renderLine();}
+  else{renderZ();}
 }
 
 loadData();
