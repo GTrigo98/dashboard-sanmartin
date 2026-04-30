@@ -480,21 +480,14 @@ function renderBar(rows){
   let chartData, subtitle;
 
   if(filtersClean){
-    // Default: last Drills session per player
-    const lastPerPlayer={};
-    drills.forEach(r=>{
-      if(!lastPerPlayer[r.p]||pd(r.d)>pd(lastPerPlayer[r.p].d)) lastPerPlayer[r.p]=r;
-    });
-    const entries=Object.values(lastPerPlayer).sort((a,b)=>b.ha-a.ha).slice(0,16);
-    // Find the most common last date for subtitle
-    const dates=Object.values(lastPerPlayer).map(r=>r.d);
-    const dateCount={};
-    dates.forEach(d=>{dateCount[d]=(dateCount[d]||0)+1;});
-    const dominantDate=Object.entries(dateCount).sort((a,b)=>b[1]-a[1])[0][0];
-    const dominantRow=Object.values(lastPerPlayer).find(r=>r.d===dominantDate);
-    const tsLabel=dominantRow?dominantRow.ts:'';
-    subtitle=`Última sesión: ${dominantDate} · ${tsLabel}`;
-    chartData=entries;
+    // Default: last team session date (most recent date in dataset)
+    const allDates=drills.map(r=>r.d);
+    const lastTeamDate=allDates.reduce((max,d)=>pd(d)>pd(max)?d:max, allDates[0]);
+    // Only players who were in that session
+    const lastSessionRows=drills.filter(r=>r.d===lastTeamDate);
+    const tsLabel=lastSessionRows.length?lastSessionRows[0].ts:'';
+    subtitle=`Última sesión: ${lastTeamDate} · ${tsLabel}`;
+    chartData=[...lastSessionRows].sort((a,b)=>b.ha-a.ha).slice(0,16);
   } else {
     // With filters: average of filtered sessions
     const map={};
