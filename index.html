@@ -92,7 +92,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 
   <div class="filters">
     <div class="f-group">
-      <div class="f-label">Período</div>
+      <div class="f-label">PERIOD</div>
       <div class="f-date-wrap">
         <input type="text" id="f-dates" placeholder="Select a period..." readonly>
       </div>
@@ -204,12 +204,12 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
   <div id="panel-c">
     <div class="two-col">
       <div class="card">
-        <div class="card-title">Ranking — máximo registrado per player</div>
+        <div class="card-title">Ranking — Max. Recorded</div>
         <div class="sort-btns" id="sbts"></div>
         <div class="tbl-wrap"><table id="rtbl"></table></div>
       </div>
       <div class="card">
-        <div class="card-title" id="bar-title">HSR Abs per player</div>
+        <div class="card-title" id="bar-title">HSR Abs</div>
         <div id="bar-subtitle" style="font-size:11px;color:#58a6ff;margin-bottom:.4rem;min-height:16px"></div>
         <div class="bar-wrap"><canvas id="bch"></canvas></div>
       </div>
@@ -548,7 +548,7 @@ function renderBar(rows){
     subtitle='Average of filtered sessions';
   }
 
-  document.getElementById('bar-title').textContent=cfg.label+' per player';
+  document.getElementById('bar-title').textContent=cfg.label;
   document.getElementById('bar-subtitle').textContent=subtitle||'';
 
   if(bc)bc.destroy();
@@ -604,7 +604,14 @@ function renderZ(){
   const cols=['Z_Distance','Z_HSR_Abs','Z_HSR_Rel','Z_HI_Acc','Z_HI_Dec','Z_PlayerLoad'];
   const lbls=['Z Dist','Z HSR Abs','Z HSR Rel','Z HI Acc','Z HI Dec','Z Load'];
   const fp=document.getElementById('f-player').value;
-  const zData=Z.filter(r=>(fp==='All'||r.player===fp)&&(fpo==='All'||r.position===fpo));
+  const zData=Z.filter(r=>{
+    if(fp!=='All'&&r.player!==fp)return false;
+    if(currentPosVal!=='All'){
+      if(POS_GROUPS[currentPosVal]){if(!POS_GROUPS[currentPosVal].includes(r.position))return false;}
+      else{if(r.position!==currentPosVal)return false;}
+    }
+    return true;
+  });
   let h=`<div class="z-hdr"><div>Player</div><div>Position</div>${lbls.map(l=>`<div style="text-align:center">${l}</div>`).join('')}</div>`;
   if(!zData.length){h+=`<div class="no-data">No data</div>`;document.getElementById('ztbl').innerHTML=h;return;}
   zData.forEach(r=>{
