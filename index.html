@@ -539,7 +539,9 @@ function renderBar(){
     const md=sample.md||'';
     const ts=sample.ts==='Official game'?'Official Match':
               sample.ts==='Friendly game'?'Friendly Match':'Training';
-    subtitle=shortDate+' · '+md+' · '+ts;
+    const rival=sample.rival||'';
+    const rivalStr=(rival&&(sample.ts==='Official game'||sample.ts==='Friendly game'))?' vs. '+rival:'';
+    subtitle=shortDate+' · '+md+' · '+ts+rivalStr;
   }
 
   // Historical max (all time, no filter)
