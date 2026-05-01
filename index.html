@@ -583,6 +583,31 @@ function renderBar(rows){
       v>=80?'rgba(160,120,50,0.75)':  // muted amber
             'rgba(140,65,65,0.75)'    // muted red
     );
+    // Custom hover label plugin - shows % at midpoint of bar on hover
+    const hoverLabelPlugin={
+      id:'hoverLabel',
+      afterDraw:function(chart){
+        const active=chart._active||chart.getActiveElements();
+        if(!active||!active.length)return;
+        const el=active[0];
+        if(el.datasetIndex!==0)return;
+        const idx=el.index;
+        const meta=chart.getDatasetMeta(0);
+        const bar=meta.data[idx];
+        const pct=pcts[idx];
+        const ctx=chart.ctx;
+        const x=bar.x;
+        const yMid=(bar.y+bar.base)/2;
+        ctx.save();
+        ctx.font='bold 12px -apple-system, sans-serif';
+        ctx.fillStyle='rgba(220,220,220,0.9)';
+        ctx.textAlign='center';
+        ctx.textBaseline='middle';
+        ctx.fillText(pct+'%', x, yMid);
+        ctx.restore();
+      }
+    };
+
     bc=new Chart(document.getElementById('bch'),{type:'bar',
       data:{
         labels:chartData.map(p=>p.p.split(' ')[0]),
@@ -605,9 +630,13 @@ function renderBar(rows){
           }
         ]
       },
+      plugins:[hoverLabelPlugin],
       options:{responsive:true,maintainAspectRatio:false,
+        hover:{mode:'index',intersect:false},
         plugins:{legend:{display:false},
           tooltip:{
+            mode:'index',intersect:false,
+            filter:function(i){return i.datasetIndex===0;},
             callbacks:{
               title:function(i){
                 const p=chartData[i[0].dataIndex];
