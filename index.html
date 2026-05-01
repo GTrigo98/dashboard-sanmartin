@@ -371,12 +371,7 @@ async function loadData(){
     const resp=await fetch(CSV_URL);
     if(!resp.ok)throw new Error('HTTP '+resp.status);
     const text=await resp.text();
-    const allParsed=parseCSV(text);
-    if(allParsed.length>0){
-      console.log('CSV columns:',Object.keys(allParsed[0]));
-      console.log('Rival value sample:',allParsed[0]['Rival'],allParsed[0][' Rival'],allParsed[0]['rival']);
-    }
-    const rows=allParsed.filter(r=>r['Player']&&r['Player']!=='Club San Martin'&&r['Selection']!=='Session');
+    const rows=parseCSV(text).filter(r=>r['Player']&&r['Player']!=='Club San Martin'&&r['Selection']!=='Session');
     S=rows.map(mapRow);
     Z=calcZScores(S);
     document.getElementById('loading').style.display='none';
@@ -603,10 +598,15 @@ function renderBar(){
       options:{responsive:true,maintainAspectRatio:false,
         plugins:{legend:{display:false},
           tooltip:{callbacks:{
-            title:function(i){const p=chartData[i[0].dataIndex];return[p.p,p.pos];},
-            label:function(i){
-              if(i.datasetIndex!==0)return null;
+            title:function(i){
+              if(!i||!i.length)return'';
               const p=chartData[i[0].dataIndex];
+              return p?[p.p,p.pos]:'';
+            },
+            label:function(i){
+              if(!i||i.datasetIndex!==0)return null;
+              const p=chartData[i.dataIndex];
+              if(!p)return null;
               return['Last: '+p.ms+' km/h','Best: '+(histMax[p.p]||'-')+' km/h','Reached: '+p.ms_pct+'%'];
             }
           }}},
