@@ -353,6 +353,7 @@ function mapRow(r){
     w:parseInt(r['Week Team'])||0,
     ts:r['Type Session']||'',
     md:r['Match Day']||'',
+    rival:(r['Rival']||'').trim(),
     sel:r['Selection']||'',
     dist:parseFloat(r['Distance(m)'])||0,
     ha:parseFloat(r['Abs HSR(m)'])||0,
