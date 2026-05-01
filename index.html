@@ -569,7 +569,7 @@ function renderBar(rows){
   const barColor=isSpeed?'#a371f7':cfg.color;
 
   document.getElementById('bar-title').textContent=isSpeed?'Top Speed — % of Personal Best':cfg.label;
-  document.getElementById('bar-subtitle').textContent=subtitle||'';
+  document.getElementById('bar-subtitle').textContent=subtitle;
 
   if(bc)bc.destroy();
   if(!chartData.length)return;
