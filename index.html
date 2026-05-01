@@ -592,12 +592,12 @@ function renderBar(rows){
         meta.data.forEach(function(bar,idx){
           const pct=pcts[idx];
           const barHeight=Math.abs(bar.base-bar.y);
-          if(barHeight<16)return; // skip if bar too thin
+          if(barHeight<18)return; // skip if bar too thin
           const x=bar.x;
           const yMid=(bar.y+bar.base)/2;
           ctx.save();
-          ctx.font='bold 11px -apple-system, sans-serif';
-          ctx.fillStyle='rgba(210,210,210,0.85)';
+          ctx.font='600 9px -apple-system, sans-serif';
+          ctx.fillStyle='rgba(180,180,180,0.65)';
           ctx.textAlign='center';
           ctx.textBaseline='middle';
           ctx.fillText(pct+'%', x, yMid);
