@@ -513,94 +513,72 @@ const METRIC_CFG={
 };
 
 // ── BAR CHART ─────────────────────────────────────────────────────────────────
-function renderBar(rows){
-  const drills=rows.filter(r=>r.sel==='Drills'&&r.dist>100);
-  if(!drills.length){if(bc)bc.destroy();return;}
+function renderBar(){
+  // ONLY responds to Position filter - always shows last team session
+  const allDrills=S.filter(r=>r.sel==='Drills'&&r.dist>100);
+  if(!allDrills.length){if(bc)bc.destroy();return;}
 
   const cfg=METRIC_CFG[sk]||METRIC_CFG.ha;
-  const fp=document.getElementById('f-player').value;
-  const ft=document.getElementById('f-type').value;
-  const fs=document.getElementById('f-sel').value;
-  const filtersClean=fp==='All'&&currentPosVal==='All'&&ft==='All'&&fs==='All'&&!dateFrom&&!dateTo;
 
-  let chartData,subtitle;
+  // Position filter only
+  const posDrills=currentPosVal==='All'?allDrills:
+    POS_GROUPS[currentPosVal]
+      ?allDrills.filter(r=>POS_GROUPS[currentPosVal].includes(r.pos))
+      :allDrills.filter(r=>r.pos===currentPosVal);
 
-  // Historical max speed per player (all Drills data)
-  const allDrills=S.filter(r=>r.sel==='Drills'&&r.ms>0);
-  const histMax={};
-  allDrills.forEach(r=>{
-    if(!histMax[r.p]||r.ms>histMax[r.p]) histMax[r.p]=r.ms;
-  });
+  // Last team session date (from all data, no filter)
+  const lastTeamDate=allDrills.map(r=>r.d).reduce((max,d)=>pd(d)>pd(max)?d:max);
+  const lastRows=posDrills.filter(r=>r.d===lastTeamDate);
 
-  if(filtersClean){
-    const allDates=drills.map(r=>r.d);
-    const lastTeamDate=allDates.reduce((max,d)=>pd(d)>pd(max)?d:max,allDates[0]);
-    const lastSessionRows=drills.filter(r=>r.d===lastTeamDate);
-    const tsLabel=lastSessionRows.length?lastSessionRows[0].ts:'';
-    subtitle='Last session: '+lastTeamDate+' · '+tsLabel;
-    // For Top Speed: convert to % of historical max
-    chartData=[...lastSessionRows].map(r=>({
-      ...r,
-      ms_pct: histMax[r.p]>0 ? Math.round(r.ms/histMax[r.p]*100) : 0
-    })).sort((a,b)=>b[sk==='ms'?'ms_pct':cfg.key]-a[sk==='ms'?'ms_pct':cfg.key]);
-  } else {
-    const map={};
-    drills.forEach(r=>{
-      if(!map[r.p])map[r.p]={p:r.p,pos:r.pos,n:0,ms:0,dist:0,ha:0,hr:0};
-      const x=map[r.p]; x.n++;
-      x.ms=Math.max(x.ms,r.ms);
-      x.dist+=r.dist; x.ha+=r.ha; x.hr+=r.hr;
-    });
-    chartData=Object.values(map).map(x=>({
-      p:x.p,pos:x.pos,
-      ms:+x.ms.toFixed(1),
-      ms_pct: histMax[x.p]>0 ? Math.round(x.ms/histMax[x.p]*100) : 0,
-      dist:Math.round(x.dist/x.n),
-      ha:Math.round(x.ha/x.n),
-      hr:Math.round(x.hr/x.n)
-    })).sort((a,b)=>b[sk==='ms'?'ms_pct':cfg.key]-a[sk==='ms'?'ms_pct':cfg.key]);
-    subtitle='Average of filtered sessions';
+  // Build subtitle
+  const sample=allDrills.find(r=>r.d===lastTeamDate);
+  let subtitle='';
+  if(sample){
+    const p=lastTeamDate.split('/');
+    const shortDate=p[0]+'/'+p[1]+'/'+p[2].slice(2);
+    const md=sample.md||'';
+    const ts=sample.ts==='Official game'?'Official Match':
+              sample.ts==='Friendly game'?'Friendly Match':'Training';
+    subtitle=shortDate+' · '+md+' · '+ts;
   }
 
-  // For Top Speed: use % values and update labels
-  const isSpeed=sk==='ms';
-  const barData=chartData.map(p=>isSpeed?p.ms_pct:p[cfg.key]);
-  const barLabel=isSpeed?'% of personal best':''+cfg.label+' ('+cfg.unit+')';
-  const barColor=isSpeed?'#a371f7':cfg.color;
+  // Historical max (all time, no filter)
+  const histMax={};
+  allDrills.forEach(r=>{if(!histMax[r.p]||r.ms>histMax[r.p])histMax[r.p]=r.ms;});
 
-  document.getElementById('bar-title').textContent=isSpeed?'Top Speed — % of Personal Best':cfg.label;
+  let chartData=[...lastRows].map(r=>({
+    ...r,
+    ms_pct:histMax[r.p]>0?Math.round(r.ms/histMax[r.p]*100):0
+  })).sort((a,b)=>b[sk==='ms'?'ms_pct':cfg.key]-a[sk==='ms'?'ms_pct':cfg.key]);
+
+  const isSpeed=sk==='ms';
+  const barColor=cfg.color;
+
+  document.getElementById('bar-title').textContent=isSpeed?'Top Speed — % of Personal Best vs. last session':cfg.label;
   document.getElementById('bar-subtitle').textContent=subtitle;
 
   if(bc)bc.destroy();
   if(!chartData.length)return;
 
   if(isSpeed){
-    // Bullet chart: background bar (100%) + colored bar (% achieved)
     const pcts=chartData.map(p=>p.ms_pct);
     const gaps=chartData.map(p=>100-p.ms_pct);
-    const colors=pcts.map(v=>
-      v>=90?'rgba(74,124,89,0.75)':   // muted green
-      v>=80?'rgba(160,120,50,0.75)':  // muted amber
-            'rgba(140,65,65,0.75)'    // muted red
-    );
-    // Inline label plugin - draws % inside bar, always visible, no re-render loop
+    const colors=pcts.map(v=>v>=90?'rgba(74,124,89,0.75)':v>=80?'rgba(160,120,50,0.75)':'rgba(140,65,65,0.75)');
+
     const inlineLabelPlugin={
       id:'inlineLabel',
       afterDatasetsDraw:function(chart){
         const ctx=chart.ctx;
         const meta=chart.getDatasetMeta(0);
         meta.data.forEach(function(bar,idx){
-          const pct=pcts[idx];
           const barHeight=Math.abs(bar.base-bar.y);
-          if(barHeight<18)return; // skip if bar too thin
-          const x=bar.x;
-          const yMid=(bar.y+bar.base)/2;
+          if(barHeight<18)return;
           ctx.save();
           ctx.font='600 9px -apple-system, sans-serif';
           ctx.fillStyle='rgba(180,180,180,0.65)';
           ctx.textAlign='center';
           ctx.textBaseline='middle';
-          ctx.fillText(pct+'%', x, yMid);
+          ctx.fillText(pcts[idx]+'%',bar.x,(bar.y+bar.base)/2);
           ctx.restore();
         });
       }
@@ -610,63 +588,31 @@ function renderBar(rows){
       data:{
         labels:chartData.map(p=>p.p.split(' ')[0]),
         datasets:[
-          {
-            label:'% reached',
-            data:pcts,
-            backgroundColor:colors,
-            borderRadius:[3,0,0,3],
-            borderSkipped:false,
-            stack:'s'
-          },
-          {
-            label:'gap to best',
-            data:gaps,
-            backgroundColor:'rgba(255,255,255,0.07)',
-            borderRadius:[0,3,3,0],
-            borderSkipped:false,
-            stack:'s'
-          }
+          {label:'% reached',data:pcts,backgroundColor:colors,borderRadius:[3,0,0,3],borderSkipped:false,stack:'s'},
+          {label:'gap',data:gaps,backgroundColor:'rgba(255,255,255,0.07)',borderRadius:[0,3,3,0],borderSkipped:false,stack:'s'}
         ]
       },
       plugins:[inlineLabelPlugin],
       options:{responsive:true,maintainAspectRatio:false,
         plugins:{legend:{display:false},
-          tooltip:{
-            callbacks:{
-              title:function(i){
-                const p=chartData[i[0].dataIndex];
-                return[p.p, p.pos];
-              },
-              label:function(i){
-                if(i.datasetIndex!==0)return null;
-                const p=chartData[i[0].dataIndex];
-                return[
-                  'Last session: '+p.ms+' km/h',
-                  'Personal best: '+(histMax[p.p]||'-')+' km/h',
-                  'Reached: '+p.ms_pct+'%'
-                ];
-              }
+          tooltip:{callbacks:{
+            title:function(i){const p=chartData[i[0].dataIndex];return[p.p,p.pos];},
+            label:function(i){
+              if(i.datasetIndex!==0)return null;
+              const p=chartData[i[0].dataIndex];
+              return['Last: '+p.ms+' km/h','Best: '+(histMax[p.p]||'-')+' km/h','Reached: '+p.ms_pct+'%'];
             }
-          }
-        },
+          }}},
         scales:{
           x:{ticks:{color:'#7d8590',font:{size:10},maxRotation:45},grid:{display:false},border:{color:'#30363d'}},
-          y:{
-            max:100,min:0,
-            ticks:{color:'#7d8590',font:{size:10},callback:function(v){return v+'%';}},
-            grid:{color:'rgba(255,255,255,.07)'},border:{color:'#30363d'}
-          }
+          y:{max:100,min:0,ticks:{color:'#7d8590',font:{size:10},callback:function(v){return v+'%';}},
+            grid:{color:'rgba(255,255,255,.07)'},border:{color:'#30363d'}}
         }}});
   } else {
     bc=new Chart(document.getElementById('bch'),{type:'bar',
       data:{
         labels:chartData.map(p=>p.p.split(' ')[0]),
-        datasets:[{
-          label:barLabel,
-          data:barData,
-          backgroundColor:barColor,
-          borderRadius:3
-        }]
+        datasets:[{label:cfg.label+' ('+cfg.unit+')',data:chartData.map(p=>p[cfg.key]),backgroundColor:barColor,borderRadius:3}]
       },
       options:{responsive:true,maintainAspectRatio:false,
         plugins:{legend:{display:false},
@@ -759,7 +705,7 @@ function setSk(k){sk=k;render();}
 function render(){
   const rows=filt();
   renderPills();
-  if(tab==='c'){renderRank(rows);renderBar(rows);renderLine();}
+  if(tab==='c'){renderRank(rows);renderBar();renderLine();}
   else{renderZ();}
 }
 
