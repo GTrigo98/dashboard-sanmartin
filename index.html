@@ -68,8 +68,11 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 .z-hdr,.z-row{display:grid;grid-template-columns:190px 95px repeat(6,1fr);gap:4px;padding:6px 2px;border-bottom:1px solid #21262d;align-items:start}
 .z-hdr{font-size:11px;font-weight:600;color:#7d8590;position:sticky;top:0;background:#161b22}
 .z-cell{text-align:center;border-radius:4px;padding:2px 5px;font-variant-numeric:tabular-nums;font-size:12px}
-.zg{background:#1a4731;color:#3fb950;font-weight:600}
-.zr{background:#3d1c1c;color:#f85149;font-weight:600}
+.zg2{background:#1a4731;color:#3fb950;font-weight:600}   /* > +1.5 very above */
+.zg1{background:#1a3a28;color:#7ee8a2;font-weight:500}   /* +0.5 to +1.5 above */
+.zn{background:#1c1c1c;color:#7d8590}                    /* -0.5 to +0.5 normal */
+.zr1{background:#3a2510;color:#e0934a;font-weight:500}   /* -0.5 to -1.5 below */
+.zr2{background:#3d1c1c;color:#f85149;font-weight:600}   /* < -1.5 very below */
 .z0{text-align:center;color:#484f58;font-size:12px}
 .note{font-size:11px;color:#7d8590;margin-bottom:.75rem;padding:.5rem;background:#0d1117;border-radius:5px;border-left:2px solid #30363d}
 .no-data{text-align:center;padding:2rem;color:#484f58;font-size:13px}
@@ -226,11 +229,18 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 
     <div class="card">
       <div class="card-title">Z-Scores · Last match vs previous 4</div>
-      <div class="note">🟢 Z ≥ 1.0 above historical average &nbsp;·&nbsp; 🔴 Z ≤ −1.0 below &nbsp;·&nbsp; — insufficient data</div>
+      <div class="note">🟢 ≥ +1.5 very above &nbsp;·&nbsp; 🟩 +0.5→+1.5 above &nbsp;·&nbsp; ⬜ normal &nbsp;·&nbsp; 🟧 −0.5→−1.5 below &nbsp;·&nbsp; 🔴 ≤ −1.5 very below &nbsp;·&nbsp; — no data</div>
       <div id="ztbl"></div>
       <div style="margin-top:1rem;padding:.75rem;background:#0d1117;border-radius:6px;border:1px solid #21262d;font-size:11px;color:#7d8590;line-height:1.7">
         <div style="font-weight:600;color:#e6edf3;margin-bottom:.4rem">📊 What is a Z-Score?</div>
-        <div>A Z-score measures how a player's last match compares to their own recent history (previous 4 matches). A value of <span style="color:#3fb950">+1.0</span> means the player performed <strong>1 standard deviation above</strong> their average — an exceptional performance. <span style="color:#f85149">−1.0</span> means 1 SD below average.</div>
+        <div>A Z-score measures how a player's last match compares to their own recent history (previous 4 matches). The further from 0, the more unusual the performance.</div>
+        <div style="margin-top:.5rem;display:flex;flex-wrap:wrap;gap:6px">
+          <span style="background:#1a4731;color:#3fb950;padding:2px 8px;border-radius:4px;font-weight:600">≥ +1.5</span> <span>Very above average</span>
+          <span style="background:#1a3a28;color:#7ee8a2;padding:2px 8px;border-radius:4px;font-weight:500">+0.5 to +1.5</span> <span>Above average</span>
+          <span style="background:#1c1c1c;color:#7d8590;padding:2px 8px;border-radius:4px">−0.5 to +0.5</span> <span>Normal</span>
+          <span style="background:#3a2510;color:#e0934a;padding:2px 8px;border-radius:4px;font-weight:500">−0.5 to −1.5</span> <span>Below average</span>
+          <span style="background:#3d1c1c;color:#f85149;padding:2px 8px;border-radius:4px;font-weight:600">≤ −1.5</span> <span>Very below average</span>
+        </div>
         <div style="margin-top:.5rem;font-weight:600;color:#e6edf3">Context reliability indicators:</div>
         <div>✅ <strong>Reliable</strong> — all 5 matches within a 14-day window. Z-score is meaningful.</div>
         <div>⚠️ <strong>Moderate</strong> — gap of 15–21 days between matches. Interpret with caution.</div>
@@ -735,7 +745,11 @@ function renderZ(){
     const cells=cols.map(c=>{
       const v=r[c];
       if(v===null||v===undefined)return`<div class="z0">—</div>`;
-      const cls=v>=1?'z-cell zg':v<=-1?'z-cell zr':'z-cell';
+      const cls=v>=1.5?'z-cell zg2':
+                v>=0.5?'z-cell zg1':
+                v>=-0.5?'z-cell zn':
+                v>=-1.5?'z-cell zr1':
+                        'z-cell zr2';
       return`<div class="${cls}">${v>0?'+':''}${v.toFixed(2)}</div>`;
     }).join('');
 
