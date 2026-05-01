@@ -65,7 +65,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 .leg-bars{display:flex;gap:14px;margin-bottom:.5rem;font-size:11px;color:#7d8590}
 .leg-bar{display:flex;align-items:center;gap:5px}
 .leg-box{width:12px;height:10px;border-radius:2px}
-.z-hdr,.z-row{display:grid;grid-template-columns:170px 95px repeat(6,1fr);gap:4px;padding:4px 2px;border-bottom:1px solid #21262d;align-items:center}
+.z-hdr,.z-row{display:grid;grid-template-columns:190px 95px repeat(6,1fr);gap:4px;padding:6px 2px;border-bottom:1px solid #21262d;align-items:start}
 .z-hdr{font-size:11px;font-weight:600;color:#7d8590;position:sticky;top:0;background:#161b22}
 .z-cell{text-align:center;border-radius:4px;padding:2px 5px;font-variant-numeric:tabular-nums;font-size:12px}
 .zg{background:#1a4731;color:#3fb950;font-weight:600}
@@ -228,6 +228,15 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
       <div class="card-title">Z-Scores · Last match vs previous 4</div>
       <div class="note">🟢 Z ≥ 1.0 above historical average &nbsp;·&nbsp; 🔴 Z ≤ −1.0 below &nbsp;·&nbsp; — insufficient data</div>
       <div id="ztbl"></div>
+      <div style="margin-top:1rem;padding:.75rem;background:#0d1117;border-radius:6px;border:1px solid #21262d;font-size:11px;color:#7d8590;line-height:1.7">
+        <div style="font-weight:600;color:#e6edf3;margin-bottom:.4rem">📊 What is a Z-Score?</div>
+        <div>A Z-score measures how a player's last match compares to their own recent history (previous 4 matches). A value of <span style="color:#3fb950">+1.0</span> means the player performed <strong>1 standard deviation above</strong> their average — an exceptional performance. <span style="color:#f85149">−1.0</span> means 1 SD below average.</div>
+        <div style="margin-top:.5rem;font-weight:600;color:#e6edf3">Context reliability indicators:</div>
+        <div>✅ <strong>Reliable</strong> — all 5 matches within a 14-day window. Z-score is meaningful.</div>
+        <div>⚠️ <strong>Moderate</strong> — gap of 15–21 days between matches. Interpret with caution.</div>
+        <div>🔴 <strong>Low</strong> — gap greater than 21 days. Player may have been injured or absent. Z-score may not reflect current form.</div>
+        <div style="margin-top:.4rem;color:#484f58">Dates shown below each player name = the 4 reference matches used for the calculation.</div>
+      </div>
     </div>
   </div>
 
@@ -678,6 +687,32 @@ function renderZ(){
   const cols=['Z_Distance','Z_HSR_Abs','Z_HSR_Rel','Z_HI_Acc','Z_HI_Dec','Z_PlayerLoad'];
   const lbls=['Z Dist','Z HSR Abs','Z HSR Rel','Z HI Acc','Z HI Dec','Z Load'];
   const fp=document.getElementById('f-player').value;
+
+  // Build Z-scores with context info (gap analysis)
+  const mdDrills=S.filter(r=>r.sel==='Drills'&&r.md==='MD');
+  const byPlayer={};
+  mdDrills.forEach(r=>{if(!byPlayer[r.p])byPlayer[r.p]=[];byPlayer[r.p].push(r.d);});
+  
+  // Calculate gap indicator for each player
+  function getGapInfo(playerName){
+    const dates=(byPlayer[playerName]||[]).map(d=>pd(d)).sort((a,b)=>a-b);
+    if(dates.length<5)return{icon:'—',label:'Insufficient data',color:'#484f58',ref:[]};
+    const last5=dates.slice(-5);
+    const refDates=last5.slice(0,4); // 4 previous
+    let maxGap=0;
+    for(let i=1;i<last5.length;i++){
+      const gap=(last5[i]-last5[i-1])/(1000*60*60*24);
+      if(gap>maxGap)maxGap=gap;
+    }
+    const refLabels=refDates.map(d=>{
+      const s=d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'});
+      return s;
+    });
+    if(maxGap<=14) return{icon:'✅',label:'Reliable context (max gap: '+Math.round(maxGap)+' days)',color:'#3fb950',ref:refLabels};
+    if(maxGap<=21) return{icon:'⚠️',label:'Moderate context (gap: '+Math.round(maxGap)+' days)',color:'#d29922',ref:refLabels};
+    return{icon:'🔴',label:'Low context — gap of '+Math.round(maxGap)+' days between matches',color:'#f85149',ref:refLabels};
+  }
+
   const zData=Z.filter(r=>{
     if(fp!=='All'&&r.player!==fp)return false;
     if(currentPosVal!=='All'){
@@ -686,19 +721,42 @@ function renderZ(){
     }
     return true;
   });
-  let h=`<div class="z-hdr"><div>Player</div><div>Position</div>${lbls.map(l=>`<div style="text-align:center">${l}</div>`).join('')}</div>`;
+
+  let h=`<div class="z-hdr">
+    <div>Player</div>
+    <div>Position</div>
+    ${lbls.map(l=>`<div style="text-align:center">${l}</div>`).join('')}
+  </div>`;
+
   if(!zData.length){h+=`<div class="no-data">No data</div>`;document.getElementById('ztbl').innerHTML=h;return;}
+
   zData.forEach(r=>{
+    const gap=getGapInfo(r.player);
     const cells=cols.map(c=>{
       const v=r[c];
       if(v===null||v===undefined)return`<div class="z0">—</div>`;
       const cls=v>=1?'z-cell zg':v<=-1?'z-cell zr':'z-cell';
       return`<div class="${cls}">${v>0?'+':''}${v.toFixed(2)}</div>`;
     }).join('');
-    h+=`<div class="z-row"><div style="font-size:12px;font-weight:500">${r.player}</div><div class="z-pos">${r.position}</div>${cells}</div>`;
+
+    const refStr=gap.ref.length?`<div style="font-size:10px;color:#484f58;margin-top:2px">${gap.ref.join(' · ')}</div>`:'';
+
+    h+=`<div class="z-row">
+      <div>
+        <div style="font-size:12px;font-weight:500;display:flex;align-items:center;gap:5px">
+          ${r.player}
+          <span title="${gap.label}" style="cursor:help;font-size:13px">${gap.icon}</span>
+        </div>
+        ${refStr}
+      </div>
+      <div class="z-pos">${r.position}</div>
+      ${cells}
+    </div>`;
   });
+
   document.getElementById('ztbl').innerHTML=h;
 }
+
 
 // ── MAIN ──────────────────────────────────────────────────────────────────────
 function setTab(t){
