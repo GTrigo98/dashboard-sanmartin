@@ -510,6 +510,7 @@ function mapRow(r){
     ts:r['Type Session']||'',
     md:r['Match Day']||'',
     rival:(r['Rival']||'').trim(),
+    wmd:parseInt(r['Week Match Day'])||0,
     sel:r['Selection']||'',
     dist:parseFloat(r['Distance(m)'])||0,
     ha:parseFloat(r['Abs HSR(m)'])||0,
@@ -556,7 +557,7 @@ function updateMicroMode(){
 }
 
 function getMicroRows(weekMD){
-  return S.filter(r=>r.sel==='Drills'&&parseInt(r.w)===parseInt(weekMD));
+  return S.filter(r=>r.sel==='Drills'&&r.wmd===parseInt(weekMD));
 }
 
 function getAvgForGroup(rows, mdLabel){
