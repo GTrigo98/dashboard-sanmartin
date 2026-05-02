@@ -255,7 +255,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
   <div id="panel-m" style="display:none">
 
     <!-- Microcycle filters -->
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1rem;align-items:flex-end">
+    <div class="filters">
 
       <!-- Match selector -->
       <div class="f-group">
@@ -359,7 +359,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
       <!-- Metric -->
       <div class="f-group">
         <div class="f-label">Métrica</div>
-        <div style="display:flex;gap:4px;flex-wrap:wrap" id="m-metrics">
+        <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center" id="m-metrics">
           <button class="sort-btn active" data-metric="dist" onclick="setMicroMetric(this,'dist')">Distance</button>
           <button class="sort-btn" data-metric="ha" onclick="setMicroMetric(this,'ha')">HSR Abs</button>
           <button class="sort-btn" data-metric="hr" onclick="setMicroMetric(this,'hr')">HSR Rel</button>
@@ -381,7 +381,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 
     <!-- Info note -->
     <div style="margin-top:.75rem;padding:.6rem 1rem;background:#0d1117;border-radius:6px;border:1px solid #21262d;font-size:11px;color:#7d8590">
-      🔴 <strong>MD</strong> = partido &nbsp;·&nbsp;
+      🟢 <strong>MD</strong> = partido &nbsp;·&nbsp;
       ⚪ <strong>MD-4 / MD-2</strong> = entrenamiento de la semana &nbsp;·&nbsp;
       Los valores mostrados son el promedio de todos los jugadores del grupo seleccionado con datos ese día.
     </div>
@@ -592,7 +592,7 @@ function renderMicro(){
       label:p1.split(' ')[0],
       data,
       borderColor:'#58a6ff',
-      backgroundColor:mdLabels.map(md=>md==='MD'?'#f85149':'rgba(88,166,255,0.8)'),
+      backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'rgba(88,166,255,0.8)'),
       pointRadius:mdLabels.map(md=>md==='MD'?8:6),
       pointHoverRadius:10,
       borderWidth:2,
@@ -607,12 +607,12 @@ function renderMicro(){
     const d2=p2?mdLabels.map(md=>getPlayerVal(rows,p2,md)):[];
     datasets=[
       {label:p1.split(' ')[0],data:d1,borderColor:'#58a6ff',
-       backgroundColor:mdLabels.map(md=>md==='MD'?'#f85149':'rgba(88,166,255,0.8)'),
+       backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'rgba(88,166,255,0.8)'),
        pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true},
     ];
     if(p2){
       datasets.push({label:p2.split(' ')[0],data:d2,borderColor:'#2ea043',
-        backgroundColor:mdLabels.map(md=>md==='MD'?'#f85149':'rgba(46,160,67,0.8)'),
+        backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'rgba(46,160,67,0.8)'),
         pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true});
     }
 
@@ -624,7 +624,7 @@ function renderMicro(){
     const posLabel={'GROUP_FW':'1–5 FW','GROUP_BR':'Back Row','GROUP_BK':'Backs'}[posGroup];
     datasets=[{
       label:posLabel,data,borderColor:'#a371f7',
-      backgroundColor:mdLabels.map(md=>md==='MD'?'#f85149':'rgba(163,113,247,0.8)'),
+      backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'rgba(163,113,247,0.8)'),
       pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true
     }];
 
@@ -632,7 +632,7 @@ function renderMicro(){
     const data=mdLabels.map(md=>getAvgForGroup(rows,md));
     datasets=[{
       label:'Team Average',data,borderColor:'#d29922',
-      backgroundColor:mdLabels.map(md=>md==='MD'?'#f85149':'rgba(210,153,34,0.8)'),
+      backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'rgba(210,153,34,0.8)'),
       pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true
     }];
   }
