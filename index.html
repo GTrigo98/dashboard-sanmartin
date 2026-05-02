@@ -90,6 +90,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
     <div class="tabs">
       <button class="tab active" id="btn-c" onclick="setTab('c')">Load Management</button>
       <button class="tab" id="btn-z" onclick="setTab('z')">Z-Scores</button>
+      <button class="tab" id="btn-m" onclick="setTab('m')">Microcycle</button>
     </div>
   </div>
 
@@ -250,6 +251,142 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
     </div>
   </div>
 
+  <!-- MICROCYCLE PANEL -->
+  <div id="panel-m" style="display:none">
+
+    <!-- Microcycle filters -->
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1rem;align-items:flex-end">
+
+      <!-- Match selector -->
+      <div class="f-group">
+        <div class="f-label">Fecha</div>
+        <select id="m-match" onchange="renderMicro()">
+          <option value="3">F1 · vs CMB (L) · 14/03</option>
+          <option value="4">F2 · vs Mariano Moreno (V) · 21/03</option>
+          <option value="5">F3 · vs Monte Grande (L) · 28/03</option>
+          <option value="6">F4 · vs Banco Nación (L) · 11/04</option>
+          <option value="7">F5 · vs Don Bosco (V) · 18/04</option>
+          <option value="8" selected>F6 · vs CAR (L) · 25/04</option>
+        </select>
+      </div>
+
+      <!-- View mode -->
+      <div class="f-group">
+        <div class="f-label">Vista</div>
+        <select id="m-mode" onchange="updateMicroMode()">
+          <option value="individual">Individual</option>
+          <option value="compare">Comparar jugadores</option>
+          <option value="position">Media por puesto</option>
+          <option value="team">Media del equipo</option>
+        </select>
+      </div>
+
+      <!-- Player 1 -->
+      <div class="f-group" id="m-p1-wrap">
+        <div class="f-label">Jugador</div>
+        <select id="m-p1" onchange="renderMicro()"><option value="Agustin Ferraro">Agustin Ferraro</option>
+<option value="Bernardo Novak">Bernardo Novak</option>
+<option value="Bruno  Zurniewicz">Bruno  Zurniewicz</option>
+<option value="Diego Lorenzo">Diego Lorenzo</option>
+<option value="Franco Cammarata">Franco Cammarata</option>
+<option value="Franco Feltrinelli">Franco Feltrinelli</option>
+<option value="Franco Sgroi">Franco Sgroi</option>
+<option value="Gianluca Gianolli">Gianluca Gianolli</option>
+<option value="Ian  Verba">Ian  Verba</option>
+<option value="Ignacio Marino">Ignacio Marino</option>
+<option value="Juan  Almandoz">Juan  Almandoz</option>
+<option value="Juan Bugge">Juan Bugge</option>
+<option value="Juan Cruz Prokopic">Juan Cruz Prokopic</option>
+<option value="Julian Papa">Julian Papa</option>
+<option value="Luca Guadagno">Luca Guadagno</option>
+<option value="Lucca Santero">Lucca Santero</option>
+<option value="Manuel Bianco">Manuel Bianco</option>
+<option value="Marcos Stanic">Marcos Stanic</option>
+<option value="Mateo Gonzalez">Mateo Gonzalez</option>
+<option value="Roman  Osella">Roman  Osella</option>
+<option value="Santiago Aguilera">Santiago Aguilera</option>
+<option value="Santiago Berdomas">Santiago Berdomas</option>
+<option value="Santiago Speroni">Santiago Speroni</option>
+<option value="Tomas Aguirre">Tomas Aguirre</option>
+<option value="Tomas Alonso">Tomas Alonso</option>
+<option value="Tomas Lemes">Tomas Lemes</option></select>
+      </div>
+
+      <!-- Player 2 (compare mode) -->
+      <div class="f-group" id="m-p2-wrap" style="display:none">
+        <div class="f-label">Comparar con</div>
+        <select id="m-p2" onchange="renderMicro()">
+          <option value="">— ninguno —</option>
+          <option value="Agustin Ferraro">Agustin Ferraro</option>
+<option value="Bernardo Novak">Bernardo Novak</option>
+<option value="Bruno  Zurniewicz">Bruno  Zurniewicz</option>
+<option value="Diego Lorenzo">Diego Lorenzo</option>
+<option value="Franco Cammarata">Franco Cammarata</option>
+<option value="Franco Feltrinelli">Franco Feltrinelli</option>
+<option value="Franco Sgroi">Franco Sgroi</option>
+<option value="Gianluca Gianolli">Gianluca Gianolli</option>
+<option value="Ian  Verba">Ian  Verba</option>
+<option value="Ignacio Marino">Ignacio Marino</option>
+<option value="Juan  Almandoz">Juan  Almandoz</option>
+<option value="Juan Bugge">Juan Bugge</option>
+<option value="Juan Cruz Prokopic">Juan Cruz Prokopic</option>
+<option value="Julian Papa">Julian Papa</option>
+<option value="Luca Guadagno">Luca Guadagno</option>
+<option value="Lucca Santero">Lucca Santero</option>
+<option value="Manuel Bianco">Manuel Bianco</option>
+<option value="Marcos Stanic">Marcos Stanic</option>
+<option value="Mateo Gonzalez">Mateo Gonzalez</option>
+<option value="Roman  Osella">Roman  Osella</option>
+<option value="Santiago Aguilera">Santiago Aguilera</option>
+<option value="Santiago Berdomas">Santiago Berdomas</option>
+<option value="Santiago Speroni">Santiago Speroni</option>
+<option value="Tomas Aguirre">Tomas Aguirre</option>
+<option value="Tomas Alonso">Tomas Alonso</option>
+<option value="Tomas Lemes">Tomas Lemes</option>
+        </select>
+      </div>
+
+      <!-- Position group -->
+      <div class="f-group" id="m-pos-wrap" style="display:none">
+        <div class="f-label">Puesto</div>
+        <select id="m-pos-sel" onchange="renderMicro()">
+          <option value="GROUP_FW">1–5 FW</option>
+          <option value="GROUP_BR">Back Row</option>
+          <option value="GROUP_BK">Backs</option>
+        </select>
+      </div>
+
+      <!-- Metric -->
+      <div class="f-group">
+        <div class="f-label">Métrica</div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap" id="m-metrics">
+          <button class="sort-btn active" data-metric="dist" onclick="setMicroMetric(this,'dist')">Distance</button>
+          <button class="sort-btn" data-metric="ha" onclick="setMicroMetric(this,'ha')">HSR Abs</button>
+          <button class="sort-btn" data-metric="hr" onclick="setMicroMetric(this,'hr')">HSR Rel</button>
+          <button class="sort-btn" data-metric="ac" onclick="setMicroMetric(this,'ac')">HI Acc</button>
+          <button class="sort-btn" data-metric="dc" onclick="setMicroMetric(this,'dc')">HI Dec</button>
+          <button class="sort-btn" data-metric="pl" onclick="setMicroMetric(this,'pl')">Load</button>
+          <button class="sort-btn" data-metric="ms" onclick="setMicroMetric(this,'ms')">Top Speed</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="card">
+      <div class="card-title" id="m-title">Microcycle view</div>
+      <div id="m-subtitle" style="font-size:11px;color:#58a6ff;margin-bottom:.75rem;min-height:16px"></div>
+      <div style="position:relative;height:320px"><canvas id="mch"></canvas></div>
+      <div class="legend" id="m-legend" style="margin-top:.75rem"></div>
+    </div>
+
+    <!-- Info note -->
+    <div style="margin-top:.75rem;padding:.6rem 1rem;background:#0d1117;border-radius:6px;border:1px solid #21262d;font-size:11px;color:#7d8590">
+      🔴 <strong>MD</strong> = partido &nbsp;·&nbsp;
+      ⚪ <strong>MD-4 / MD-2</strong> = entrenamiento de la semana &nbsp;·&nbsp;
+      Los valores mostrados son el promedio de todos los jugadores del grupo seleccionado con datos ese día.
+    </div>
+  </div>
+
   <div id="loading" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(13,17,23,.85);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:12px">
     <div style="width:40px;height:40px;border:3px solid #30363d;border-top-color:#1f6feb;border-radius:50%;animation:spin .8s linear infinite"></div>
     <div style="color:#7d8590;font-size:13px">Loading data from Google Sheets...</div>
@@ -385,6 +522,148 @@ function mapRow(r){
 }
 
 // ── LOAD DATA ─────────────────────────────────────────────────────────────────
+// ── MICROCYCLE DATA ───────────────────────────────────────────────────────────
+const MICROCYCLES={
+  3:{label:'F1 · vs CMB (L)',rival:'CMB (L)',matchDate:'14/03/2026'},
+  4:{label:'F2 · vs Mariano Moreno (V)',rival:'Mariano Moreno (V)',matchDate:'21/03/2026'},
+  5:{label:'F3 · vs Monte Grande (L)',rival:'Monte Grande (L)',matchDate:'28/03/2026'},
+  6:{label:'F4 · vs Banco Nación (L)',rival:'Banco Nación (L)',matchDate:'11/04/2026'},
+  7:{label:'F5 · vs Don Bosco (V)',rival:'Don Bosco (V)',matchDate:'18/04/2026'},
+  8:{label:'F6 · vs CAR (L)',rival:'CAR (L)',matchDate:'25/04/2026'}
+};
+
+const MICRO_METRIC_LABELS={
+  dist:'Distance (m)', ha:'HSR Abs (m)', hr:'HSR Rel (m)',
+  ac:'HI Acc', dc:'HI Dec', pl:'Player Load', ms:'Top Speed (km/h)'
+};
+
+let microMetric='dist';
+let mc=null;
+
+function setMicroMetric(btn,metric){
+  microMetric=metric;
+  document.querySelectorAll('#m-metrics .sort-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMicro();
+}
+
+function updateMicroMode(){
+  const mode=document.getElementById('m-mode').value;
+  document.getElementById('m-p1-wrap').style.display=(mode==='individual'||mode==='compare')?'':'none';
+  document.getElementById('m-p2-wrap').style.display=(mode==='compare')?'':'none';
+  document.getElementById('m-pos-wrap').style.display=(mode==='position')?'':'none';
+  renderMicro();
+}
+
+function getMicroRows(weekMD){
+  return S.filter(r=>r.sel==='Drills'&&parseInt(r.w)===parseInt(weekMD));
+}
+
+function getAvgForGroup(rows, mdLabel){
+  const grp=rows.filter(r=>r.md===mdLabel);
+  if(!grp.length)return null;
+  const val=grp.reduce((s,r)=>s+(parseFloat(r[microMetric])||0),0)/grp.length;
+  return +val.toFixed(1);
+}
+
+function getPlayerVal(rows, player, mdLabel){
+  const r=rows.find(r=>r.p===player&&r.md===mdLabel);
+  return r?+(parseFloat(r[microMetric])||0).toFixed(1):null;
+}
+
+function renderMicro(){
+  const weekMD=parseInt(document.getElementById('m-match').value);
+  const mode=document.getElementById('m-mode').value;
+  const mc_info=MICROCYCLES[weekMD];
+  const rows=getMicroRows(weekMD);
+  const mdLabels=['-4 MD','-2 MD','MD'];
+  const xLabels=['MD-4','MD-2','MD'];
+
+  document.getElementById('m-title').textContent=MICRO_METRIC_LABELS[microMetric]+' — '+mc_info.label;
+  document.getElementById('m-subtitle').textContent='Week Match Day '+weekMD+' · Partido: '+mc_info.matchDate;
+
+  let datasets=[];
+
+  if(mode==='individual'){
+    const p1=document.getElementById('m-p1').value;
+    const data=mdLabels.map(md=>getPlayerVal(rows,p1,md));
+    datasets=[{
+      label:p1.split(' ')[0],
+      data,
+      borderColor:'#58a6ff',
+      backgroundColor:mdLabels.map(md=>md==='MD'?'#f85149':'rgba(88,166,255,0.8)'),
+      pointRadius:mdLabels.map(md=>md==='MD'?8:6),
+      pointHoverRadius:10,
+      borderWidth:2,
+      tension:0.3,
+      spanGaps:true
+    }];
+
+  } else if(mode==='compare'){
+    const p1=document.getElementById('m-p1').value;
+    const p2=document.getElementById('m-p2').value;
+    const d1=mdLabels.map(md=>getPlayerVal(rows,p1,md));
+    const d2=p2?mdLabels.map(md=>getPlayerVal(rows,p2,md)):[];
+    datasets=[
+      {label:p1.split(' ')[0],data:d1,borderColor:'#58a6ff',
+       backgroundColor:mdLabels.map(md=>md==='MD'?'#f85149':'rgba(88,166,255,0.8)'),
+       pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true},
+    ];
+    if(p2){
+      datasets.push({label:p2.split(' ')[0],data:d2,borderColor:'#2ea043',
+        backgroundColor:mdLabels.map(md=>md==='MD'?'#f85149':'rgba(46,160,67,0.8)'),
+        pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true});
+    }
+
+  } else if(mode==='position'){
+    const posGroup=document.getElementById('m-pos-sel').value;
+    const posPlayers=POS_GROUPS[posGroup]||[];
+    const posRows=rows.filter(r=>posPlayers.includes(r.pos));
+    const data=mdLabels.map(md=>getAvgForGroup(posRows,md));
+    const posLabel={'GROUP_FW':'1–5 FW','GROUP_BR':'Back Row','GROUP_BK':'Backs'}[posGroup];
+    datasets=[{
+      label:posLabel,data,borderColor:'#a371f7',
+      backgroundColor:mdLabels.map(md=>md==='MD'?'#f85149':'rgba(163,113,247,0.8)'),
+      pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true
+    }];
+
+  } else { // team
+    const data=mdLabels.map(md=>getAvgForGroup(rows,md));
+    datasets=[{
+      label:'Team Average',data,borderColor:'#d29922',
+      backgroundColor:mdLabels.map(md=>md==='MD'?'#f85149':'rgba(210,153,34,0.8)'),
+      pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true
+    }];
+  }
+
+  if(mc)mc.destroy();
+  mc=new Chart(document.getElementById('mch'),{
+    type:'line',
+    data:{labels:xLabels,datasets},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:datasets.length>1,position:'top',labels:{color:'#7d8590',font:{size:11}}},
+        tooltip:{callbacks:{
+          title:function(i){return xLabels[i[0].dataIndex]+(i[0].dataIndex===2?' — MATCH DAY':'');},
+          label:function(i){return (i.dataset.label||'')+': '+(i.raw!==null?i.raw:'no data')+' '+MICRO_METRIC_LABELS[microMetric].split(' ').pop();}
+        }}
+      },
+      scales:{
+        x:{ticks:{color:'#e6edf3',font:{size:12,weight:'600'}},
+          grid:{color:'rgba(255,255,255,.05)'},border:{color:'#30363d'}},
+        y:{ticks:{color:'#7d8590',font:{size:10}},
+          grid:{color:'rgba(255,255,255,.07)'},border:{color:'#30363d'},
+          beginAtZero:false}
+      }
+    }
+  });
+
+  // Legend
+  document.getElementById('m-legend').innerHTML=datasets.map(d=>
+    `<span class="leg-item"><span class="leg-dot" style="background:${d.borderColor}"></span>${d.label}</span>`
+  ).join('');
+}
+
 async function loadData(){
   document.getElementById('loading').style.display='flex';
   try{
@@ -786,9 +1065,12 @@ function setTab(t){
   tab=t;
   document.getElementById('btn-c').className='tab'+(t==='c'?' active':'');
   document.getElementById('btn-z').className='tab'+(t==='z'?' active':'');
+  document.getElementById('btn-m').className='tab'+(t==='m'?' active':'');
   document.getElementById('panel-c').style.display=t==='c'?'':'none';
   document.getElementById('panel-z').style.display=t==='z'?'':'none';
-  render();
+  document.getElementById('panel-m').style.display=t==='m'?'':'none';
+  if(t==='m')renderMicro();
+  else render();
 }
 function setSk(k){sk=k;render();}
 function render(){
