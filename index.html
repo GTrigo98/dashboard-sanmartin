@@ -107,15 +107,15 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
         <option value="All">All players</option>
         <option value="Agustin Ferraro">Agustin Ferraro</option>
 <option value="Bernardo Novak">Bernardo Novak</option>
-<option value="Bruno  Zurniewicz">Bruno  Zurniewicz</option>
+<option value="Bruno Zurniewicz">Bruno Zurniewicz</option>
 <option value="Diego Lorenzo">Diego Lorenzo</option>
 <option value="Franco Cammarata">Franco Cammarata</option>
 <option value="Franco Feltrinelli">Franco Feltrinelli</option>
 <option value="Franco Sgroi">Franco Sgroi</option>
 <option value="Gianluca Gianolli">Gianluca Gianolli</option>
-<option value="Ian  Verba">Ian  Verba</option>
+<option value="Ian Verba">Ian Verba</option>
 <option value="Ignacio Marino">Ignacio Marino</option>
-<option value="Juan  Almandoz">Juan  Almandoz</option>
+<option value="Juan Almandoz">Juan Almandoz</option>
 <option value="Juan Bugge">Juan Bugge</option>
 <option value="Juan Cruz Prokopic">Juan Cruz Prokopic</option>
 <option value="Julian Papa">Julian Papa</option>
@@ -124,7 +124,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 <option value="Manuel Bianco">Manuel Bianco</option>
 <option value="Marcos Stanic">Marcos Stanic</option>
 <option value="Mateo Gonzalez">Mateo Gonzalez</option>
-<option value="Roman  Osella">Roman  Osella</option>
+<option value="Roman Osella">Roman Osella</option>
 <option value="Santiago Aguilera">Santiago Aguilera</option>
 <option value="Santiago Berdomas">Santiago Berdomas</option>
 <option value="Santiago Speroni">Santiago Speroni</option>
@@ -286,15 +286,15 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
         <div class="f-label">Jugador</div>
         <select id="m-p1" onchange="renderMicro()"><option value="Agustin Ferraro">Agustin Ferraro</option>
 <option value="Bernardo Novak">Bernardo Novak</option>
-<option value="Bruno  Zurniewicz">Bruno  Zurniewicz</option>
+<option value="Bruno Zurniewicz">Bruno Zurniewicz</option>
 <option value="Diego Lorenzo">Diego Lorenzo</option>
 <option value="Franco Cammarata">Franco Cammarata</option>
 <option value="Franco Feltrinelli">Franco Feltrinelli</option>
 <option value="Franco Sgroi">Franco Sgroi</option>
 <option value="Gianluca Gianolli">Gianluca Gianolli</option>
-<option value="Ian  Verba">Ian  Verba</option>
+<option value="Ian Verba">Ian Verba</option>
 <option value="Ignacio Marino">Ignacio Marino</option>
-<option value="Juan  Almandoz">Juan  Almandoz</option>
+<option value="Juan Almandoz">Juan Almandoz</option>
 <option value="Juan Bugge">Juan Bugge</option>
 <option value="Juan Cruz Prokopic">Juan Cruz Prokopic</option>
 <option value="Julian Papa">Julian Papa</option>
@@ -303,7 +303,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 <option value="Manuel Bianco">Manuel Bianco</option>
 <option value="Marcos Stanic">Marcos Stanic</option>
 <option value="Mateo Gonzalez">Mateo Gonzalez</option>
-<option value="Roman  Osella">Roman  Osella</option>
+<option value="Roman Osella">Roman Osella</option>
 <option value="Santiago Aguilera">Santiago Aguilera</option>
 <option value="Santiago Berdomas">Santiago Berdomas</option>
 <option value="Santiago Speroni">Santiago Speroni</option>
@@ -319,15 +319,15 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
           <option value="">— ninguno —</option>
           <option value="Agustin Ferraro">Agustin Ferraro</option>
 <option value="Bernardo Novak">Bernardo Novak</option>
-<option value="Bruno  Zurniewicz">Bruno  Zurniewicz</option>
+<option value="Bruno Zurniewicz">Bruno Zurniewicz</option>
 <option value="Diego Lorenzo">Diego Lorenzo</option>
 <option value="Franco Cammarata">Franco Cammarata</option>
 <option value="Franco Feltrinelli">Franco Feltrinelli</option>
 <option value="Franco Sgroi">Franco Sgroi</option>
 <option value="Gianluca Gianolli">Gianluca Gianolli</option>
-<option value="Ian  Verba">Ian  Verba</option>
+<option value="Ian Verba">Ian Verba</option>
 <option value="Ignacio Marino">Ignacio Marino</option>
-<option value="Juan  Almandoz">Juan  Almandoz</option>
+<option value="Juan Almandoz">Juan Almandoz</option>
 <option value="Juan Bugge">Juan Bugge</option>
 <option value="Juan Cruz Prokopic">Juan Cruz Prokopic</option>
 <option value="Julian Papa">Julian Papa</option>
@@ -336,7 +336,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 <option value="Manuel Bianco">Manuel Bianco</option>
 <option value="Marcos Stanic">Marcos Stanic</option>
 <option value="Mateo Gonzalez">Mateo Gonzalez</option>
-<option value="Roman  Osella">Roman  Osella</option>
+<option value="Roman Osella">Roman Osella</option>
 <option value="Santiago Aguilera">Santiago Aguilera</option>
 <option value="Santiago Berdomas">Santiago Berdomas</option>
 <option value="Santiago Speroni">Santiago Speroni</option>
@@ -503,7 +503,7 @@ function calcZScores(rows){
 // ── MAP CSV ROW ───────────────────────────────────────────────────────────────
 function mapRow(r){
   return{
-    p:(r['Player']||'').trim(),
+    p:(r['Player']||'').trim().replace(/\s+/g,' '),
     pos:(r['Position']||'').trim(),
     d:r['Date']||'',
     w:parseInt(r['Week Team'])||0,
