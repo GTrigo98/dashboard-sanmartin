@@ -847,6 +847,12 @@ function renderBar(){
   // Historical max (all time, no filter)
   const histMax={};
   allDrills.forEach(r=>{if(!histMax[r.p]||r.ms>histMax[r.p])histMax[r.p]=r.ms;});
+  console.log('histMax Zurniewicz:', histMax['Bruno  Zurniewicz']);
+  console.log('histMax Verba:', histMax['Ian  Verba']);
+  console.log('histMax Osella:', histMax['Roman  Osella']);
+  console.log('allDrills count:', allDrills.length);
+  const zRows=allDrills.filter(r=>r.p==='Bruno  Zurniewicz').sort((a,b)=>b.ms-a.ms).slice(0,3);
+  console.log('Zurniewicz top 3:', zRows.map(r=>r.d+' '+r.ms));
 
   let chartData=[...lastRows].map(r=>({
     ...r,
