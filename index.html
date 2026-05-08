@@ -942,7 +942,7 @@ function renderBar(){
 function renderLine(){
   const rows=filt();
   // For line chart, always use Drills — but any MD (training or match)
-  const mdD=rows.filter(r=>r.sel==='Drills'&&r[sk]>0);
+  const mdD=rows.filter(r=>r.sel==='Drills'&&r.dist>0);
 
   if(!mdD.length){if(lc2)lc2.destroy();document.getElementById('spleg2').innerHTML='';return;}
 
