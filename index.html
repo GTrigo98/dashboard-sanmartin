@@ -423,7 +423,7 @@ document.addEventListener('click',function(e){
 
 const PC=['#1f6feb','#2ea043','#d29922','#e85151','#a371f7','#58a6ff','#3fb950','#f78166','#d2a8ff','#ffa657','#79c0ff','#56d364','#ff7b72','#e3b341','#bc8cff','#6cb6ff','#85e89d','#ff6b6b','#ffe566','#b69bf8','#7ec8e3','#95d5b2','#ff9999','#ffc56d','#8dd9dd'];
 
-let tab='c', sk='ms', bc=null, lc=null;
+let tab='c', sk='ms', bc=null, lc=null, lc2=null;
 let dateFrom=null, dateTo=null;
 let S=[], Z=[];
 
@@ -947,7 +947,7 @@ function renderLine(){
   if(!mdD.length){if(lc2)lc2.destroy();document.getElementById('spleg2').innerHTML='';return;}
 
   const dates=[...new Set(mdD.map(r=>r.d))].sort((a,b)=>pd(a)-pd(b));
-  const players=[...new Set(mdD.map(r=>r.p))].sort();
+  const players=[...new Set(S.map(r=>r.p))].sort();
   const cfg=METRIC_CFG[sk]||METRIC_CFG.ms;
 
   const datasets=players.map((p,i)=>({
