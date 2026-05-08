@@ -421,7 +421,7 @@ document.addEventListener('click',function(e){
   }
 });
 
-const PC=['#1f6feb','#2ea043','#d29922','#e85151','#a371f7','#58a6ff','#3fb950','#f78166','#d2a8ff','#ffa657','#79c0ff','#56d364','#ff7b72','#e3b341','#bc8cff','#6cb6ff','#85e89d','#ff6b6b','#ffe566','#b69bf8','#7ec8e3','#95d5b2','#ff9999','#ffc56d','#8dd9dd'];
+const PC=['#e8b84b','#d29922','#e85151','#a371f7','#ffa657','#ff7b72','#bc8cff','#e3b341','#ff6b6b','#ffe566','#b69bf8','#7ec8e3','#ff9999','#ffc56d','#c9a84c','#e07b54','#c084fc','#fbbf24','#fb923c','#f472b6','#a78bfa','#34d399','#f87171','#60a5fa','#818cf8'];
 
 let tab='c', sk='ms', bc=null, lc=null, lc2=null;
 let dateFrom=null, dateTo=null;
@@ -986,9 +986,9 @@ function renderLine(){
   document.getElementById('spleg2').innerHTML=
     '<span class="leg-item"><span class="leg-dot" style="background:#2ea043"></span>Match</span>' +
     '<span class="leg-item"><span class="leg-dot" style="background:#1f6feb"></span>Training</span>' +
-    '<span style="flex-basis:100%;height:4px"></span>' +
+    '<span style="flex-basis:100%;height:6px"></span>' +
     players.filter(p=>mdD.some(r=>r.p===p))
-    .map((p,i)=>`<span class="leg-item"><span class="leg-dot" style="background:${PC[i%PC.length]}"></span>${p.split(' ')[0]}</span>`).join('');
+    .map((p,i)=>`<span class="leg-item"><span style="display:inline-block;width:20px;height:2px;background:${PC[i%PC.length]};border-radius:2px;margin-right:4px;vertical-align:middle"></span>${p.split(' ')[0]}</span>`).join('');
 }
 
 
