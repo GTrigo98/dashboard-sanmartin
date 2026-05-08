@@ -950,10 +950,23 @@ function renderLine(){
   const players=[...new Set(S.map(r=>r.p))].sort();
   const cfg=METRIC_CFG[sk]||METRIC_CFG.ms;
 
+  // Point colors: green for MD (match), blue for training
+  const pointColors=dates.map(d=>{
+    const r=mdD.find(row=>row.d===d);
+    return r&&r.md==='MD'?'#2ea043':'#1f6feb';
+  });
+  const pointSizes=dates.map(d=>{
+    const r=mdD.find(row=>row.d===d);
+    return r&&r.md==='MD'?7:4;
+  });
+
   const datasets=players.map((p,i)=>({
     label:p,borderColor:PC[i%PC.length],backgroundColor:'transparent',
     data:dates.map(d=>{const m=mdD.find(r=>r.p===p&&r.d===d);return m?m[sk]:null;}),
-    borderWidth:1.5,pointRadius:3,spanGaps:true,tension:0.3
+    pointBackgroundColor:pointColors,
+    pointRadius:pointSizes,
+    pointHoverRadius:pointSizes.map(s=>s+3),
+    borderWidth:1.5,spanGaps:true,tension:0.3
   })).filter(ds=>ds.data.some(v=>v!==null));
 
   // Update chart title dynamically
@@ -970,8 +983,11 @@ function renderLine(){
         y:{ticks:{color:'#7d8590',font:{size:10}},
           grid:{color:'rgba(255,255,255,.07)'},border:{color:'#30363d'},
           title:{display:true,text:cfg.unit,color:'#7d8590',font:{size:10}}}}}});
-  document.getElementById('spleg2').innerHTML=players
-    .filter(p=>mdD.some(r=>r.p===p))
+  document.getElementById('spleg2').innerHTML=
+    '<span class="leg-item"><span class="leg-dot" style="background:#2ea043"></span>Match</span>' +
+    '<span class="leg-item"><span class="leg-dot" style="background:#1f6feb"></span>Training</span>' +
+    '<span style="flex-basis:100%;height:4px"></span>' +
+    players.filter(p=>mdD.some(r=>r.p===p))
     .map((p,i)=>`<span class="leg-item"><span class="leg-dot" style="background:${PC[i%PC.length]}"></span>${p.split(' ')[0]}</span>`).join('');
 }
 
