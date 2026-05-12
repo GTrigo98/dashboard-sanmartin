@@ -477,6 +477,9 @@ function pd(s){
 function calcZScores(rows){
   const md=rows.filter(r=>r.md==='MD'&&r.sel==='Drills');
   md.sort((a,b)=>pd(a.d)-pd(b.d));
+  const uniqueDates=[...new Set(md.map(r=>r.d))];
+  console.log('MD Drills dates in Z-calc:', uniqueDates);
+  console.log('Total MD Drills rows:', md.length);
   const byPlayer={};
   md.forEach(r=>{if(!byPlayer[r.p])byPlayer[r.p]=[];byPlayer[r.p].push(r);});
   const zM=[{z:'Z_Distance',k:'dist'},{z:'Z_HSR_Abs',k:'ha'},{z:'Z_HSR_Rel',k:'hr'},
