@@ -68,11 +68,11 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 .z-hdr,.z-row{display:grid;grid-template-columns:190px 95px repeat(6,1fr);gap:4px;padding:6px 2px;border-bottom:1px solid #21262d;align-items:start}
 .z-hdr{font-size:11px;font-weight:600;color:#7d8590;position:sticky;top:0;background:#161b22}
 .z-cell{text-align:center;border-radius:4px;padding:2px 5px;font-variant-numeric:tabular-nums;font-size:12px}
-.zg2{background:#1a4731;color:#3fb950;font-weight:600}   /* > +1.5 very above */
-.zg1{background:#1a3a28;color:#7ee8a2;font-weight:500}   /* +0.5 to +1.5 above */
-.zn{background:#1c1c1c;color:#7d8590}                    /* -0.5 to +0.5 normal */
-.zr1{background:#3a2510;color:#e0934a;font-weight:500}   /* -0.5 to -1.5 below */
-.zr2{background:#3d1c1c;color:#f85149;font-weight:600}   /* < -1.5 very below */
+.zg2{background:#1a4731;color:#3fb950;font-weight:600}
+.zg1{background:#1a3a28;color:#7ee8a2;font-weight:500}
+.zn{background:#1c1c1c;color:#7d8590}
+.zr1{background:#3a2510;color:#e0934a;font-weight:500}
+.zr2{background:#3d1c1c;color:#f85149;font-weight:600}
 .z0{text-align:center;color:#484f58;font-size:12px}
 .note{font-size:11px;color:#7d8590;margin-bottom:.75rem;padding:.5rem;background:#0d1117;border-radius:5px;border-left:2px solid #30363d}
 .no-data{text-align:center;padding:2rem;color:#484f58;font-size:13px}
@@ -105,65 +105,30 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
       <div class="f-label">Player</div>
       <select id="f-player" onchange="render()">
         <option value="All">All players</option>
-        <option value="Agustin Ferraro">Agustin Ferraro</option>
-<option value="Bernardo Novak">Bernardo Novak</option>
-<option value="Bruno Zurniewicz">Bruno Zurniewicz</option>
-<option value="Diego Lorenzo">Diego Lorenzo</option>
-<option value="Franco Cammarata">Franco Cammarata</option>
-<option value="Franco Feltrinelli">Franco Feltrinelli</option>
-<option value="Franco Sgroi">Franco Sgroi</option>
-<option value="Gianluca Gianolli">Gianluca Gianolli</option>
-<option value="Ian Verba">Ian Verba</option>
-<option value="Ignacio Marino">Ignacio Marino</option>
-<option value="Juan Almandoz">Juan Almandoz</option>
-<option value="Juan Bugge">Juan Bugge</option>
-<option value="Juan Cruz Prokopic">Juan Cruz Prokopic</option>
-<option value="Julian Papa">Julian Papa</option>
-<option value="Luca Guadagno">Luca Guadagno</option>
-<option value="Lucca Santero">Lucca Santero</option>
-<option value="Manuel Bianco">Manuel Bianco</option>
-<option value="Marcos Stanic">Marcos Stanic</option>
-<option value="Mateo Gonzalez">Mateo Gonzalez</option>
-<option value="Roman Osella">Roman Osella</option>
-<option value="Santiago Aguilera">Santiago Aguilera</option>
-<option value="Santiago Berdomas">Santiago Berdomas</option>
-<option value="Santiago Speroni">Santiago Speroni</option>
-<option value="Tomas Aguirre">Tomas Aguirre</option>
-<option value="Tomas Alonso">Tomas Alonso</option>
-<option value="Tomas Lemes">Tomas Lemes</option>
       </select>
     </div>
     <div class="f-group" style="position:relative">
       <div class="f-label">Position</div>
-      <div id="pos-display" onclick="togglePosDropdown()" 
+      <div id="pos-display" onclick="togglePosDropdown()"
            style="background:#161b22;border:1px solid #30363d;color:#e6edf3;padding:6px 10px;border-radius:6px;font-size:12px;cursor:pointer;height:32px;min-width:160px;display:flex;align-items:center;justify-content:space-between;user-select:none">
         <span id="pos-label">All positions</span>
         <span style="color:#484f58;font-size:10px;margin-left:8px">▼</span>
       </div>
       <div id="pos-dropdown" style="display:none;position:absolute;top:54px;left:0;z-index:100;background:#161b22;border:1px solid #30363d;border-radius:8px;min-width:200px;box-shadow:0 8px 24px rgba(0,0,0,.6);overflow:hidden">
-        <div class="pos-opt" data-val="All" onclick="selectPos('All','All positions')" style="padding:7px 12px;cursor:pointer;font-size:12px;color:#7d8590;border-bottom:1px solid #21262d">All positions</div>
-        <!-- 1-5 FW GROUP -->
-        <div class="pos-group-hdr" onclick="selectPos('GROUP_FW','1–5 FW')" style="padding:7px 12px;cursor:pointer;font-size:11px;font-weight:700;color:#58a6ff;background:#0d1117;display:flex;align-items:center;justify-content:space-between" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='#0d1117'">
-          <span>1–5 FW</span><span style="font-size:10px;opacity:.6">▶ full group</span>
-        </div>
-        <div class="pos-opt" data-val="PROP" onclick="selectPos('PROP','PROP')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">PROP</div>
-        <div class="pos-opt" data-val="HOOKER" onclick="selectPos('HOOKER','HOOKER')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">HOOKER</div>
-        <div class="pos-opt" data-val="SECOND ROW" onclick="selectPos('SECOND ROW','SECOND ROW')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">SECOND ROW</div>
-        <!-- BACK ROW GROUP -->
-        <div class="pos-group-hdr" onclick="selectPos('GROUP_BR','Back Row')" style="padding:7px 12px;cursor:pointer;font-size:11px;font-weight:700;color:#58a6ff;background:#0d1117;display:flex;align-items:center;justify-content:space-between" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='#0d1117'">
-          <span>BACK ROW</span><span style="font-size:10px;opacity:.6">▶ full group</span>
-        </div>
-        <div class="pos-opt" data-val="FLANKER" onclick="selectPos('FLANKER','FLANKER')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">FLANKER</div>
-        <div class="pos-opt" data-val="NUMBER 8" onclick="selectPos('NUMBER 8','NUMBER 8')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">NUMBER 8</div>
-        <!-- BACKS GROUP -->
-        <div class="pos-group-hdr" onclick="selectPos('GROUP_BK','Backs')" style="padding:7px 12px;cursor:pointer;font-size:11px;font-weight:700;color:#58a6ff;background:#0d1117;display:flex;align-items:center;justify-content:space-between" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='#0d1117'">
-          <span>BACKS</span><span style="font-size:10px;opacity:.6">▶ full group</span>
-        </div>
-        <div class="pos-opt" data-val="SCRUM-HALF" onclick="selectPos('SCRUM-HALF','SCRUM-HALF')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">SCRUM-HALF</div>
-        <div class="pos-opt" data-val="FLY-HALF" onclick="selectPos('FLY-HALF','FLY-HALF')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">FLY-HALF</div>
-        <div class="pos-opt" data-val="CENTRE" onclick="selectPos('CENTRE','CENTRE')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">CENTRE</div>
-        <div class="pos-opt" data-val="WING" onclick="selectPos('WING','WING')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">WING</div>
-        <div class="pos-opt" data-val="FULLBACK" onclick="selectPos('FULLBACK','FULLBACK')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3;border-radius:0 0 8px 8px" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">FULLBACK</div>
+        <div onclick="selectPos('All','All positions')" style="padding:7px 12px;cursor:pointer;font-size:12px;color:#7d8590;border-bottom:1px solid #21262d">All positions</div>
+        <div onclick="selectPos('GROUP_FW','1–5 FW')" style="padding:7px 12px;cursor:pointer;font-size:11px;font-weight:700;color:#58a6ff;background:#0d1117;display:flex;align-items:center;justify-content:space-between" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='#0d1117'"><span>1–5 FW</span><span style="font-size:10px;opacity:.6">▶ full group</span></div>
+        <div onclick="selectPos('PROP','PROP')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">PROP</div>
+        <div onclick="selectPos('HOOKER','HOOKER')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">HOOKER</div>
+        <div onclick="selectPos('SECOND ROW','SECOND ROW')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">SECOND ROW</div>
+        <div onclick="selectPos('GROUP_BR','Back Row')" style="padding:7px 12px;cursor:pointer;font-size:11px;font-weight:700;color:#58a6ff;background:#0d1117;display:flex;align-items:center;justify-content:space-between" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='#0d1117'"><span>BACK ROW</span><span style="font-size:10px;opacity:.6">▶ full group</span></div>
+        <div onclick="selectPos('FLANKER','FLANKER')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">FLANKER</div>
+        <div onclick="selectPos('NUMBER 8','NUMBER 8')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">NUMBER 8</div>
+        <div onclick="selectPos('GROUP_BK','Backs')" style="padding:7px 12px;cursor:pointer;font-size:11px;font-weight:700;color:#58a6ff;background:#0d1117;display:flex;align-items:center;justify-content:space-between" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='#0d1117'"><span>BACKS</span><span style="font-size:10px;opacity:.6">▶ full group</span></div>
+        <div onclick="selectPos('SCRUM-HALF','SCRUM-HALF')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">SCRUM-HALF</div>
+        <div onclick="selectPos('FLY-HALF','FLY-HALF')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">FLY-HALF</div>
+        <div onclick="selectPos('CENTRE','CENTRE')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">CENTRE</div>
+        <div onclick="selectPos('WING','WING')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">WING</div>
+        <div onclick="selectPos('FULLBACK','FULLBACK')" style="padding:5px 12px 5px 24px;cursor:pointer;font-size:12px;color:#e6edf3;border-radius:0 0 8px 8px" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='transparent'">FULLBACK</div>
       </div>
     </div>
     <div class="f-group">
@@ -218,16 +183,14 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
         <div class="bar-wrap"><canvas id="bch"></canvas></div>
       </div>
     </div>
-  <!-- Top Speed Evolution -->
-  <div class="card" style="margin-top:1rem">
-    <div class="card-title">KPI's Evolution</div>
-    <div class="line-wrap"><canvas id="lch2"></canvas></div>
-    <div class="legend" id="spleg2"></div>
-  </div>
+    <div class="card" style="margin-top:1rem">
+      <div class="card-title" id="line-title">KPI's Evolution</div>
+      <div class="line-wrap"><canvas id="lch2"></canvas></div>
+      <div class="legend" id="spleg2"></div>
+    </div>
   </div>
 
   <div id="panel-z" style="display:none">
-
     <div class="card">
       <div class="card-title">Z-Scores · Last match vs previous 4</div>
       <div class="note">🟢 ≥ +1.5 very above &nbsp;·&nbsp; 🟩 +0.5→+1.5 above &nbsp;·&nbsp; ⬜ normal &nbsp;·&nbsp; 🟧 −0.5→−1.5 below &nbsp;·&nbsp; 🔴 ≤ −1.5 very below &nbsp;·&nbsp; — no data</div>
@@ -245,7 +208,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
         <div style="margin-top:.5rem;font-weight:600;color:#e6edf3">Indicadores de confiabilidad del contexto:</div>
         <div>✅ <strong>Confiable</strong> — los 5 partidos están dentro de una ventana de 14 días. El Z-Score es representativo.</div>
         <div>⚠️ <strong>Moderado</strong> — hay un gap de 15 a 21 días entre partidos. Interpretar con precaución.</div>
-        <div>🔴 <strong>Bajo</strong> — gap mayor a 21 días. El jugador puede haber estado lesionado o ausente. El Z-Score puede no reflejar la forma actual.</div>
+        <div>🔴 <strong>Bajo</strong> — gap mayor a 21 días. El jugador puede haber estado lesionado o ausente.</div>
         <div style="margin-top:.4rem;color:#484f58">Las fechas debajo del nombre de cada jugador corresponden a los 4 partidos usados como referencia para el cálculo.</div>
       </div>
     </div>
@@ -253,24 +216,13 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 
   <!-- MICROCYCLE PANEL -->
   <div id="panel-m" style="display:none">
-
-    <!-- Microcycle filters -->
     <div class="filters">
-
-      <!-- Match selector -->
       <div class="f-group">
         <div class="f-label">Fecha</div>
         <select id="m-match" onchange="renderMicro()">
-          <option value="3">F1 · vs CMB (L) · 14/03</option>
-          <option value="4">F2 · vs Mariano Moreno (V) · 21/03</option>
-          <option value="5">F3 · vs Monte Grande (L) · 28/03</option>
-          <option value="6">F4 · vs Banco Nación (L) · 11/04</option>
-          <option value="7">F5 · vs Don Bosco (V) · 18/04</option>
-          <option value="8" selected>F6 · vs CAR (L) · 25/04</option>
+          <option value="">Loading...</option>
         </select>
       </div>
-
-      <!-- View mode -->
       <div class="f-group">
         <div class="f-label">Vista</div>
         <select id="m-mode" onchange="updateMicroMode()">
@@ -280,73 +232,16 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
           <option value="team">Media del equipo</option>
         </select>
       </div>
-
-      <!-- Player 1 -->
       <div class="f-group" id="m-p1-wrap">
         <div class="f-label">Jugador</div>
-        <select id="m-p1" onchange="renderMicro()"><option value="Agustin Ferraro">Agustin Ferraro</option>
-<option value="Bernardo Novak">Bernardo Novak</option>
-<option value="Bruno Zurniewicz">Bruno Zurniewicz</option>
-<option value="Diego Lorenzo">Diego Lorenzo</option>
-<option value="Franco Cammarata">Franco Cammarata</option>
-<option value="Franco Feltrinelli">Franco Feltrinelli</option>
-<option value="Franco Sgroi">Franco Sgroi</option>
-<option value="Gianluca Gianolli">Gianluca Gianolli</option>
-<option value="Ian Verba">Ian Verba</option>
-<option value="Ignacio Marino">Ignacio Marino</option>
-<option value="Juan Almandoz">Juan Almandoz</option>
-<option value="Juan Bugge">Juan Bugge</option>
-<option value="Juan Cruz Prokopic">Juan Cruz Prokopic</option>
-<option value="Julian Papa">Julian Papa</option>
-<option value="Luca Guadagno">Luca Guadagno</option>
-<option value="Lucca Santero">Lucca Santero</option>
-<option value="Manuel Bianco">Manuel Bianco</option>
-<option value="Marcos Stanic">Marcos Stanic</option>
-<option value="Mateo Gonzalez">Mateo Gonzalez</option>
-<option value="Roman Osella">Roman Osella</option>
-<option value="Santiago Aguilera">Santiago Aguilera</option>
-<option value="Santiago Berdomas">Santiago Berdomas</option>
-<option value="Santiago Speroni">Santiago Speroni</option>
-<option value="Tomas Aguirre">Tomas Aguirre</option>
-<option value="Tomas Alonso">Tomas Alonso</option>
-<option value="Tomas Lemes">Tomas Lemes</option></select>
+        <select id="m-p1" onchange="renderMicro()"></select>
       </div>
-
-      <!-- Player 2 (compare mode) -->
       <div class="f-group" id="m-p2-wrap" style="display:none">
         <div class="f-label">Comparar con</div>
         <select id="m-p2" onchange="renderMicro()">
           <option value="">— ninguno —</option>
-          <option value="Agustin Ferraro">Agustin Ferraro</option>
-<option value="Bernardo Novak">Bernardo Novak</option>
-<option value="Bruno Zurniewicz">Bruno Zurniewicz</option>
-<option value="Diego Lorenzo">Diego Lorenzo</option>
-<option value="Franco Cammarata">Franco Cammarata</option>
-<option value="Franco Feltrinelli">Franco Feltrinelli</option>
-<option value="Franco Sgroi">Franco Sgroi</option>
-<option value="Gianluca Gianolli">Gianluca Gianolli</option>
-<option value="Ian Verba">Ian Verba</option>
-<option value="Ignacio Marino">Ignacio Marino</option>
-<option value="Juan Almandoz">Juan Almandoz</option>
-<option value="Juan Bugge">Juan Bugge</option>
-<option value="Juan Cruz Prokopic">Juan Cruz Prokopic</option>
-<option value="Julian Papa">Julian Papa</option>
-<option value="Luca Guadagno">Luca Guadagno</option>
-<option value="Lucca Santero">Lucca Santero</option>
-<option value="Manuel Bianco">Manuel Bianco</option>
-<option value="Marcos Stanic">Marcos Stanic</option>
-<option value="Mateo Gonzalez">Mateo Gonzalez</option>
-<option value="Roman Osella">Roman Osella</option>
-<option value="Santiago Aguilera">Santiago Aguilera</option>
-<option value="Santiago Berdomas">Santiago Berdomas</option>
-<option value="Santiago Speroni">Santiago Speroni</option>
-<option value="Tomas Aguirre">Tomas Aguirre</option>
-<option value="Tomas Alonso">Tomas Alonso</option>
-<option value="Tomas Lemes">Tomas Lemes</option>
         </select>
       </div>
-
-      <!-- Position group -->
       <div class="f-group" id="m-pos-wrap" style="display:none">
         <div class="f-label">Puesto</div>
         <select id="m-pos-sel" onchange="renderMicro()">
@@ -355,35 +250,27 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
           <option value="GROUP_BK">Backs</option>
         </select>
       </div>
-
-      <!-- Metric -->
       <div class="f-group">
         <div class="f-label">Métrica</div>
         <div style="display:flex;gap:4px;flex-wrap:wrap;align-items:center" id="m-metrics">
-          <button class="sort-btn active" data-metric="dist" onclick="setMicroMetric(this,'dist')">Distance</button>
-          <button class="sort-btn" data-metric="ha" onclick="setMicroMetric(this,'ha')">HSR Abs</button>
-          <button class="sort-btn" data-metric="hr" onclick="setMicroMetric(this,'hr')">HSR Rel</button>
-          <button class="sort-btn" data-metric="ac" onclick="setMicroMetric(this,'ac')">HI Acc</button>
-          <button class="sort-btn" data-metric="dc" onclick="setMicroMetric(this,'dc')">HI Dec</button>
-          <button class="sort-btn" data-metric="pl" onclick="setMicroMetric(this,'pl')">Load</button>
-          <button class="sort-btn" data-metric="ms" onclick="setMicroMetric(this,'ms')">Top Speed</button>
+          <button class="sort-btn active" onclick="setMicroMetric(this,'dist')">Distance</button>
+          <button class="sort-btn" onclick="setMicroMetric(this,'ha')">HSR Abs</button>
+          <button class="sort-btn" onclick="setMicroMetric(this,'hr')">HSR Rel</button>
+          <button class="sort-btn" onclick="setMicroMetric(this,'ac')">HI Acc</button>
+          <button class="sort-btn" onclick="setMicroMetric(this,'dc')">HI Dec</button>
+          <button class="sort-btn" onclick="setMicroMetric(this,'pl')">Load</button>
+          <button class="sort-btn" onclick="setMicroMetric(this,'ms')">Top Speed</button>
         </div>
       </div>
     </div>
-
-    <!-- Chart -->
     <div class="card">
       <div class="card-title" id="m-title">Microcycle view</div>
       <div id="m-subtitle" style="font-size:11px;color:#58a6ff;margin-bottom:.75rem;min-height:16px"></div>
       <div style="position:relative;height:320px"><canvas id="mch"></canvas></div>
       <div class="legend" id="m-legend" style="margin-top:.75rem"></div>
     </div>
-
-    <!-- Info note -->
     <div style="margin-top:.75rem;padding:.6rem 1rem;background:#0d1117;border-radius:6px;border:1px solid #21262d;font-size:11px;color:#7d8590">
-      🟢 <strong>MD</strong> = partido &nbsp;·&nbsp;
-      ⚪ <strong>MD-4 / MD-2</strong> = entrenamiento de la semana &nbsp;·&nbsp;
-      Los valores mostrados son el promedio de todos los jugadores del grupo seleccionado con datos ese día.
+      🟢 <strong>MD</strong> = partido &nbsp;·&nbsp; ⚪ <strong>MD-4 / MD-2</strong> = entrenamiento de la semana
     </div>
   </div>
 
@@ -396,54 +283,27 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ_u4pAxUSP94hzf6T5afS5TGa7mFotJ-9ngpEZ9QG2QqF-FHzEaiysadZ6A1a31A/pub?gid=175231250&single=true&output=csv";
 const SORTS=[{k:'ms',l:'Top Speed'},{k:'dist',l:'Distance'},{k:'ha',l:'HSR Abs'},{k:'hr',l:'HSR Rel'}];
-const POS_GROUPS={
-  'GROUP_FW':['PROP','HOOKER','SECOND ROW'],
-  'GROUP_BR':['FLANKER','NUMBER 8'],
-  'GROUP_BK':['SCRUM-HALF','FLY-HALF','CENTRE','WING','FULLBACK']
-};
-let currentPosVal='All';
-
-function togglePosDropdown(){
-  const dd=document.getElementById('pos-dropdown');
-  dd.style.display=dd.style.display==='none'?'block':'none';
-}
-function selectPos(val,label){
-  currentPosVal=val;
-  document.getElementById('pos-label').textContent=label;
-  document.getElementById('pos-dropdown').style.display='none';
-  render();
-}
-// Close dropdown when clicking outside
-document.addEventListener('click',function(e){
-  if(!e.target.closest('#pos-display')&&!e.target.closest('#pos-dropdown')){
-    const dd=document.getElementById('pos-dropdown');
-    if(dd)dd.style.display='none';
-  }
-});
-
+const POS_GROUPS={'GROUP_FW':['PROP','HOOKER','SECOND ROW'],'GROUP_BR':['FLANKER','NUMBER 8'],'GROUP_BK':['SCRUM-HALF','FLY-HALF','CENTRE','WING','FULLBACK']};
+const MICRO_METRIC_LABELS={dist:'Distance (m)',ha:'HSR Abs (m)',hr:'HSR Rel (m)',ac:'HI Acc',dc:'HI Dec',pl:'Player Load',ms:'Top Speed (km/h)'};
 const PC=['#e8b84b','#d29922','#e85151','#a371f7','#ffa657','#ff7b72','#bc8cff','#e3b341','#ff6b6b','#ffe566','#b69bf8','#7ec8e3','#ff9999','#ffc56d','#c9a84c','#e07b54','#c084fc','#fbbf24','#fb923c','#f472b6','#a78bfa','#34d399','#f87171','#60a5fa','#818cf8'];
+const METRIC_CFG={ms:{key:'ms',label:'Top Speed',unit:'km/h',color:'#a371f7'},dist:{key:'dist',label:'Distance',unit:'m',color:'#1f6feb'},ha:{key:'ha',label:'HSR Abs',unit:'m',color:'#1f6feb'},hr:{key:'hr',label:'HSR Rel',unit:'m',color:'#2ea043'}};
 
-let tab='c', sk='ms', bc=null, lc=null, lc2=null;
+let tab='c', sk='ms', bc=null, lc2=null, mc=null;
 let dateFrom=null, dateTo=null;
 let S=[], Z=[];
+let currentPosVal='All';
+let microMetric='dist';
+let MICROCYCLES={};
 
 // ── DATE PICKER ───────────────────────────────────────────────────────────────
-const fp = flatpickr('#f-dates',{
-  mode:'range', dateFormat:'d/m/Y',
-  minDate:'11/02/2026',
+const fp=flatpickr('#f-dates',{
+  mode:'range',dateFormat:'d/m/Y',minDate:'11/02/2026',
   locale:{firstDayOfWeek:1,
     weekdays:{shorthand:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],longhand:['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']},
-    months:{shorthand:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-            longhand:['January','February','March','April','May','June','July','August','September','October','November','December']}
-  },
-  onClose(sel){
-    dateFrom=sel.length>=1?sel[0]:null;
-    dateTo=sel.length>=2?sel[1]:sel.length===1?sel[0]:null;
-    render();
-  }
+    months:{shorthand:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],longhand:['January','February','March','April','May','June','July','August','September','October','November','December']}},
+  onClose(sel){dateFrom=sel.length>=1?sel[0]:null;dateTo=sel.length>=2?sel[1]:sel.length===1?sel[0]:null;render();}
 });
 
-// ── CSV PARSER ────────────────────────────────────────────────────────────────
 function parseCSVLine(line){
   const vals=[];let cur='';let inQ=false;
   for(let i=0;i<line.length;i++){
@@ -452,8 +312,7 @@ function parseCSVLine(line){
     else if(c===','&&!inQ){vals.push(cur.trim());cur='';}
     else{cur+=c;}
   }
-  vals.push(cur.trim());
-  return vals;
+  vals.push(cur.trim());return vals;
 }
 function parseCSV(text){
   const lines=text.trim().split('\n');
@@ -465,25 +324,85 @@ function parseCSV(text){
     return obj;
   });
 }
-
-// ── DATE PARSE DD/MM/YYYY ─────────────────────────────────────────────────────
 function pd(s){
   if(!s)return null;
+  // Handle yyyy-mm-dd or yyyy-mm-ddTxx:xx:xx
+  if(s.includes('-')&&s.slice(0,4).match(/\d{4}/)){
+    const p=s.slice(0,10).split('-');
+    return new Date(+p[0],+p[1]-1,+p[2]);
+  }
+  // Handle dd/mm/yyyy
   const p=s.split('/');
   return p.length===3?new Date(+p[2],+p[1]-1,+p[0]):null;
+}
+
+// ── BUILD MICROCYCLES DYNAMICALLY FROM DATA ───────────────────────────────────
+function buildMicrocycles(){
+  // Find all MD matches (md==='MD', sel==='Drills')
+  const matches=S.filter(r=>r.md==='MD'&&r.sel==='Drills'&&r.wmd>0);
+  const byWmd={};
+  matches.forEach(r=>{
+    if(!byWmd[r.wmd])byWmd[r.wmd]={wmd:r.wmd,date:r.d,rival:r.rival,ts:r.ts};
+    // Keep latest date per wmd
+    if(pd(r.d)>pd(byWmd[r.wmd].date)){byWmd[r.wmd].date=r.d;byWmd[r.wmd].rival=r.rival;}
+  });
+
+  MICROCYCLES={};
+  const sorted=Object.values(byWmd).sort((a,b)=>pd(a.date)-pd(b.date));
+  sorted.forEach((m,i)=>{
+    const fn='F'+(i+1);
+    const rival=m.rival?'vs '+m.rival:'';
+    const dateShort=m.date?m.date.slice(0,5):'';
+    MICROCYCLES[m.wmd]={
+      label:fn+(rival?' · '+rival:''),
+      rival:m.rival||'',
+      matchDate:m.date||'',
+      fn:fn
+    };
+  });
+
+  // Populate dropdown
+  const sel=document.getElementById('m-match');
+  sel.innerHTML='';
+  sorted.forEach((m,i)=>{
+    const mc=MICROCYCLES[m.wmd];
+    const opt=document.createElement('option');
+    opt.value=m.wmd;
+    opt.textContent=mc.fn+(m.rival?' · vs '+m.rival:'')+' · '+m.date.slice(0,5);
+    sel.appendChild(opt);
+  });
+  // Select last by default
+  if(sorted.length>0){
+    sel.value=sorted[sorted.length-1].wmd;
+  }
+
+  // Populate player dropdowns
+  const players=sorted=[...new Set(S.map(r=>r.p))].sort();
+  ['f-player','m-p1','m-p2'].forEach(id=>{
+    const el=document.getElementById(id);
+    const hasAll=id==='f-player'||id==='m-p2';
+    const currentVal=el.value;
+    if(hasAll){
+      el.innerHTML=id==='f-player'?'<option value="All">All players</option>':'<option value="">— ninguno —</option>';
+    } else {
+      el.innerHTML='';
+    }
+    players.forEach(p=>{
+      const opt=document.createElement('option');
+      opt.value=p;opt.textContent=p;
+      el.appendChild(opt);
+    });
+    if(currentVal&&[...el.options].some(o=>o.value===currentVal))el.value=currentVal;
+  });
 }
 
 // ── Z-SCORE CALCULATION ───────────────────────────────────────────────────────
 function calcZScores(rows){
   const md=rows.filter(r=>r.md==='MD'&&r.sel==='Drills');
   md.sort((a,b)=>pd(a.d)-pd(b.d));
-  const uniqueDates=[...new Set(md.map(r=>r.d))];
-  console.log('MD Drills dates in Z-calc:', uniqueDates);
-  console.log('Total MD Drills rows:', md.length);
   const byPlayer={};
   md.forEach(r=>{if(!byPlayer[r.p])byPlayer[r.p]=[];byPlayer[r.p].push(r);});
-  const zM=[{z:'Z_Distance',k:'dist'},{z:'Z_HSR_Abs',k:'ha'},{z:'Z_HSR_Rel',k:'hr'},
-            {z:'Z_HI_Acc',k:'ac'},{z:'Z_HI_Dec',k:'dc'},{z:'Z_PlayerLoad',k:'pl'}];
+  const zM=[{z:'Z_Distance',k:'dist'},{z:'Z_HSR_Abs',k:'ha'},{z:'Z_HSR_Rel',k:'hr'},{z:'Z_HI_Acc',k:'ac'},{z:'Z_HI_Dec',k:'dc'},{z:'Z_PlayerLoad',k:'pl'}];
   const results=[];
   Object.entries(byPlayer).forEach(([player,games])=>{
     if(games.length<5)return;
@@ -503,12 +422,18 @@ function calcZScores(rows){
   return results;
 }
 
-// ── MAP CSV ROW ───────────────────────────────────────────────────────────────
 function mapRow(r){
   return{
     p:(r['Player']||'').trim().replace(/\s+/g,' '),
     pos:(r['Position']||'').trim(),
-    d:r['Date']||'',
+    d:(function(s){
+      if(!s)return '';
+      if(s.includes('-')&&s.slice(0,4).match(/\d{4}/)){
+        const p=s.slice(0,10).split('-');
+        return p[2]+'/'+p[1]+'/'+p[0];
+      }
+      return s;
+    })(r['Date']||''),
     w:parseInt(r['Week Team'])||0,
     ts:r['Type Session']||'',
     md:r['Match Day']||'',
@@ -518,154 +443,11 @@ function mapRow(r){
     dist:parseFloat(r['Distance(m)'])||0,
     ha:parseFloat(r['Abs HSR(m)'])||0,
     hr:parseFloat(r['HSR Rel (m)'])||0,
-    ac:parseInt(r['High Intensity Acc (count)']||r['Accelerations'])||0,
-    dc:parseInt(r['High Intensity Dec (count)']||r['Decelerations'])||0,
+    ac:parseInt(r['High Intensity Acc (count)'])||0,
+    dc:parseInt(r['High Intensity Dec (count)'])||0,
     ms:parseFloat(r['MAX Speed(km/h)'])||0,
     pl:parseFloat(r['Player Load (a.u.)'])||0,
   };
-}
-
-// ── LOAD DATA ─────────────────────────────────────────────────────────────────
-// ── MICROCYCLE DATA ───────────────────────────────────────────────────────────
-const MICROCYCLES={
-  3:{label:'F1 · vs CMB (L)',rival:'CMB (L)',matchDate:'14/03/2026'},
-  4:{label:'F2 · vs Mariano Moreno (V)',rival:'Mariano Moreno (V)',matchDate:'21/03/2026'},
-  5:{label:'F3 · vs Monte Grande (L)',rival:'Monte Grande (L)',matchDate:'28/03/2026'},
-  6:{label:'F4 · vs Banco Nación (L)',rival:'Banco Nación (L)',matchDate:'11/04/2026'},
-  7:{label:'F5 · vs Don Bosco (V)',rival:'Don Bosco (V)',matchDate:'18/04/2026'},
-  8:{label:'F6 · vs CAR (L)',rival:'CAR (L)',matchDate:'25/04/2026'}
-};
-
-const MICRO_METRIC_LABELS={
-  dist:'Distance (m)', ha:'HSR Abs (m)', hr:'HSR Rel (m)',
-  ac:'HI Acc', dc:'HI Dec', pl:'Player Load', ms:'Top Speed (km/h)'
-};
-
-let microMetric='dist';
-let mc=null;
-
-function setMicroMetric(btn,metric){
-  microMetric=metric;
-  document.querySelectorAll('#m-metrics .sort-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  renderMicro();
-}
-
-function updateMicroMode(){
-  const mode=document.getElementById('m-mode').value;
-  document.getElementById('m-p1-wrap').style.display=(mode==='individual'||mode==='compare')?'':'none';
-  document.getElementById('m-p2-wrap').style.display=(mode==='compare')?'':'none';
-  document.getElementById('m-pos-wrap').style.display=(mode==='position')?'':'none';
-  renderMicro();
-}
-
-function getMicroRows(weekMD){
-  return S.filter(r=>r.sel==='Drills'&&r.wmd===parseInt(weekMD));
-}
-
-function getAvgForGroup(rows, mdLabel){
-  const grp=rows.filter(r=>r.md===mdLabel);
-  if(!grp.length)return null;
-  const val=grp.reduce((s,r)=>s+(parseFloat(r[microMetric])||0),0)/grp.length;
-  return +val.toFixed(1);
-}
-
-function getPlayerVal(rows, player, mdLabel){
-  const r=rows.find(r=>r.p===player&&r.md===mdLabel);
-  return r?+(parseFloat(r[microMetric])||0).toFixed(1):null;
-}
-
-function renderMicro(){
-  const weekMD=parseInt(document.getElementById('m-match').value);
-  const mode=document.getElementById('m-mode').value;
-  const mc_info=MICROCYCLES[weekMD];
-  const rows=getMicroRows(weekMD);
-  const mdLabels=['-4 MD','-2 MD','MD'];
-  const xLabels=['MD-4','MD-2','MD'];
-
-  document.getElementById('m-title').textContent=MICRO_METRIC_LABELS[microMetric]+' — '+mc_info.label;
-  document.getElementById('m-subtitle').textContent='Week Match Day '+weekMD+' · Partido: '+mc_info.matchDate;
-
-  let datasets=[];
-
-  if(mode==='individual'){
-    const p1=document.getElementById('m-p1').value;
-    const data=mdLabels.map(md=>getPlayerVal(rows,p1,md));
-    datasets=[{
-      label:p1.split(' ')[0],
-      data,
-      borderColor:'#58a6ff',
-      backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'rgba(88,166,255,0.8)'),
-      pointRadius:mdLabels.map(md=>md==='MD'?8:6),
-      pointHoverRadius:10,
-      borderWidth:2,
-      tension:0.3,
-      spanGaps:true
-    }];
-
-  } else if(mode==='compare'){
-    const p1=document.getElementById('m-p1').value;
-    const p2=document.getElementById('m-p2').value;
-    const d1=mdLabels.map(md=>getPlayerVal(rows,p1,md));
-    const d2=p2?mdLabels.map(md=>getPlayerVal(rows,p2,md)):[];
-    datasets=[
-      {label:p1.split(' ')[0],data:d1,borderColor:'#58a6ff',
-       backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'rgba(88,166,255,0.8)'),
-       pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true},
-    ];
-    if(p2){
-      datasets.push({label:p2.split(' ')[0],data:d2,borderColor:'#2ea043',
-        backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'rgba(46,160,67,0.8)'),
-        pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true});
-    }
-
-  } else if(mode==='position'){
-    const posGroup=document.getElementById('m-pos-sel').value;
-    const posPlayers=POS_GROUPS[posGroup]||[];
-    const posRows=rows.filter(r=>posPlayers.includes(r.pos));
-    const data=mdLabels.map(md=>getAvgForGroup(posRows,md));
-    const posLabel={'GROUP_FW':'1–5 FW','GROUP_BR':'Back Row','GROUP_BK':'Backs'}[posGroup];
-    datasets=[{
-      label:posLabel,data,borderColor:'#a371f7',
-      backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'rgba(163,113,247,0.8)'),
-      pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true
-    }];
-
-  } else { // team
-    const data=mdLabels.map(md=>getAvgForGroup(rows,md));
-    datasets=[{
-      label:'Team Average',data,borderColor:'#d29922',
-      backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'rgba(210,153,34,0.8)'),
-      pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true
-    }];
-  }
-
-  if(mc)mc.destroy();
-  mc=new Chart(document.getElementById('mch'),{
-    type:'line',
-    data:{labels:xLabels,datasets},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{
-        legend:{display:datasets.length>1,position:'top',labels:{color:'#7d8590',font:{size:11}}},
-        tooltip:{callbacks:{
-          title:function(i){return xLabels[i[0].dataIndex]+(i[0].dataIndex===2?' — MATCH DAY':'');},
-          label:function(i){return (i.dataset.label||'')+': '+(i.raw!==null?i.raw:'no data')+' '+MICRO_METRIC_LABELS[microMetric].split(' ').pop();}
-        }}
-      },
-      scales:{
-        x:{ticks:{color:'#e6edf3',font:{size:12,weight:'600'}},
-          grid:{color:'rgba(255,255,255,.05)'},border:{color:'#30363d'}},
-        y:{ticks:{color:'#7d8590',font:{size:10}},
-          grid:{color:'rgba(255,255,255,.07)'},border:{color:'#30363d'},
-          beginAtZero:false}
-      }
-    }
-  });
-
-  // Legend
-  document.getElementById('m-legend').innerHTML=datasets.map(d=>
-    `<span class="leg-item"><span class="leg-dot" style="background:${d.borderColor}"></span>${d.label}</span>`
-  ).join('');
 }
 
 async function loadData(){
@@ -677,20 +459,19 @@ async function loadData(){
     const rows=parseCSV(text).filter(r=>r['Player']&&r['Player']!=='Club San Martin'&&r['Selection']!=='Session');
     S=rows.map(mapRow);
     Z=calcZScores(S);
+    buildMicrocycles();
     document.getElementById('loading').style.display='none';
     syncTasks();
     render();
   }catch(e){
-    document.getElementById('loading').innerHTML=`
-      <div style="text-align:center;color:#f85149">
-        <div style="font-size:18px;margin-bottom:8px">⚠ Error loading data</div>
-        <div style="font-size:13px;color:#7d8590">${e.message}</div>
-        <button onclick="loadData()" style="margin-top:12px;padding:8px 16px;background:#1f6feb;border:none;border-radius:6px;color:#fff;cursor:pointer;font-size:13px">Retry</button>
-      </div>`;
+    document.getElementById('loading').innerHTML=`<div style="text-align:center;color:#f85149"><div style="font-size:18px;margin-bottom:8px">⚠ Error loading data</div><div style="font-size:13px;color:#7d8590">${e.message}</div><button onclick="loadData()" style="margin-top:12px;padding:8px 16px;background:#1f6feb;border:none;border-radius:6px;color:#fff;cursor:pointer;font-size:13px">Retry</button></div>`;
   }
 }
 
-// ── TASKS SYNC ────────────────────────────────────────────────────────────────
+function togglePosDropdown(){const dd=document.getElementById('pos-dropdown');dd.style.display=dd.style.display==='none'?'block':'none';}
+function selectPos(val,label){currentPosVal=val;document.getElementById('pos-label').textContent=label;document.getElementById('pos-dropdown').style.display='none';render();}
+document.addEventListener('click',function(e){if(!e.target.closest('#pos-display')&&!e.target.closest('#pos-dropdown')){const dd=document.getElementById('pos-dropdown');if(dd)dd.style.display='none';}});
+
 function syncTasks(){
   const t=document.getElementById('f-type').value;
   document.getElementById('tg-tac').style.display=(t==='All'||t==='Tactical')?'':'none';
@@ -699,7 +480,6 @@ function syncTasks(){
   document.getElementById('f-sel').value='All';
 }
 
-// ── FILTER ────────────────────────────────────────────────────────────────────
 function filt(){
   const fp=document.getElementById('f-player').value;
   const ft=document.getElementById('f-type').value;
@@ -707,11 +487,8 @@ function filt(){
   return S.filter(r=>{
     if(fp!=='All'&&r.p!==fp)return false;
     if(currentPosVal!=='All'){
-      if(POS_GROUPS[currentPosVal]){
-        if(!POS_GROUPS[currentPosVal].includes(r.pos))return false;
-      } else {
-        if(r.pos!==currentPosVal)return false;
-      }
+      if(POS_GROUPS[currentPosVal]){if(!POS_GROUPS[currentPosVal].includes(r.pos))return false;}
+      else{if(r.pos!==currentPosVal)return false;}
     }
     if(ft!=='All'&&r.ts!==ft)return false;
     if(fs!=='All'&&r.sel!==fs)return false;
@@ -720,21 +497,6 @@ function filt(){
   });
 }
 
-function agg(rows){
-  const m={};
-  rows.forEach(r=>{
-    if(!m[r.p])m[r.p]={p:r.p,pos:r.pos,n:0,dist:0,ha:0,hr:0,pl:0,ms:0};
-    const x=m[r.p];x.n++;
-    x.dist+=r.dist;x.ha+=r.ha;x.hr+=r.hr;x.pl+=r.pl;
-    x.ms=Math.max(x.ms,r.ms);
-  });
-  return Object.values(m).map(x=>({...x,
-    dist:Math.round(x.dist/x.n),ha:+(x.ha/x.n).toFixed(0),
-    hr:+(x.hr/x.n).toFixed(0),pl:+(x.pl/x.n).toFixed(1)
-  }));
-}
-
-// ── ACTIVE FILTER PILLS ───────────────────────────────────────────────────────
 function renderPills(){
   const fp=document.getElementById('f-player').value;
   const ft=document.getElementById('f-type').value;
@@ -748,8 +510,7 @@ function renderPills(){
   if(fp!=='All')pills.push(`<div class="af-pill">👤 ${fp} <span onclick="clearSel('f-player')">✕</span></div>`);
   if(currentPosVal!=='All'){
     const posLabels={'GROUP_FW':'1–5 FW','GROUP_BR':'Back Row','GROUP_BK':'Backs'};
-    const posLbl=posLabels[currentPosVal]||currentPosVal;
-    pills.push(`<div class="af-pill">🏉 ${posLbl} <span onclick="selectPos('All','All positions')">✕</span></div>`);
+    pills.push(`<div class="af-pill">🏉 ${posLabels[currentPosVal]||currentPosVal} <span onclick="selectPos('All','All positions')">✕</span></div>`);
   }
   const tm={'Tactical':'Training','Friendly game':'Friendly','Official game':'Official'};
   if(ft!=='All')pills.push(`<div class="af-pill">📋 ${tm[ft]||ft} <span onclick="clearSel('f-type');syncTasks()">✕</span></div>`);
@@ -758,10 +519,8 @@ function renderPills(){
   if(dateFrom&&dateTo){
     const from=dateFrom.toLocaleDateString('es-AR',{day:'2-digit',month:'long'});
     const to=dateTo.toLocaleDateString('es-AR',{day:'2-digit',month:'long',year:'numeric'});
-    document.getElementById('hdr-range').textContent=`Temporada 2026 · ${from} → ${to}`;
-  }else{
-    document.getElementById('hdr-range').textContent='Season 2026 · GPS Data';
-  }
+    document.getElementById('hdr-range').textContent='Temporada 2026 · '+from+' → '+to;
+  }else{document.getElementById('hdr-range').textContent='Season 2026 · GPS Data';}
 }
 function clearDate(){fp.clear();dateFrom=null;dateTo=null;render();}
 function clearSel(id){document.getElementById(id).value='All';if(id==='f-type')syncTasks();render();}
@@ -773,15 +532,13 @@ function resetFilters(){
   fp.clear();dateFrom=null;dateTo=null;syncTasks();render();
 }
 
-// ── RANKING ───────────────────────────────────────────────────────────────────
 function renderRank(rows){
   document.getElementById('sbts').innerHTML=SORTS.map(o=>`<button class="sort-btn${o.k===sk?' active':''}" onclick="setSk('${o.k}')">${o.l}</button>`).join('');
   const drills=rows.filter(r=>r.sel==='Drills'&&r.dist>100&&r.ms>0);
   const map={};
   drills.forEach(r=>{
     if(!map[r.p])map[r.p]={p:r.p,pos:r.pos,ms:0,ms_src:'',dist:0,dist_src:'',ha:0,ha_src:'',hr:0,hr_src:''};
-    const x=map[r.p];
-    const src=r.md==='MD'?'Match Day':'Training';
+    const x=map[r.p];const src=r.md==='MD'?'Match Day':'Training';
     if(r.ms>x.ms){x.ms=r.ms;x.ms_src=src;}
     if(r.dist>x.dist){x.dist=r.dist;x.dist_src=src;}
     if(r.ha>x.ha){x.ha=r.ha;x.ha_src=src;}
@@ -789,312 +546,196 @@ function renderRank(rows){
   });
   const srt=Object.values(map).sort((a,b)=>b[sk]-a[sk]);
   const t=document.getElementById('rtbl');
-  if(!srt.length){t.innerHTML=`<tr><td class="no-data" colspan="11">No data</td></tr>`;return;}
+  if(!srt.length){t.innerHTML='<tr><td class="no-data" colspan="11">No data</td></tr>';return;}
   const badge=s=>s==='Match Day'?'<span class="src-md">MD</span>':'<span class="src-tr">TR</span>';
   t.innerHTML=`<thead><tr><th>#</th><th>Player</th><th>Pos</th>${SORTS.map(o=>`<th class="num${o.k===sk?' act':''}" onclick="setSk('${o.k}')" colspan="2">${o.l}</th>`).join('')}</tr></thead>`;
   const tb=document.createElement('tbody');
   srt.forEach((p,i)=>{
     const tr=document.createElement('tr');
-    tr.innerHTML=`<td class="rk">${i+1}</td>
-      <td style="font-weight:500;white-space:nowrap">${p.p}</td>
-      <td><span class="pill">${p.pos}</span></td>
-      <td class="num">${p.ms.toFixed(1)}</td><td>${badge(p.ms_src)}</td>
-      <td class="num">${p.dist.toLocaleString()}</td><td>${badge(p.dist_src)}</td>
-      <td class="num">${p.ha}</td><td>${badge(p.ha_src)}</td>
-      <td class="num">${p.hr}</td><td>${badge(p.hr_src)}</td>`;
+    tr.innerHTML=`<td class="rk">${i+1}</td><td style="font-weight:500;white-space:nowrap">${p.p}</td><td><span class="pill">${p.pos}</span></td><td class="num">${p.ms.toFixed(1)}</td><td>${badge(p.ms_src)}</td><td class="num">${p.dist.toLocaleString()}</td><td>${badge(p.dist_src)}</td><td class="num">${p.ha}</td><td>${badge(p.ha_src)}</td><td class="num">${p.hr}</td><td>${badge(p.hr_src)}</td>`;
     tb.appendChild(tr);
   });
   t.appendChild(tb);
 }
 
-// ── METRIC CONFIG ────────────────────────────────────────────────────────────
-const METRIC_CFG={
-  ms:{key:'ms',label:'Top Speed',unit:'km/h',color:'#a371f7'},
-  dist:{key:'dist',label:'Distance',unit:'m',color:'#1f6feb'},
-  ha:{key:'ha',label:'HSR Abs',unit:'m',color:'#1f6feb'},
-  hr:{key:'hr',label:'HSR Rel',unit:'m',color:'#2ea043'},
-};
-
-// ── BAR CHART ─────────────────────────────────────────────────────────────────
 function renderBar(){
-  // ONLY responds to Position filter - always shows last team session
   const allDrills=S.filter(r=>r.sel==='Drills'&&r.dist>100);
   if(!allDrills.length){if(bc)bc.destroy();return;}
-
   const cfg=METRIC_CFG[sk]||METRIC_CFG.ha;
-
-  // Position filter only
-  const posDrills=currentPosVal==='All'?allDrills:
-    POS_GROUPS[currentPosVal]
-      ?allDrills.filter(r=>POS_GROUPS[currentPosVal].includes(r.pos))
-      :allDrills.filter(r=>r.pos===currentPosVal);
-
-  // Last team session date (from all data, no filter)
+  const posDrills=currentPosVal==='All'?allDrills:POS_GROUPS[currentPosVal]?allDrills.filter(r=>POS_GROUPS[currentPosVal].includes(r.pos)):allDrills.filter(r=>r.pos===currentPosVal);
   const lastTeamDate=allDrills.map(r=>r.d).reduce((max,d)=>pd(d)>pd(max)?d:max);
   const lastRows=posDrills.filter(r=>r.d===lastTeamDate);
-
-  // Build subtitle
   const sample=allDrills.find(r=>r.d===lastTeamDate);
   let subtitle='';
   if(sample){
     const p=lastTeamDate.split('/');
     const shortDate=p[0]+'/'+p[1]+'/'+p[2].slice(2);
     const md=sample.md||'';
-    const ts=sample.ts==='Official game'?'Official Match':
-              sample.ts==='Friendly game'?'Friendly Match':'Training';
+    const ts=sample.ts==='Official game'?'Official Match':sample.ts==='Friendly game'?'Friendly Match':'Training';
     const rival=sample.rival||'';
     const rivalStr=(rival&&(sample.ts==='Official game'||sample.ts==='Friendly game'))?' vs. '+rival:'';
     subtitle=shortDate+' · '+md+' · '+ts+rivalStr;
   }
-
-  // Historical max (all time, no filter)
-  // histMax uses ALL Drills rows, no distance filter — ensures historical max is never missed
   const histMax={};
-  S.filter(r=>r.sel==='Drills'&&r.ms>0).forEach(r=>{
-    if(!histMax[r.p]||r.ms>histMax[r.p])histMax[r.p]=r.ms;
-  });
-
-  let chartData=[...lastRows].map(r=>({
-    ...r,
-    ms_pct:histMax[r.p]>0?Math.round(r.ms/histMax[r.p]*100):0
-  })).sort((a,b)=>b[sk==='ms'?'ms_pct':cfg.key]-a[sk==='ms'?'ms_pct':cfg.key]);
-
+  S.filter(r=>r.sel==='Drills'&&r.ms>0).forEach(r=>{if(!histMax[r.p]||r.ms>histMax[r.p])histMax[r.p]=r.ms;});
+  let chartData=[...lastRows].map(r=>({...r,ms_pct:histMax[r.p]>0?Math.round(r.ms/histMax[r.p]*100):0})).sort((a,b)=>b[sk==='ms'?'ms_pct':cfg.key]-a[sk==='ms'?'ms_pct':cfg.key]);
   const isSpeed=sk==='ms';
-  const barColor=cfg.color;
-
   document.getElementById('bar-title').textContent=isSpeed?'Top Speed — % of Personal Best vs. last session':cfg.label;
   document.getElementById('bar-subtitle').textContent=subtitle;
-
   if(bc)bc.destroy();
   if(!chartData.length)return;
-
   if(isSpeed){
     const pcts=chartData.map(p=>p.ms_pct);
     const gaps=chartData.map(p=>100-p.ms_pct);
     const colors=pcts.map(v=>v>=90?'rgba(74,124,89,0.75)':v>=80?'rgba(160,120,50,0.75)':'rgba(140,65,65,0.75)');
-
-    const inlineLabelPlugin={
-      id:'inlineLabel',
-      afterDatasetsDraw:function(chart){
-        const ctx=chart.ctx;
-        const meta=chart.getDatasetMeta(0);
-        meta.data.forEach(function(bar,idx){
-          const barHeight=Math.abs(bar.base-bar.y);
-          if(barHeight<18)return;
-          ctx.save();
-          ctx.font='600 9px -apple-system, sans-serif';
-          ctx.fillStyle='rgba(180,180,180,0.65)';
-          ctx.textAlign='center';
-          ctx.textBaseline='middle';
-          ctx.fillText(pcts[idx]+'%',bar.x,(bar.y+bar.base)/2);
-          ctx.restore();
-        });
-      }
-    };
-
+    const inlineLabelPlugin={id:'inlineLabel',afterDatasetsDraw:function(chart){
+      const ctx=chart.ctx;const meta=chart.getDatasetMeta(0);
+      meta.data.forEach(function(bar,idx){
+        const barHeight=Math.abs(bar.base-bar.y);if(barHeight<18)return;
+        ctx.save();ctx.font='600 9px -apple-system, sans-serif';ctx.fillStyle='rgba(180,180,180,0.65)';
+        ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(pcts[idx]+'%',bar.x,(bar.y+bar.base)/2);ctx.restore();
+      });
+    }};
     bc=new Chart(document.getElementById('bch'),{type:'bar',
-      data:{
-        labels:chartData.map(p=>p.p.split(' ')[0]),
-        datasets:[
-          {label:'% reached',data:pcts,backgroundColor:colors,borderRadius:[3,0,0,3],borderSkipped:false,stack:'s'},
-          {label:'gap',data:gaps,backgroundColor:'rgba(255,255,255,0.07)',borderRadius:[0,3,3,0],borderSkipped:false,stack:'s'}
-        ]
-      },
+      data:{labels:chartData.map(p=>p.p.split(' ')[0]),datasets:[{label:'% reached',data:pcts,backgroundColor:colors,borderRadius:[3,0,0,3],borderSkipped:false,stack:'s'},{label:'gap',data:gaps,backgroundColor:'rgba(255,255,255,0.07)',borderRadius:[0,3,3,0],borderSkipped:false,stack:'s'}]},
       plugins:[inlineLabelPlugin],
-      options:{responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:false},
-          tooltip:{callbacks:{
-            title:function(i){
-              if(!i||!i.length)return'';
-              const p=chartData[i[0].dataIndex];
-              return p?[p.p,p.pos]:'';
-            },
-            label:function(i){
-              if(!i||i.datasetIndex!==0)return null;
-              const p=chartData[i.dataIndex];
-              if(!p)return null;
-              return['Last: '+p.ms+' km/h','Best: '+(histMax[p.p]||'-')+' km/h','Reached: '+p.ms_pct+'%'];
-            }
-          }}},
-        scales:{
-          x:{ticks:{color:'#7d8590',font:{size:10},maxRotation:45},grid:{display:false},border:{color:'#30363d'}},
-          y:{max:100,min:0,ticks:{color:'#7d8590',font:{size:10},callback:function(v){return v+'%';}},
-            grid:{color:'rgba(255,255,255,.07)'},border:{color:'#30363d'}}
-        }}});
-  } else {
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:function(i){if(!i||!i.length)return'';const p=chartData[i[0].dataIndex];return p?[p.p,p.pos]:'';},label:function(i){if(!i||i.datasetIndex!==0)return null;const p=chartData[i.dataIndex];if(!p)return null;return['Last: '+p.ms+' km/h','Best: '+(histMax[p.p]||'-')+' km/h','Reached: '+p.ms_pct+'%'];}}}},
+        scales:{x:{ticks:{color:'#7d8590',font:{size:10},maxRotation:45},grid:{display:false},border:{color:'#30363d'}},y:{max:100,min:0,ticks:{color:'#7d8590',font:{size:10},callback:function(v){return v+'%';}},grid:{color:'rgba(255,255,255,.07)'},border:{color:'#30363d'}}}}});
+  }else{
     bc=new Chart(document.getElementById('bch'),{type:'bar',
-      data:{
-        labels:chartData.map(p=>p.p.split(' ')[0]),
-        datasets:[{label:cfg.label+' ('+cfg.unit+')',data:chartData.map(p=>p[cfg.key]),backgroundColor:barColor,borderRadius:3}]
-      },
-      options:{responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:false},
-          tooltip:{callbacks:{
-            title:function(i){return[chartData[i[0].dataIndex].p,chartData[i[0].dataIndex].pos];},
-            label:function(i){return cfg.label+': '+i.raw+' '+cfg.unit;}
-          }}},
-        scales:{
-          x:{ticks:{color:'#7d8590',font:{size:10},maxRotation:45},grid:{display:false},border:{color:'#30363d'}},
-          y:{ticks:{color:'#7d8590',font:{size:10}},grid:{color:'rgba(255,255,255,.07)'},border:{color:'#30363d'}}
-        }}});
+      data:{labels:chartData.map(p=>p.p.split(' ')[0]),datasets:[{label:cfg.label+' ('+cfg.unit+')',data:chartData.map(p=>p[cfg.key]),backgroundColor:cfg.color,borderRadius:3}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{title:function(i){return[chartData[i[0].dataIndex].p,chartData[i[0].dataIndex].pos];},label:function(i){return cfg.label+': '+i.raw+' '+cfg.unit;}}}},
+        scales:{x:{ticks:{color:'#7d8590',font:{size:10},maxRotation:45},grid:{display:false},border:{color:'#30363d'}},y:{ticks:{color:'#7d8590',font:{size:10}},grid:{color:'rgba(255,255,255,.07)'},border:{color:'#30363d'}}}}});
   }
 }
 
-
-// ── LINE CHART ────────────────────────────────────────────────────────────────
 function renderLine(){
   const rows=filt();
-  // For line chart, always use Drills — but any MD (training or match)
   const mdD=rows.filter(r=>r.sel==='Drills'&&r.dist>0);
-
   if(!mdD.length){if(lc2)lc2.destroy();document.getElementById('spleg2').innerHTML='';return;}
-
   const dates=[...new Set(mdD.map(r=>r.d))].sort((a,b)=>pd(a)-pd(b));
   const players=[...new Set(S.map(r=>r.p))].sort();
   const cfg=METRIC_CFG[sk]||METRIC_CFG.ms;
-
-  // Point colors: green for MD (match), blue for training
-  const pointColors=dates.map(d=>{
-    const r=mdD.find(row=>row.d===d);
-    return r&&r.md==='MD'?'#2ea043':'#1f6feb';
-  });
-  const pointSizes=dates.map(d=>{
-    const r=mdD.find(row=>row.d===d);
-    return r&&r.md==='MD'?7:4;
-  });
-
-  const datasets=players.map((p,i)=>({
-    label:p,borderColor:PC[i%PC.length],backgroundColor:'transparent',
-    data:dates.map(d=>{const m=mdD.find(r=>r.p===p&&r.d===d);return m?m[sk]:null;}),
-    pointBackgroundColor:pointColors,
-    pointRadius:pointSizes,
-    pointHoverRadius:pointSizes.map(s=>s+3),
-    borderWidth:1.5,spanGaps:true,tension:0.3
-  })).filter(ds=>ds.data.some(v=>v!==null));
-
-  // Update chart title dynamically
+  const pointColors=dates.map(d=>{const r=mdD.find(row=>row.d===d);return r&&r.md==='MD'?'#2ea043':'#1f6feb';});
+  const pointSizes=dates.map(d=>{const r=mdD.find(row=>row.d===d);return r&&r.md==='MD'?7:4;});
+  const datasets=players.map((p,i)=>({label:p,borderColor:PC[i%PC.length],backgroundColor:'transparent',data:dates.map(d=>{const m=mdD.find(r=>r.p===p&&r.d===d);return m?m[sk]:null;}),pointBackgroundColor:pointColors,pointRadius:pointSizes,pointHoverRadius:pointSizes.map(s=>s+3),borderWidth:1.5,spanGaps:true,tension:0.3})).filter(ds=>ds.data.some(v=>v!==null));
   const titleEl=document.getElementById('line-title');
-  if(titleEl)titleEl.textContent=cfg.label+" Evolution";
-
+  if(titleEl)titleEl.textContent=cfg.label+' Evolution';
   if(lc2)lc2.destroy();
-  lc2=new Chart(document.getElementById('lch2'),{type:'line',
-    data:{labels:dates.map(d=>d.slice(0,5)),datasets},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false}},
-      scales:{
-        x:{ticks:{color:'#7d8590',font:{size:10}},grid:{display:false},border:{color:'#30363d'}},
-        y:{ticks:{color:'#7d8590',font:{size:10}},
-          grid:{color:'rgba(255,255,255,.07)'},border:{color:'#30363d'},
-          title:{display:true,text:cfg.unit,color:'#7d8590',font:{size:10}}}}}});
+  lc2=new Chart(document.getElementById('lch2'),{type:'line',data:{labels:dates.map(d=>d.slice(0,5)),datasets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#7d8590',font:{size:10}},grid:{display:false},border:{color:'#30363d'}},y:{ticks:{color:'#7d8590',font:{size:10}},grid:{color:'rgba(255,255,255,.07)'},border:{color:'#30363d'},title:{display:true,text:cfg.unit,color:'#7d8590',font:{size:10}}}}}});
   document.getElementById('spleg2').innerHTML=
-    '<span class="leg-item"><span class="leg-dot" style="background:#2ea043"></span>Match</span>' +
-    '<span class="leg-item"><span class="leg-dot" style="background:#1f6feb"></span>Training</span>' +
-    '<span style="flex-basis:100%;height:6px"></span>' +
-    players.filter(p=>mdD.some(r=>r.p===p))
-    .map((p,i)=>`<span class="leg-item"><span style="display:inline-block;width:20px;height:2px;background:${PC[i%PC.length]};border-radius:2px;margin-right:4px;vertical-align:middle"></span>${p.split(' ')[0]}</span>`).join('');
+    '<span class="leg-item"><span class="leg-dot" style="background:#2ea043"></span>Match</span>'+
+    '<span class="leg-item"><span class="leg-dot" style="background:#1f6feb"></span>Training</span>'+
+    '<span style="flex-basis:100%;height:6px"></span>'+
+    players.filter(p=>mdD.some(r=>r.p===p)).map((p,i)=>`<span class="leg-item"><span style="display:inline-block;width:20px;height:2px;background:${PC[i%PC.length]};border-radius:2px;margin-right:4px;vertical-align:middle"></span>${p.split(' ')[0]}</span>`).join('');
 }
 
-
-// ── Z TABLE ───────────────────────────────────────────────────────────────────
 function renderZ(){
   const cols=['Z_Distance','Z_HSR_Abs','Z_HSR_Rel','Z_HI_Acc','Z_HI_Dec','Z_PlayerLoad'];
   const lbls=['Z Dist','Z HSR Abs','Z HSR Rel','Z HI Acc','Z HI Dec','Z Load'];
   const fp=document.getElementById('f-player').value;
-
-  // Build Z-scores with context info (gap analysis)
   const mdDrills=S.filter(r=>r.sel==='Drills'&&r.md==='MD');
+  mdDrills.sort((a,b)=>pd(a.d)-pd(b.d));
   const byPlayer={};
   mdDrills.forEach(r=>{if(!byPlayer[r.p])byPlayer[r.p]=[];byPlayer[r.p].push(r.d);});
-  
-  // Calculate gap indicator for each player
+  const md=mdDrills;
   function getGapInfo(playerName){
     const dates=(byPlayer[playerName]||[]).map(d=>pd(d)).sort((a,b)=>a-b);
     if(dates.length<5)return{icon:'—',label:'Insufficient data',color:'#484f58',ref:[]};
     const last5=dates.slice(-5);
-    const refDates=last5.slice(0,4); // 4 previous
+    const refDates=last5.slice(0,4);
     let maxGap=0;
-    for(let i=1;i<last5.length;i++){
-      const gap=(last5[i]-last5[i-1])/(1000*60*60*24);
-      if(gap>maxGap)maxGap=gap;
-    }
-    const refLabels=refDates.map(d=>{
-      const s=d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'});
-      return s;
-    });
-    if(maxGap<=14) return{icon:'✅',label:'Reliable context (max gap: '+Math.round(maxGap)+' days)',color:'#3fb950',ref:refLabels};
-    if(maxGap<=21) return{icon:'⚠️',label:'Moderate context (gap: '+Math.round(maxGap)+' days)',color:'#d29922',ref:refLabels};
+    for(let i=1;i<last5.length;i++){const gap=(last5[i]-last5[i-1])/(1000*60*60*24);if(gap>maxGap)maxGap=gap;}
+    const refLabels=refDates.map(d=>d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'}));
+    if(maxGap<=14)return{icon:'✅',label:'Reliable context (max gap: '+Math.round(maxGap)+' days)',color:'#3fb950',ref:refLabels};
+    if(maxGap<=21)return{icon:'⚠️',label:'Moderate context (gap: '+Math.round(maxGap)+' days)',color:'#d29922',ref:refLabels};
     return{icon:'🔴',label:'Low context — gap of '+Math.round(maxGap)+' days between matches',color:'#f85149',ref:refLabels};
   }
-
   const zData=Z.filter(r=>{
     if(fp!=='All'&&r.player!==fp)return false;
-    if(currentPosVal!=='All'){
-      if(POS_GROUPS[currentPosVal]){if(!POS_GROUPS[currentPosVal].includes(r.position))return false;}
-      else{if(r.position!==currentPosVal)return false;}
-    }
+    if(currentPosVal!=='All'){if(POS_GROUPS[currentPosVal]){if(!POS_GROUPS[currentPosVal].includes(r.position))return false;}else{if(r.position!==currentPosVal)return false;}}
     return true;
   });
-
-  const zDescriptions={
-    'Z Dist': 'Distancia total recorrida durante el partido.',
-    'Z HSR Abs': 'Distancia recorrida por encima de 21 km/h.',
-    'Z HSR Rel': 'Distancia recorrida por encima del 75,5% de la velocidad máxima registrada del jugador.',
-    'Z HI Acc': 'Número de aceleraciones superiores a +3 m/s².',
-    'Z HI Dec': 'Número de desaceleraciones superiores a -3 m/s².',
-    'Z Load': 'Player Load: carga mecánica total calculada a partir de aceleraciones, desaceleraciones y cambios de dirección en los tres ejes del cuerpo.'
-  };
-
-  let h=`<div class="z-hdr">
-    <div>Player</div>
-    <div>Position</div>
-    ${lbls.map(l=>`<div style="text-align:center;cursor:help" title="${zDescriptions[l]||''}">${l} <span style="font-size:9px;opacity:.5">ℹ</span></div>`).join('')}
-  </div>`;
-
-  if(!zData.length){h+=`<div class="no-data">No data</div>`;document.getElementById('ztbl').innerHTML=h;return;}
-
+  const zDescriptions={'Z Dist':'Distancia total recorrida durante el partido.','Z HSR Abs':'Distancia recorrida por encima de 21 km/h.','Z HSR Rel':'Distancia recorrida por encima del 75,5% de la velocidad máxima registrada del jugador.','Z HI Acc':'Número de aceleraciones superiores a +3 m/s².','Z HI Dec':'Número de desaceleraciones superiores a -3 m/s².','Z Load':'Player Load: carga mecánica total calculada a partir de aceleraciones, desaceleraciones y cambios de dirección en los tres ejes del cuerpo.'};
+  let h=`<div class="z-hdr"><div>Player</div><div>Position</div>${lbls.map(l=>`<div style="text-align:center;cursor:help" title="${zDescriptions[l]||''}">${l} <span style="font-size:9px;opacity:.5">ℹ</span></div>`).join('')}</div>`;
+  if(!zData.length){h+='<div class="no-data">No data</div>';document.getElementById('ztbl').innerHTML=h;return;}
   zData.forEach(r=>{
     const gap=getGapInfo(r.player);
-    const cells=cols.map(c=>{
-      const v=r[c];
-      if(v===null||v===undefined)return`<div class="z0">—</div>`;
-      const cls=v>=1.5?'z-cell zg2':
-                v>=0.5?'z-cell zg1':
-                v>=-0.5?'z-cell zn':
-                v>=-1.5?'z-cell zr1':
-                        'z-cell zr2';
-      return`<div class="${cls}">${v>0?'+':''}${v.toFixed(2)}</div>`;
-    }).join('');
-
-    const refStr=gap.ref.length?`<div style="font-size:10px;color:#484f58;margin-top:2px">${gap.ref.join(' · ')}</div>`:'';
-
-    h+=`<div class="z-row">
-      <div>
-        <div style="font-size:12px;font-weight:500;display:flex;align-items:center;gap:5px">
-          ${r.player}
-          <span title="${gap.label}" style="cursor:help;font-size:13px">${gap.icon}</span>
-        </div>
-        ${refStr}
-      </div>
-      <div class="z-pos">${r.position}</div>
-      ${cells}
-    </div>`;
+    const cells=cols.map(c=>{const v=r[c];if(v===null||v===undefined)return'<div class="z0">—</div>';const cls=v>=1.5?'z-cell zg2':v>=0.5?'z-cell zg1':v>=-0.5?'z-cell zn':v>=-1.5?'z-cell zr1':'z-cell zr2';return`<div class="${cls}">${v>0?'+':''}${v.toFixed(2)}</div>`;}).join('');
+    const playerMD=md.filter(row=>row.p===r.player);
+    const lastMatch=playerMD.length?playerMD[playerMD.length-1]:null;
+    const lastDateStr=lastMatch?lastMatch.d:'';
+    const lastRival=lastMatch&&lastMatch.rival?' · vs '+lastMatch.rival:'';
+    const lastLabel=lastDateStr?`<div style="font-size:10px;color:#58a6ff;margin-top:2px">🏉 ${lastDateStr.slice(0,5)}${lastRival}</div>`:'';
+    const refStr=gap.ref.length?`<div style="font-size:10px;color:#484f58;margin-top:1px">📊 ${gap.ref.join(' · ')}</div>`:'';
+    h+=`<div class="z-row"><div><div style="font-size:12px;font-weight:500;display:flex;align-items:center;gap:5px">${r.player}<span title="${gap.label}" style="cursor:help;font-size:13px">${gap.icon}</span></div>${lastLabel}${refStr}</div><div class="z-pos">${r.position}</div>${cells}</div>`;
   });
-
   document.getElementById('ztbl').innerHTML=h;
 }
 
+// ── MICROCYCLE ────────────────────────────────────────────────────────────────
+function setMicroMetric(btn,metric){
+  microMetric=metric;
+  document.querySelectorAll('#m-metrics .sort-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMicro();
+}
+function updateMicroMode(){
+  const mode=document.getElementById('m-mode').value;
+  document.getElementById('m-p1-wrap').style.display=(mode==='individual'||mode==='compare')?'':'none';
+  document.getElementById('m-p2-wrap').style.display=mode==='compare'?'':'none';
+  document.getElementById('m-pos-wrap').style.display=mode==='position'?'':'none';
+  renderMicro();
+}
+function getMicroRows(weekMD){return S.filter(r=>r.sel==='Drills'&&r.wmd===parseInt(weekMD));}
+function getAvgForGroup(rows,mdLabel){
+  const grp=rows.filter(r=>r.md===mdLabel);
+  if(!grp.length)return null;
+  return +(grp.reduce((s,r)=>s+(parseFloat(r[microMetric])||0),0)/grp.length).toFixed(1);
+}
+function getPlayerVal(rows,player,mdLabel){
+  const r=rows.find(r=>r.p===player&&r.md===mdLabel);
+  return r?+(parseFloat(r[microMetric])||0).toFixed(1):null;
+}
+function renderMicro(){
+  const weekMD=parseInt(document.getElementById('m-match').value);
+  if(!weekMD||!MICROCYCLES[weekMD])return;
+  const mode=document.getElementById('m-mode').value;
+  const mc_info=MICROCYCLES[weekMD];
+  const rows=getMicroRows(weekMD);
+  const mdLabels=['-4 MD','-2 MD','MD'];
+  const xLabels=['MD-4','MD-2','MD'];
+  document.getElementById('m-title').textContent=MICRO_METRIC_LABELS[microMetric]+' — '+mc_info.label;
+  document.getElementById('m-subtitle').textContent='Week Match Day '+weekMD+' · Match: '+mc_info.matchDate;
+  let datasets=[];
+  if(mode==='individual'){
+    const p1=document.getElementById('m-p1').value;
+    datasets=[{label:p1.split(' ')[0],data:mdLabels.map(md=>getPlayerVal(rows,p1,md)),borderColor:'#58a6ff',backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'rgba(88,166,255,0.8)'),pointRadius:mdLabels.map(md=>md==='MD'?8:6),pointHoverRadius:10,borderWidth:2,tension:0.3,spanGaps:true}];
+  }else if(mode==='compare'){
+    const p1=document.getElementById('m-p1').value;
+    const p2=document.getElementById('m-p2').value;
+    datasets=[{label:p1.split(' ')[0],data:mdLabels.map(md=>getPlayerVal(rows,p1,md)),borderColor:'#58a6ff',backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'rgba(88,166,255,0.8)'),pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true}];
+    if(p2)datasets.push({label:p2.split(' ')[0],data:mdLabels.map(md=>getPlayerVal(rows,p2,md)),borderColor:'#e8b84b',backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'rgba(232,184,75,0.8)'),pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true});
+  }else if(mode==='position'){
+    const posGroup=document.getElementById('m-pos-sel').value;
+    const posRows=rows.filter(r=>(POS_GROUPS[posGroup]||[]).includes(r.pos));
+    const posLabel={'GROUP_FW':'1–5 FW','GROUP_BR':'Back Row','GROUP_BK':'Backs'}[posGroup];
+    datasets=[{label:posLabel,data:mdLabels.map(md=>getAvgForGroup(posRows,md)),borderColor:'#a371f7',backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'rgba(163,113,247,0.8)'),pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true}];
+  }else{
+    datasets=[{label:'Team Average',data:mdLabels.map(md=>getAvgForGroup(rows,md)),borderColor:'#d29922',backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'rgba(210,153,34,0.8)'),pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true}];
+  }
+  if(mc)mc.destroy();
+  mc=new Chart(document.getElementById('mch'),{type:'line',data:{labels:xLabels,datasets},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:datasets.length>1,position:'top',labels:{color:'#7d8590',font:{size:11}}},tooltip:{callbacks:{title:function(i){return xLabels[i[0].dataIndex]+(i[0].dataIndex===2?' — MATCH DAY':'');},label:function(i){return(i.dataset.label||'')+': '+(i.raw!==null?i.raw:'no data')+' '+MICRO_METRIC_LABELS[microMetric].split(' ').pop();}}}},
+      scales:{x:{ticks:{color:'#e6edf3',font:{size:12,weight:'600'}},grid:{color:'rgba(255,255,255,.05)'},border:{color:'#30363d'}},y:{ticks:{color:'#7d8590',font:{size:10}},grid:{color:'rgba(255,255,255,.07)'},border:{color:'#30363d'},beginAtZero:false}}}});
+  document.getElementById('m-legend').innerHTML=datasets.map(d=>`<span class="leg-item"><span class="leg-dot" style="background:${d.borderColor}"></span>${d.label}</span>`).join('');
+}
 
-// ── MAIN ──────────────────────────────────────────────────────────────────────
 function setTab(t){
   tab=t;
-  document.getElementById('btn-c').className='tab'+(t==='c'?' active':'');
-  document.getElementById('btn-z').className='tab'+(t==='z'?' active':'');
-  document.getElementById('btn-m').className='tab'+(t==='m'?' active':'');
-  document.getElementById('panel-c').style.display=t==='c'?'':'none';
-  document.getElementById('panel-z').style.display=t==='z'?'':'none';
-  document.getElementById('panel-m').style.display=t==='m'?'':'none';
-  if(t==='m')renderMicro();
-  else render();
+  ['c','z','m'].forEach(x=>{document.getElementById('btn-'+x).className='tab'+(t===x?' active':'');document.getElementById('panel-'+x).style.display=t===x?'':'none';});
+  if(t==='m')renderMicro();else render();
 }
 function setSk(k){sk=k;render();}
 function render(){
