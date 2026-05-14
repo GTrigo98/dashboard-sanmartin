@@ -349,8 +349,10 @@ function buildMicrocycles(){
 
   MICROCYCLES={};
   const sortedMatches=Object.values(byWmd).sort((a,b)=>pd(a.date)-pd(b.date));
+  let fnCount=1, anCount=1;
   sortedMatches.forEach((m,i)=>{
-    const fn='F'+(i+1);
+    const isOfficial=m.ts==='Official game';
+    const fn=isOfficial?'F'+fnCount++:'A'+anCount++;
     const rival=m.rival?'vs '+m.rival:'';
     const dateShort=m.date?m.date.slice(0,5):'';
     MICROCYCLES[m.wmd]={
