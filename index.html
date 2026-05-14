@@ -348,8 +348,8 @@ function buildMicrocycles(){
   });
 
   MICROCYCLES={};
-  const sorted=Object.values(byWmd).sort((a,b)=>pd(a.date)-pd(b.date));
-  sorted.forEach((m,i)=>{
+  const sortedMatches=Object.values(byWmd).sort((a,b)=>pd(a.date)-pd(b.date));
+  sortedMatches.forEach((m,i)=>{
     const fn='F'+(i+1);
     const rival=m.rival?'vs '+m.rival:'';
     const dateShort=m.date?m.date.slice(0,5):'';
@@ -364,7 +364,7 @@ function buildMicrocycles(){
   // Populate dropdown
   const sel=document.getElementById('m-match');
   sel.innerHTML='';
-  sorted.forEach((m,i)=>{
+  sortedMatches.forEach((m,i)=>{
     const mc=MICROCYCLES[m.wmd];
     const opt=document.createElement('option');
     opt.value=m.wmd;
@@ -372,12 +372,12 @@ function buildMicrocycles(){
     sel.appendChild(opt);
   });
   // Select last by default
-  if(sorted.length>0){
-    sel.value=sorted[sorted.length-1].wmd;
+  if(sortedMatches.length>0){
+    sel.value=sortedMatches[sortedMatches.length-1].wmd;
   }
 
   // Populate player dropdowns
-  const players=sorted=[...new Set(S.map(r=>r.p))].sort();
+  const players=[...new Set(S.map(r=>r.p))].sort();
   ['f-player','m-p1','m-p2'].forEach(id=>{
     const el=document.getElementById(id);
     const hasAll=id==='f-player'||id==='m-p2';
