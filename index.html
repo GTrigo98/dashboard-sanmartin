@@ -677,6 +677,32 @@ function renderZ(){
   const zDescriptions={'Z Dist':'Distancia total recorrida durante el partido.','Z HSR Abs':'Distancia recorrida por encima de 21 km/h.','Z HSR Rel':'Distancia recorrida por encima del 75,5% de la velocidad máxima registrada del jugador.','Z HI Acc':'Número de aceleraciones superiores a +3 m/s².','Z HI Dec':'Número de desaceleraciones superiores a -3 m/s².','Z Load':'Player Load: carga mecánica total calculada a partir de aceleraciones, desaceleraciones y cambios de dirección en los tres ejes del cuerpo.'};
   let h=`<div class="z-hdr"><div>Player</div><div>Position</div>${lbls.map(l=>`<div style="text-align:center;cursor:help" title="${zDescriptions[l]||''}">${l} <span style="font-size:9px;opacity:.5">ℹ</span></div>`).join('')}</div>`;
   if(!zData.length){h+='<div class="no-data">No data</div>';document.getElementById('ztbl').innerHTML=h;return;}
+
+  // Sort by gap: reliable first (✅), then moderate (⚠️), then low (🔴)
+  // Within each group, sort by maxGap ascending
+  function getMaxGap(playerName){
+    const dates=(byPlayer[playerName]||[]).map(d=>pd(d)).sort((a,b)=>a-b);
+    if(dates.length<5)return 9999;
+    const last5=dates.slice(-5);
+    let maxGap=0;
+    for(let i=1;i<last5.length;i++){
+      const gap=(last5[i]-last5[i-1])/(1000*60*60*24);
+      if(gap>maxGap)maxGap=gap;
+    }
+    return maxGap;
+  }
+  function getGapOrder(playerName){
+    const g=getMaxGap(playerName);
+    if(g<=14)return 0;
+    if(g<=21)return 1;
+    return 2;
+  }
+  zData.sort((a,b)=>{
+    const orderDiff=getGapOrder(a.player)-getGapOrder(b.player);
+    if(orderDiff!==0)return orderDiff;
+    return getMaxGap(a.player)-getMaxGap(b.player);
+  });
+
   zData.forEach(r=>{
     const gap=getGapInfo(r.player);
     const cells=cols.map(c=>{const v=r[c];if(v===null||v===undefined)return'<div class="z0">—</div>';const cls=v>=1.5?'z-cell zg2':v>=0.5?'z-cell zg1':v>=-0.5?'z-cell zn':v>=-1.5?'z-cell zr1':'z-cell zr2';return`<div class="${cls}">${v>0?'+':''}${v.toFixed(2)}</div>`;}).join('');
