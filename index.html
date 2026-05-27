@@ -712,19 +712,19 @@ function renderMicro(){
   let datasets=[];
   if(mode==='individual'){
     const p1=document.getElementById('m-p1').value;
-    datasets=[{label:p1.split(' ')[0],data:mdLabels.map(md=>getPlayerVal(rows,p1,md)),borderColor:'#58a6ff',backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'rgba(88,166,255,0.8)'),pointRadius:mdLabels.map(md=>md==='MD'?8:6),pointHoverRadius:10,borderWidth:2,tension:0.3,spanGaps:true}];
+    datasets=[{label:p1.split(' ')[0],data:mdLabels.map(md=>getPlayerVal(rows,p1,md)),borderColor:'#58a6ff',backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'#ffffff'),pointRadius:mdLabels.map(md=>md==='MD'?8:6),pointHoverRadius:10,borderWidth:2,tension:0.3,spanGaps:true}];
   }else if(mode==='compare'){
     const p1=document.getElementById('m-p1').value;
     const p2=document.getElementById('m-p2').value;
-    datasets=[{label:p1.split(' ')[0],data:mdLabels.map(md=>getPlayerVal(rows,p1,md)),borderColor:'#58a6ff',backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'rgba(88,166,255,0.8)'),pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true}];
-    if(p2)datasets.push({label:p2.split(' ')[0],data:mdLabels.map(md=>getPlayerVal(rows,p2,md)),borderColor:'#e8b84b',backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'rgba(232,184,75,0.8)'),pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true});
+    datasets=[{label:p1.split(' ')[0],data:mdLabels.map(md=>getPlayerVal(rows,p1,md)),borderColor:'#58a6ff',backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'#ffffff'),pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true}];
+    if(p2)datasets.push({label:p2.split(' ')[0],data:mdLabels.map(md=>getPlayerVal(rows,p2,md)),borderColor:'#e8b84b',backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'#ffffff'),pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true});
   }else if(mode==='position'){
     const posGroup=document.getElementById('m-pos-sel').value;
     const posRows=rows.filter(r=>(POS_GROUPS[posGroup]||[]).includes(r.pos));
     const posLabel={'GROUP_FW':'1–5 FW','GROUP_BR':'Back Row','GROUP_BK':'Backs'}[posGroup];
-    datasets=[{label:posLabel,data:mdLabels.map(md=>getAvgForGroup(posRows,md)),borderColor:'#a371f7',backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'rgba(163,113,247,0.8)'),pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true}];
+    datasets=[{label:posLabel,data:mdLabels.map(md=>getAvgForGroup(posRows,md)),borderColor:'#a371f7',backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'#ffffff'),pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true}];
   }else{
-    datasets=[{label:'Team Average',data:mdLabels.map(md=>getAvgForGroup(rows,md)),borderColor:'#d29922',backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'rgba(210,153,34,0.8)'),pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true}];
+    datasets=[{label:'Team Average',data:mdLabels.map(md=>getAvgForGroup(rows,md)),borderColor:'#d29922',backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'#ffffff'),pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true}];
   }
   if(mc)mc.destroy();
   mc=new Chart(document.getElementById('mch'),{type:'line',data:{labels:xLabels,datasets},
