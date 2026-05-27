@@ -945,7 +945,7 @@ function renderTaskBreakdown(){
   const mc_info=MICROCYCLES[weekMD];
 
   // Get ALL non-Drills rows for this weekMD
-  const taskRows=S.filter(r=>r.sel!=='Drills'&&r.sel!=='Session'&&r.wmd===weekMD&&r[microMetric]>0);
+  const taskRows=S.filter(r=>r.sel!=='Drills'&&r.sel!=='Session'&&r.wmd===weekMD&&r.dist>0);
   if(!taskRows.length){if(tc)tc.destroy();document.getElementById('task-chart-subtitle').textContent='No task data for this microcycle';return;}
 
   // Get unique tasks and players/groups
@@ -982,8 +982,8 @@ function renderTaskBreakdown(){
     data:subjects.map(subj=>{
       const rows=taskRows.filter(r=>r.sel===task&&subj.filter(r));
       if(!rows.length)return 0;
-      const val=rows.reduce((s,r)=>s+(parseFloat(r[microMetric])||0),0)/rows.length;
-      return +val.toFixed(1);
+      const val=rows.reduce((s,r)=>s+(parseFloat(r[microMetric])||0),0);
+      return rows.length?+val.toFixed(1):0;
     })
   }));
 
@@ -1015,6 +1015,11 @@ function renderTaskBreakdown(){
 function setTab(t){
   tab=t;
   ['c','z','m'].forEach(x=>{document.getElementById('btn-'+x).className='tab'+(t===x?' active':'');document.getElementById('panel-'+x).style.display=t===x?'':'none';});
+  // Hide global filters in Load Management tab
+  const globalFilters=document.querySelector('.filters');
+  const activePills=document.getElementById('af');
+  if(globalFilters){globalFilters.style.display=t==='m'?'none':'';}
+  if(activePills){activePills.style.display=t==='m'?'none':'';}
   if(t==='m')renderMicro();else render();
 }
 function setSk(k){sk=k;render();}
