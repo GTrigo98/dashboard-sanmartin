@@ -294,6 +294,12 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
     <div class="card" style="margin-top:1rem" id="task-breakdown-card">
       <div class="card-title" id="task-chart-title">Session breakdown by task</div>
       <div id="task-chart-subtitle" style="font-size:11px;color:#58a6ff;margin-bottom:.5rem;min-height:16px"></div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:.6rem">
+        <span style="font-size:10px;font-weight:600;color:#7d8590;text-transform:uppercase;letter-spacing:.06em;align-self:center;margin-right:4px">Estímulo</span>
+        <button id="stim-md4" onclick="toggleStim(this,'-4 MD')" style="padding:3px 10px;border-radius:5px;font-size:11px;font-family:inherit;cursor:pointer;border:1.5px solid #58a6ff;background:#58a6ff;color:#0d1117;transition:all .15s" data-selected="1">MD-4</button>
+        <button id="stim-md2" onclick="toggleStim(this,'-2 MD')" style="padding:3px 10px;border-radius:5px;font-size:11px;font-family:inherit;cursor:pointer;border:1.5px solid #58a6ff;background:#58a6ff;color:#0d1117;transition:all .15s" data-selected="1">MD-2</button>
+        <button id="stim-md" onclick="toggleStim(this,'MD')" style="padding:3px 10px;border-radius:5px;font-size:11px;font-family:inherit;cursor:pointer;border:1.5px solid #2ea043;background:#2ea043;color:#0d1117;transition:all .15s" data-selected="1">MD</button>
+      </div>
       <div style="position:relative;height:320px"><canvas id="tch"></canvas></div>
       <div class="legend" id="task-legend" style="margin-top:.5rem"></div>
     </div>
@@ -929,6 +935,23 @@ function buildChart(datasets,xLabels){
 }
 
 // ── TASK BREAKDOWN CHART ─────────────────────────────────────────────────────
+function toggleStim(btn, mdLabel){
+  const sel = btn.getAttribute('data-selected') === '1';
+  btn.setAttribute('data-selected', sel ? '0' : '1');
+  const isMD = mdLabel === 'MD';
+  const color = isMD ? '#2ea043' : '#58a6ff';
+  btn.style.background = sel ? 'transparent' : color;
+  btn.style.color = sel ? '#7d8590' : '#0d1117';
+  renderTaskBreakdown();
+}
+
+function getSelectedStims(){
+  const map = {'-4 MD': 'stim-md4', '-2 MD': 'stim-md2', 'MD': 'stim-md'};
+  return Object.entries(map)
+    .filter(([md, id]) => document.getElementById(id) && document.getElementById(id).getAttribute('data-selected') === '1')
+    .map(([md]) => md);
+}
+
 function renderTaskBreakdown(){
   if(tab!=='m')return; // Only render in Load Management tab
   const mode=document.getElementById('m-mode').value;
@@ -947,14 +970,16 @@ function renderTaskBreakdown(){
 
   const mc_info=MICROCYCLES[weekMD];
 
-  // Get ALL non-Drills rows for this weekMD
-  const taskRows=S.filter(r=>r.sel!=='Drills'&&r.sel!=='Session'&&r.wmd===weekMD&&r.dist>0);
-  console.log('weekMD:',weekMD,'microMetric:',microMetric,'taskRows:',taskRows.length);
-  console.log('sample wmd values:',[...new Set(S.filter(r=>r.sel!=='Drills').map(r=>r.wmd))].slice(0,10));
-  console.log('sample sel values:',[...new Set(S.map(r=>r.sel))].slice(0,10));
-  if(!taskRows.length){if(tc)tc.destroy();document.getElementById('task-chart-subtitle').textContent='No task data for this microcycle';return;}
+  // Get selected stimuli
+  const selectedStims=getSelectedStims();
+  if(!selectedStims.length){if(tc)tc.destroy();document.getElementById('task-chart-subtitle').textContent='Select at least one stimulus above';return;}
 
-  // Get unique tasks and players/groups
+  // Get ALL non-Drills rows for this weekMD, filtered by selected stims
+  const allTaskRows=S.filter(r=>r.sel!=='Drills'&&r.sel!=='Session'&&r.wmd===weekMD&&r.dist>0);
+  const taskRows=allTaskRows.filter(r=>selectedStims.includes(r.md));
+  if(!taskRows.length){if(tc)tc.destroy();document.getElementById('task-chart-subtitle').textContent='No task data for selected stimuli';return;}
+
+  // Get unique tasks
   const tasks=[...new Set(taskRows.map(r=>r.sel))].sort();
 
   // Determine subjects based on mode
