@@ -216,6 +216,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 
   <!-- MICROCYCLE PANEL -->
   <div id="panel-m" style="display:none">
+
     <div class="filters">
       <div class="f-group">
         <div class="f-label">Fecha</div>
@@ -233,7 +234,6 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
           <option value="multiweek">Microcycle Comparison</option>
         </select>
       </div>
-      <!-- Multi-week selector -->
       <div class="f-group" id="m-multi-wrap" style="display:none">
         <div class="f-label">Microciclos a comparar <span style="color:#484f58;font-weight:400" id="m-multi-hint">(max 4 para comparar jugadores)</span></div>
         <div id="m-multi-checks" style="display:flex;flex-wrap:wrap;gap:5px;padding:2px 0;max-width:900px"></div>
@@ -247,7 +247,6 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
           <option value="compare">Comparar jugadores</option>
         </select>
       </div>
-
       <div class="f-group" id="m-p1-wrap">
         <div class="f-label">Jugador</div>
         <select id="m-p1" onchange="renderMicro()"></select>
@@ -278,8 +277,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
           <button class="sort-btn" onclick="setMicroMetric(this,'ms')">Top Speed</button>
         </div>
       </div>
-    
-    </div
+    </div>
 
     <div class="card">
       <div class="card-title" id="m-title">Microcycle view</div>
@@ -287,6 +285,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
       <div style="position:relative;height:320px"><canvas id="mch"></canvas></div>
       <div class="legend" id="m-legend" style="margin-top:.75rem"></div>
     </div>
+
     <div style="margin-top:.75rem;padding:.6rem 1rem;background:#0d1117;border-radius:6px;border:1px solid #21262d;font-size:11px;color:#7d8590">
       🟢 <strong>MD</strong> = partido &nbsp;·&nbsp; ⚪ <strong>MD-4 / MD-2</strong> = entrenamiento de la semana
     </div>
@@ -298,6 +297,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
       <div style="position:relative;height:320px"><canvas id="tch"></canvas></div>
       <div class="legend" id="task-legend" style="margin-top:.5rem"></div>
     </div>
+
   </div>
 
   <div id="loading" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(13,17,23,.85);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:12px">
@@ -930,6 +930,7 @@ function buildChart(datasets,xLabels){
 
 // ── TASK BREAKDOWN CHART ─────────────────────────────────────────────────────
 function renderTaskBreakdown(){
+  if(tab!=='m')return; // Only render in Load Management tab
   const mode=document.getElementById('m-mode').value;
   const isMulti=mode==='multiweek';
 
