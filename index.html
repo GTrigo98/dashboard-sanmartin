@@ -278,7 +278,15 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
           <button class="sort-btn" onclick="setMicroMetric(this,'ms')">Top Speed</button>
         </div>
       </div>
+    
+    <!-- Task Breakdown Chart -->
+    <div class="card" style="margin-top:1rem" id="task-breakdown-card">
+      <div class="card-title" id="task-chart-title">Session breakdown by task</div>
+      <div id="task-chart-subtitle" style="font-size:11px;color:#58a6ff;margin-bottom:.5rem;min-height:16px"></div>
+      <div style="position:relative;height:280px"><canvas id="tch"></canvas></div>
+      <div class="legend" id="task-legend" style="margin-top:.5rem"></div>
     </div>
+  </div>
     <div class="card">
       <div class="card-title" id="m-title">Microcycle view</div>
       <div id="m-subtitle" style="font-size:11px;color:#58a6ff;margin-bottom:.75rem;min-height:16px"></div>
@@ -288,15 +296,9 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
     <div style="margin-top:.75rem;padding:.6rem 1rem;background:#0d1117;border-radius:6px;border:1px solid #21262d;font-size:11px;color:#7d8590">
       🟢 <strong>MD</strong> = partido &nbsp;·&nbsp; ⚪ <strong>MD-4 / MD-2</strong> = entrenamiento de la semana
     </div>
+    </div>
   </div>
 
-  <!-- Task Breakdown Chart -->
-  <div class="card" style="margin-top:1rem" id="task-breakdown-card">
-    <div class="card-title" id="task-chart-title">Session breakdown by task</div>
-    <div id="task-chart-subtitle" style="font-size:11px;color:#58a6ff;margin-bottom:.5rem;min-height:16px"></div>
-    <div style="position:relative;height:280px"><canvas id="tch"></canvas></div>
-    <div class="legend" id="task-legend" style="margin-top:.5rem"></div>
-  </div>
   </div>
 
   <div id="loading" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(13,17,23,.85);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:12px">
