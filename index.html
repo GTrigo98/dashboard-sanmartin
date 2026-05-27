@@ -236,7 +236,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
       <!-- Multi-week selector -->
       <div class="f-group" id="m-multi-wrap" style="display:none">
         <div class="f-label">Microciclos a comparar <span style="color:#484f58;font-weight:400" id="m-multi-hint">(max 4 para comparar jugadores)</span></div>
-        <div id="m-multi-checks" style="display:flex;flex-wrap:wrap;gap:6px;padding:4px 0;max-width:700px"></div>
+        <div id="m-multi-checks" style="display:flex;flex-wrap:wrap;gap:5px;padding:2px 0;max-width:900px"></div>
       </div>
       <div class="f-group" id="m-submode-wrap" style="display:none">
         <div class="f-label">Ver por</div>
@@ -736,20 +736,34 @@ function buildMultiWeekChecks(){
   const container=document.getElementById('m-multi-checks');
   const current=getSelectedWeeks();
   container.innerHTML='';
-  Object.entries(MICROCYCLES).forEach(([wmd,mc])=>{
-    const checked=current.length===0||current.includes(parseInt(wmd));
-    const label=mc.fn+(mc.rival?' · vs '+mc.rival:'')+' · '+mc.matchDate.slice(0,5);
-    const id='chk-wmd-'+wmd;
-    const div=document.createElement('div');
-    div.style.cssText='display:flex;align-items:center;gap:5px;cursor:pointer;';
-    div.innerHTML=`<input type="checkbox" id="${id}" value="${wmd}" ${checked?'checked':''} onchange="renderMicro()" style="accent-color:#1f6feb;cursor:pointer"><label for="${id}" style="font-size:11px;color:#e6edf3;cursor:pointer;white-space:nowrap">${label}</label>`;
-    container.appendChild(div);
+  const weekColors=['#58a6ff','#e8b84b','#a371f7','#ff7b72','#ffa657','#bc8cff','#34d399','#f472b6','#60a5fa','#e3b341','#7ec8e3'];
+  const sortedWmds=Object.keys(MICROCYCLES).map(Number).sort((a,b)=>a-b);
+  sortedWmds.forEach((wmd,idx)=>{
+    const mc=MICROCYCLES[wmd];
+    const isSelected=current.length===0||current.includes(wmd);
+    const color=weekColors[idx%weekColors.length];
+    const label=mc.fn+(mc.rival?' vs '+mc.rival:'');
+    const btn=document.createElement('button');
+    btn.setAttribute('data-wmd',wmd);
+    btn.setAttribute('data-selected',isSelected?'1':'0');
+    btn.style.cssText=`padding:3px 10px;border-radius:5px;font-size:11px;font-family:inherit;cursor:pointer;white-space:nowrap;transition:all .15s;border:1.5px solid ${color};background:${isSelected?color:'transparent'};color:${isSelected?'#0d1117':'#7d8590'};`;
+    btn.textContent=label;
+    btn.onclick=function(){
+      const sel=this.getAttribute('data-selected')==='1';
+      this.setAttribute('data-selected',sel?'0':'1');
+      this.style.background=sel?'transparent':color;
+      this.style.color=sel?'#7d8590':'#0d1117';
+      renderMicro();
+    };
+    container.appendChild(btn);
   });
 }
 
 function getSelectedWeeks(){
-  return [...document.querySelectorAll('#m-multi-checks input:checked')].map(i=>parseInt(i.value));
+  return [...document.querySelectorAll('#m-multi-checks button[data-selected="1"]')].map(b=>parseInt(b.getAttribute('data-wmd')));
 }
+
+
 
 function renderMicro(){
   const mode=document.getElementById('m-mode').value;
