@@ -230,8 +230,15 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
           <option value="compare">Comparar jugadores</option>
           <option value="position">Media por puesto</option>
           <option value="team">Media del equipo</option>
+          <option value="multiweek">Microcycle Comparison</option>
         </select>
       </div>
+      <!-- Multi-week selector -->
+      <div class="f-group" id="m-multi-wrap" style="display:none">
+        <div class="f-label">Microciclos a comparar</div>
+        <div id="m-multi-checks" style="display:flex;flex-wrap:wrap;gap:6px;padding:4px 0;max-width:600px"></div>
+      </div>
+
       <div class="f-group" id="m-p1-wrap">
         <div class="f-label">Jugador</div>
         <select id="m-p1" onchange="renderMicro()"></select>
@@ -684,9 +691,13 @@ function setMicroMetric(btn,metric){
 }
 function updateMicroMode(){
   const mode=document.getElementById('m-mode').value;
-  document.getElementById('m-p1-wrap').style.display=(mode==='individual'||mode==='compare')?'':'none';
+  const isMulti=mode==='multiweek';
+  document.getElementById('m-match').closest('.f-group').style.display=isMulti?'none':'';
+  document.getElementById('m-multi-wrap').style.display=isMulti?'':'none';
+  document.getElementById('m-p1-wrap').style.display=(!isMulti&&(mode==='individual'||mode==='compare'))?'':'none';
   document.getElementById('m-p2-wrap').style.display=mode==='compare'?'':'none';
   document.getElementById('m-pos-wrap').style.display=mode==='position'?'':'none';
+  if(isMulti)buildMultiWeekChecks();
   renderMicro();
 }
 function getMicroRows(weekMD){return S.filter(r=>r.sel==='Drills'&&r.wmd===parseInt(weekMD));}
@@ -699,17 +710,64 @@ function getPlayerVal(rows,player,mdLabel){
   const r=rows.find(r=>r.p===player&&r.md===mdLabel);
   return r?+(parseFloat(r[microMetric])||0).toFixed(1):null;
 }
+function buildMultiWeekChecks(){
+  const container=document.getElementById('m-multi-checks');
+  const current=getSelectedWeeks();
+  container.innerHTML='';
+  Object.entries(MICROCYCLES).forEach(([wmd,mc])=>{
+    const checked=current.length===0||current.includes(parseInt(wmd));
+    const label=mc.fn+(mc.rival?' · vs '+mc.rival:'')+' · '+mc.matchDate.slice(0,5);
+    const id='chk-wmd-'+wmd;
+    const div=document.createElement('div');
+    div.style.cssText='display:flex;align-items:center;gap:5px;cursor:pointer;';
+    div.innerHTML=`<input type="checkbox" id="${id}" value="${wmd}" ${checked?'checked':''} onchange="renderMicro()" style="accent-color:#1f6feb;cursor:pointer"><label for="${id}" style="font-size:11px;color:#e6edf3;cursor:pointer;white-space:nowrap">${label}</label>`;
+    container.appendChild(div);
+  });
+}
+
+function getSelectedWeeks(){
+  return [...document.querySelectorAll('#m-multi-checks input:checked')].map(i=>parseInt(i.value));
+}
+
 function renderMicro(){
-  const weekMD=parseInt(document.getElementById('m-match').value);
-  if(!weekMD||!MICROCYCLES[weekMD])return;
   const mode=document.getElementById('m-mode').value;
-  const mc_info=MICROCYCLES[weekMD];
-  const rows=getMicroRows(weekMD);
   const mdLabels=['-4 MD','-2 MD','MD'];
   const xLabels=['MD-4','MD-2','MD'];
+  let datasets=[];
+
+  // ── MULTIWEEK COMPARISON MODE ─────────────────────────────────────────────
+  if(mode==='multiweek'){
+    const selectedWeeks=getSelectedWeeks();
+    if(!selectedWeeks.length){if(mc)mc.destroy();return;}
+    const weekColors=['#58a6ff','#e8b84b','#a371f7','#2ea043','#ff7b72','#d29922','#bc8cff','#ffa657','#34d399','#f472b6'];
+    selectedWeeks.forEach((wmd,idx)=>{
+      const mc_info=MICROCYCLES[wmd];
+      if(!mc_info)return;
+      const rows=getMicroRows(wmd);
+      const color=weekColors[idx%weekColors.length];
+      const data=mdLabels.map(md=>getAvgForGroup(rows,md));
+      datasets.push({
+        label:mc_info.fn+(mc_info.rival?' vs '+mc_info.rival:''),
+        data,
+        borderColor:color,
+        backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'#ffffff'),
+        pointRadius:mdLabels.map(md=>md==='MD'?8:5),
+        borderWidth:2,tension:0.3,spanGaps:true
+      });
+    });
+    document.getElementById('m-title').textContent=MICRO_METRIC_LABELS[microMetric]+' — Microcycle Comparison';
+    document.getElementById('m-subtitle').textContent='Team average per microcycle · '+selectedWeeks.length+' microcycles selected';
+    buildChart(datasets,xLabels);
+    return;
+  }
+
+  // ── SINGLE MICROCYCLE MODES ───────────────────────────────────────────────
+  const weekMD=parseInt(document.getElementById('m-match').value);
+  if(!weekMD||!MICROCYCLES[weekMD])return;
+  const mc_info=MICROCYCLES[weekMD];
+  const rows=getMicroRows(weekMD);
   document.getElementById('m-title').textContent=MICRO_METRIC_LABELS[microMetric]+' — '+mc_info.label;
   document.getElementById('m-subtitle').textContent='Week Match Day '+weekMD+' · Match: '+mc_info.matchDate;
-  let datasets=[];
   if(mode==='individual'){
     const p1=document.getElementById('m-p1').value;
     datasets=[{label:p1.split(' ')[0],data:mdLabels.map(md=>getPlayerVal(rows,p1,md)),borderColor:'#58a6ff',backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'#ffffff'),pointRadius:mdLabels.map(md=>md==='MD'?8:6),pointHoverRadius:10,borderWidth:2,tension:0.3,spanGaps:true}];
@@ -726,6 +784,10 @@ function renderMicro(){
   }else{
     datasets=[{label:'Team Average',data:mdLabels.map(md=>getAvgForGroup(rows,md)),borderColor:'#d29922',backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'#ffffff'),pointRadius:mdLabels.map(md=>md==='MD'?8:6),borderWidth:2,tension:0.3,spanGaps:true}];
   }
+  buildChart(datasets,xLabels);
+}
+
+function buildChart(datasets,xLabels){
   if(mc)mc.destroy();
   mc=new Chart(document.getElementById('mch'),{type:'line',data:{labels:xLabels,datasets},
     options:{responsive:true,maintainAspectRatio:false,
