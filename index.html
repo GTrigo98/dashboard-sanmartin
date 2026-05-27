@@ -290,6 +290,15 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
     </div>
   </div>
 
+  <!-- Task Breakdown Chart -->
+  <div class="card" style="margin-top:1rem" id="task-breakdown-card">
+    <div class="card-title" id="task-chart-title">Session breakdown by task</div>
+    <div id="task-chart-subtitle" style="font-size:11px;color:#58a6ff;margin-bottom:.5rem;min-height:16px"></div>
+    <div style="position:relative;height:280px"><canvas id="tch"></canvas></div>
+    <div class="legend" id="task-legend" style="margin-top:.5rem"></div>
+  </div>
+  </div>
+
   <div id="loading" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(13,17,23,.85);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:12px">
     <div style="width:40px;height:40px;border:3px solid #30363d;border-top-color:#1f6feb;border-radius:50%;animation:spin .8s linear infinite"></div>
     <div style="color:#7d8590;font-size:13px">Loading data from Google Sheets...</div>
@@ -301,10 +310,19 @@ const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ_u4pAxUSP94hz
 const SORTS=[{k:'ms',l:'Top Speed'},{k:'dist',l:'Distance'},{k:'ha',l:'HSR Abs'},{k:'hr',l:'HSR Rel'}];
 const POS_GROUPS={'GROUP_FW':['PROP','HOOKER','SECOND ROW'],'GROUP_BR':['FLANKER','NUMBER 8'],'GROUP_BK':['SCRUM-HALF','FLY-HALF','CENTRE','WING','FULLBACK']};
 const MICRO_METRIC_LABELS={dist:'Distance (m)',ha:'HSR Abs (m)',hr:'HSR Rel (m)',ac:'HI Acc',dc:'HI Dec',pl:'Player Load',ms:'Top Speed (km/h)'};
+const TASK_COLORS={
+  'SPEED':'#58a6ff','RUGBY':'#2ea043','UNIDADES':'#a371f7',
+  'CONDITIONING':'#d29922','WARM-UP':'#7ec8e3','PHYSICAL-TECHNICAL':'#e8b84b',
+  'PHYSICAL TECHNICAL':'#e8b84b','1st time':'#3fb950','2nd time':'#1a7f37',
+  'Drills':'#484f58'
+};
+function getTaskColor(task,idx){
+  return TASK_COLORS[task]||PC[idx%PC.length];
+}
 const PC=['#e8b84b','#d29922','#e85151','#a371f7','#ffa657','#ff7b72','#bc8cff','#e3b341','#ff6b6b','#ffe566','#b69bf8','#7ec8e3','#ff9999','#ffc56d','#c9a84c','#e07b54','#c084fc','#fbbf24','#fb923c','#f472b6','#a78bfa','#34d399','#f87171','#60a5fa','#818cf8'];
 const METRIC_CFG={ms:{key:'ms',label:'Top Speed',unit:'km/h',color:'#a371f7'},dist:{key:'dist',label:'Distance',unit:'m',color:'#1f6feb'},ha:{key:'ha',label:'HSR Abs',unit:'m',color:'#1f6feb'},hr:{key:'hr',label:'HSR Rel',unit:'m',color:'#2ea043'}};
 
-let tab='c', sk='ms', bc=null, lc2=null, mc=null;
+let tab='c', sk='ms', bc=null, lc2=null, mc=null, tc=null;
 let dateFrom=null, dateTo=null;
 let S=[], Z=[];
 let currentPosVal='All';
@@ -869,6 +887,7 @@ function renderMicro(){
     document.getElementById('m-title').textContent=MICRO_METRIC_LABELS[microMetric]+' — Microcycle Comparison';
     document.getElementById('m-subtitle').textContent=selectedWeeks.length+' microcycles · color = week · line style = player/group';
     buildChart(datasets,xLabels);
+    renderTaskBreakdown();
     return;
   }
 
@@ -905,6 +924,92 @@ function buildChart(datasets,xLabels){
       plugins:{legend:{display:datasets.length>1,position:'top',labels:{color:'#7d8590',font:{size:11}}},tooltip:{callbacks:{title:function(i){return xLabels[i[0].dataIndex]+(i[0].dataIndex===2?' — MATCH DAY':'');},label:function(i){return(i.dataset.label||'')+': '+(i.raw!==null?i.raw:'no data')+' '+MICRO_METRIC_LABELS[microMetric].split(' ').pop();}}}},
       scales:{x:{ticks:{color:'#e6edf3',font:{size:12,weight:'600'}},grid:{color:'rgba(255,255,255,.05)'},border:{color:'#30363d'}},y:{ticks:{color:'#7d8590',font:{size:10}},grid:{color:'rgba(255,255,255,.07)'},border:{color:'#30363d'},beginAtZero:false}}}});
   document.getElementById('m-legend').innerHTML=datasets.map(d=>`<span class="leg-item"><span class="leg-dot" style="background:${d.borderColor}"></span>${d.label}</span>`).join('');
+}
+
+// ── TASK BREAKDOWN CHART ─────────────────────────────────────────────────────
+function renderTaskBreakdown(){
+  const mode=document.getElementById('m-mode').value;
+  const isMulti=mode==='multiweek';
+
+  // Get the relevant weekMD
+  let weekMD;
+  if(isMulti){
+    const sel=getSelectedWeeks();
+    if(!sel.length){if(tc)tc.destroy();return;}
+    weekMD=sel[sel.length-1]; // use last selected
+  } else {
+    weekMD=parseInt(document.getElementById('m-match').value);
+  }
+  if(!weekMD||!MICROCYCLES[weekMD]){if(tc)tc.destroy();return;}
+
+  const mc_info=MICROCYCLES[weekMD];
+
+  // Get ALL non-Drills rows for this weekMD
+  const taskRows=S.filter(r=>r.sel!=='Drills'&&r.sel!=='Session'&&r.wmd===weekMD&&r[microMetric]>0);
+  if(!taskRows.length){if(tc)tc.destroy();document.getElementById('task-chart-subtitle').textContent='No task data for this microcycle';return;}
+
+  // Get unique tasks and players/groups
+  const tasks=[...new Set(taskRows.map(r=>r.sel))].sort();
+
+  // Determine subjects based on mode
+  let subjects=[];
+  const subMode=isMulti?document.getElementById('m-submode').value:mode;
+
+  if(subMode==='team'){
+    subjects=[{label:'Team Avg',filter:r=>true}];
+  } else if(subMode==='position'){
+    const pg=document.getElementById('m-pos-sel').value;
+    const posLabel={'GROUP_FW':'1–5 FW','GROUP_BR':'Back Row','GROUP_BK':'Backs'}[pg]||pg;
+    subjects=[{label:posLabel,filter:r=>(POS_GROUPS[pg]||[]).includes(r.pos)}];
+  } else if(subMode==='individual'||mode==='individual'){
+    const p1=document.getElementById('m-p1').value;
+    subjects=[{label:p1.split(' ')[0],filter:r=>r.p===p1}];
+  } else if(subMode==='compare'||mode==='compare'){
+    const p1=document.getElementById('m-p1').value;
+    const p2=document.getElementById('m-p2').value;
+    subjects=[{label:p1.split(' ')[0],filter:r=>r.p===p1}];
+    if(p2)subjects.push({label:p2.split(' ')[0],filter:r=>r.p===p2});
+  } else {
+    subjects=[{label:'Team Avg',filter:r=>true}];
+  }
+
+  const labels=subjects.map(s=>s.label);
+
+  // Build datasets — one per task
+  const datasets=tasks.map((task,ti)=>({
+    label:task,
+    backgroundColor:getTaskColor(task,ti),
+    data:subjects.map(subj=>{
+      const rows=taskRows.filter(r=>r.sel===task&&subj.filter(r));
+      if(!rows.length)return 0;
+      const val=rows.reduce((s,r)=>s+(parseFloat(r[microMetric])||0),0)/rows.length;
+      return +val.toFixed(1);
+    })
+  }));
+
+  const metricLabel=MICRO_METRIC_LABELS[microMetric];
+  document.getElementById('task-chart-title').textContent=metricLabel+' by task — '+mc_info.label;
+  document.getElementById('task-chart-subtitle').textContent='Excluding Drills totals · values = average per player';
+
+  if(tc)tc.destroy();
+  tc=new Chart(document.getElementById('tch'),{
+    type:'bar',
+    data:{labels,datasets},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:true,position:'top',labels:{color:'#7d8590',font:{size:11},boxWidth:12}},
+        tooltip:{callbacks:{label:function(i){return i.dataset.label+': '+i.raw+' '+(metricLabel.split(' ').pop());}}}
+      },
+      scales:{
+        x:{stacked:true,ticks:{color:'#e6edf3',font:{size:11}},grid:{display:false},border:{color:'#30363d'}},
+        y:{stacked:true,ticks:{color:'#7d8590',font:{size:10}},grid:{color:'rgba(255,255,255,.07)'},border:{color:'#30363d'}}
+      }}
+  });
+
+  // Legend
+  document.getElementById('task-legend').innerHTML=tasks.map((t,i)=>
+    `<span class="leg-item"><span class="leg-dot" style="background:${getTaskColor(t,i)}"></span>${t}</span>`
+  ).join('');
 }
 
 function setTab(t){
