@@ -697,9 +697,17 @@ function renderZ(){
     if(g<=21)return 1;
     return 2;
   }
+  function getLastMatchDate(playerName){
+    const dates=(byPlayer[playerName]||[]).map(d=>pd(d)).sort((a,b)=>a-b);
+    return dates.length?dates[dates.length-1]:new Date(0);
+  }
   zData.sort((a,b)=>{
     const orderDiff=getGapOrder(a.player)-getGapOrder(b.player);
     if(orderDiff!==0)return orderDiff;
+    // Within same group: most recent last match first
+    const dateDiff=getLastMatchDate(b.player)-getLastMatchDate(a.player);
+    if(dateDiff!==0)return dateDiff;
+    // If same date: smaller gap first
     return getMaxGap(a.player)-getMaxGap(b.player);
   });
 
