@@ -235,8 +235,17 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
       </div>
       <!-- Multi-week selector -->
       <div class="f-group" id="m-multi-wrap" style="display:none">
-        <div class="f-label">Microciclos a comparar</div>
-        <div id="m-multi-checks" style="display:flex;flex-wrap:wrap;gap:6px;padding:4px 0;max-width:600px"></div>
+        <div class="f-label">Microciclos a comparar <span style="color:#484f58;font-weight:400" id="m-multi-hint">(max 4 para comparar jugadores)</span></div>
+        <div id="m-multi-checks" style="display:flex;flex-wrap:wrap;gap:6px;padding:4px 0;max-width:700px"></div>
+      </div>
+      <div class="f-group" id="m-submode-wrap" style="display:none">
+        <div class="f-label">Ver por</div>
+        <select id="m-submode" onchange="updateMultiSubmode();renderMicro()" style="background:#161b22;border:1px solid #30363d;color:#e6edf3;padding:6px 10px;border-radius:6px;font-size:12px;height:32px;min-width:160px">
+          <option value="team">Team Average</option>
+          <option value="position">By Position</option>
+          <option value="individual">Individual</option>
+          <option value="compare">Comparar jugadores</option>
+        </select>
       </div>
 
       <div class="f-group" id="m-p1-wrap">
@@ -694,11 +703,24 @@ function updateMicroMode(){
   const isMulti=mode==='multiweek';
   document.getElementById('m-match').closest('.f-group').style.display=isMulti?'none':'';
   document.getElementById('m-multi-wrap').style.display=isMulti?'':'none';
-  document.getElementById('m-p1-wrap').style.display=(!isMulti&&(mode==='individual'||mode==='compare'))?'':'none';
-  document.getElementById('m-p2-wrap').style.display=mode==='compare'?'':'none';
-  document.getElementById('m-pos-wrap').style.display=mode==='position'?'':'none';
-  if(isMulti)buildMultiWeekChecks();
+  document.getElementById('m-submode-wrap').style.display=isMulti?'':'none';
+  if(!isMulti){
+    document.getElementById('m-p1-wrap').style.display=(mode==='individual'||mode==='compare')?'':'none';
+    document.getElementById('m-p2-wrap').style.display=mode==='compare'?'':'none';
+    document.getElementById('m-pos-wrap').style.display=mode==='position'?'':'none';
+  } else {
+    // In multiweek, p1/p2/pos shown based on submode
+    updateMultiSubmode();
+    buildMultiWeekChecks();
+  }
   renderMicro();
+}
+
+function updateMultiSubmode(){
+  const subMode=document.getElementById('m-submode')?document.getElementById('m-submode').value:'team';
+  document.getElementById('m-p1-wrap').style.display=(subMode==='individual'||subMode==='compare')?'':'none';
+  document.getElementById('m-p2-wrap').style.display=subMode==='compare'?'':'none';
+  document.getElementById('m-pos-wrap').style.display=subMode==='position'?'':'none';
 }
 function getMicroRows(weekMD){return S.filter(r=>r.sel==='Drills'&&r.wmd===parseInt(weekMD));}
 function getAvgForGroup(rows,mdLabel){
@@ -737,26 +759,67 @@ function renderMicro(){
 
   // ── MULTIWEEK COMPARISON MODE ─────────────────────────────────────────────
   if(mode==='multiweek'){
-    const selectedWeeks=getSelectedWeeks();
+    const subMode=document.getElementById('m-submode').value;
+    const maxWeeks=subMode==='compare'?4:99;
+    const selectedWeeks=getSelectedWeeks().slice(0,maxWeeks);
     if(!selectedWeeks.length){if(mc)mc.destroy();return;}
-    const weekColors=['#58a6ff','#e8b84b','#a371f7','#2ea043','#ff7b72','#d29922','#bc8cff','#ffa657','#34d399','#f472b6'];
-    selectedWeeks.forEach((wmd,idx)=>{
-      const mc_info=MICROCYCLES[wmd];
-      if(!mc_info)return;
-      const rows=getMicroRows(wmd);
-      const color=weekColors[idx%weekColors.length];
-      const data=mdLabels.map(md=>getAvgForGroup(rows,md));
-      datasets.push({
-        label:mc_info.fn+(mc_info.rival?' vs '+mc_info.rival:''),
-        data,
-        borderColor:color,
-        backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'#ffffff'),
-        pointRadius:mdLabels.map(md=>md==='MD'?8:5),
-        borderWidth:2,tension:0.3,spanGaps:true
+
+    const weekColors=['#58a6ff','#e8b84b','#a371f7','#ff7b72'];
+    const lineStyles=[[],[6,3],[3,3],[6,3,2,3]]; // solid, dashed, dotted, dash-dot
+
+    const subjects=[]; // {label, key} where key identifies the data source
+
+    if(subMode==='team'){
+      subjects.push({label:'Team Avg',key:'team'});
+    } else if(subMode==='position'){
+      const pg=document.getElementById('m-pos-sel').value;
+      const posLabel={'GROUP_FW':'1–5 FW','GROUP_BR':'Back Row','GROUP_BK':'Backs'}[pg]||pg;
+      subjects.push({label:posLabel,key:'pos:'+pg});
+    } else if(subMode==='individual'){
+      const p1=document.getElementById('m-p1').value;
+      subjects.push({label:p1.split(' ')[0],key:'player:'+p1});
+    } else if(subMode==='compare'){
+      const p1=document.getElementById('m-p1').value;
+      const p2=document.getElementById('m-p2').value;
+      subjects.push({label:p1.split(' ')[0],key:'player:'+p1});
+      if(p2)subjects.push({label:p2.split(' ')[0],key:'player:'+p2});
+    }
+
+    subjects.forEach((subj,si)=>{
+      selectedWeeks.forEach((wmd,wi)=>{
+        const mc_info=MICROCYCLES[wmd];
+        if(!mc_info)return;
+        const rows=getMicroRows(wmd);
+        const color=weekColors[wi%weekColors.length];
+        const dash=lineStyles[si%lineStyles.length];
+
+        let data;
+        if(subj.key==='team'){
+          data=mdLabels.map(md=>getAvgForGroup(rows,md));
+        } else if(subj.key.startsWith('pos:')){
+          const pg=subj.key.slice(4);
+          const posRows=rows.filter(r=>(POS_GROUPS[pg]||[]).includes(r.pos));
+          data=mdLabels.map(md=>getAvgForGroup(posRows,md));
+        } else {
+          const player=subj.key.slice(7);
+          data=mdLabels.map(md=>getPlayerVal(rows,player,md));
+        }
+
+        const weekLabel=mc_info.fn+(mc_info.rival?' vs '+mc_info.rival:'');
+        datasets.push({
+          label:subj.label+' · '+weekLabel,
+          data,
+          borderColor:color,
+          borderDash:dash,
+          backgroundColor:mdLabels.map(md=>md==='MD'?'#2ea043':'#ffffff'),
+          pointRadius:mdLabels.map(md=>md==='MD'?8:5),
+          borderWidth:2,tension:0.3,spanGaps:true
+        });
       });
     });
+
     document.getElementById('m-title').textContent=MICRO_METRIC_LABELS[microMetric]+' — Microcycle Comparison';
-    document.getElementById('m-subtitle').textContent='Team average per microcycle · '+selectedWeeks.length+' microcycles selected';
+    document.getElementById('m-subtitle').textContent=selectedWeeks.length+' microcycles · color = week · line style = player/group';
     buildChart(datasets,xLabels);
     return;
   }
