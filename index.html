@@ -946,6 +946,9 @@ function renderTaskBreakdown(){
 
   // Get ALL non-Drills rows for this weekMD
   const taskRows=S.filter(r=>r.sel!=='Drills'&&r.sel!=='Session'&&r.wmd===weekMD&&r.dist>0);
+  console.log('weekMD:',weekMD,'microMetric:',microMetric,'taskRows:',taskRows.length);
+  console.log('sample wmd values:',[...new Set(S.filter(r=>r.sel!=='Drills').map(r=>r.wmd))].slice(0,10));
+  console.log('sample sel values:',[...new Set(S.map(r=>r.sel))].slice(0,10));
   if(!taskRows.length){if(tc)tc.destroy();document.getElementById('task-chart-subtitle').textContent='No task data for this microcycle';return;}
 
   // Get unique tasks and players/groups
