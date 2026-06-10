@@ -987,11 +987,11 @@ function renderTaskBreakdown(){
   const subMode=isMulti?document.getElementById('m-submode').value:mode;
 
   if(subMode==='team'){
-    subjects=[{label:'Team Avg',filter:r=>true}];
+    subjects=[{label:'Team Avg',filter:r=>true,isGroup:true}];
   } else if(subMode==='position'){
     const pg=document.getElementById('m-pos-sel').value;
     const posLabel={'GROUP_FW':'1–5 FW','GROUP_BR':'Back Row','GROUP_BK':'Backs'}[pg]||pg;
-    subjects=[{label:posLabel,filter:r=>(POS_GROUPS[pg]||[]).includes(r.pos)}];
+    subjects=[{label:posLabel,filter:r=>(POS_GROUPS[pg]||[]).includes(r.pos),isGroup:true}];
   } else if(subMode==='individual'||mode==='individual'){
     const p1=document.getElementById('m-p1').value;
     subjects=[{label:p1.split(' ')[0],filter:r=>r.p===p1}];
@@ -1001,7 +1001,7 @@ function renderTaskBreakdown(){
     subjects=[{label:p1.split(' ')[0],filter:r=>r.p===p1}];
     if(p2)subjects.push({label:p2.split(' ')[0],filter:r=>r.p===p2});
   } else {
-    subjects=[{label:'Team Avg',filter:r=>true}];
+    subjects=[{label:'Team Avg',filter:r=>true,isGroup:true}];
   }
 
   const labels=subjects.map(s=>s.label);
