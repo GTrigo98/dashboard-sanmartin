@@ -1007,18 +1007,34 @@ function renderTaskBreakdown(){
   const labels=subjects.map(s=>s.label);
 
   // Build datasets — one per task
+  // Build X axis labels: one per (stim × subject)
+  const stimDisplayMap={'-4 MD':'MD-4','-2 MD':'MD-2','MD':'MD'};
+  const xLabels=[];
+  if(subjects.length>1){
+    selectedStims.forEach(stim=>subjects.forEach(subj=>xLabels.push(stimDisplayMap[stim]+' · '+subj.label)));
+  } else {
+    selectedStims.forEach(stim=>xLabels.push(stimDisplayMap[stim]));
+  }
+
   const datasets=tasks.map((task,ti)=>({
     label:task,
     backgroundColor:getTaskColor(task,ti),
-    data:subjects.map(subj=>{
-      const rows=taskRows.filter(r=>r.sel===task&&subj.filter(r));
+    data:xLabels.map((_,li)=>{
+      let stim, subj;
+      if(subjects.length>1){
+        stim=selectedStims[Math.floor(li/subjects.length)];
+        subj=subjects[li%subjects.length];
+      } else {
+        stim=selectedStims[li];
+        subj=subjects[0];
+      }
+      const rows=taskRows.filter(r=>r.sel===task&&r.md===stim&&subj.filter(r));
       if(!rows.length)return 0;
       const vals=rows.map(r=>parseFloat(r[microMetric])||0);
       if(subj.isGroup){
         const sorted=[...vals].sort((a,b)=>a-b);
         const mid=Math.floor(sorted.length/2);
-        const median=sorted.length%2?sorted[mid]:(sorted[mid-1]+sorted[mid])/2;
-        return +median.toFixed(1);
+        return +((sorted.length%2)?sorted[mid]:(sorted[mid-1]+sorted[mid])/2).toFixed(1);
       }
       return +vals[0].toFixed(1);
     })
