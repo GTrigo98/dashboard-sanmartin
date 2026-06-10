@@ -1086,15 +1086,12 @@ function renderTaskBreakdown(){
         tooltip:{callbacks:{
           title:function(items){
             if(!items.length)return'';
-            const lbl=labels[items[0].dataIndex];
-            // Determine stim from label
-            const stimKey=lbl.includes('MD-4')?'-4 MD':lbl.includes('MD-2')?'-2 MD':'MD';
-            const stimDisplay=lbl.includes('MD-4')?'MD-4':lbl.includes('MD-2')?'MD-2':'MD';
-            return stimDisplay;
+            const lbl=xLabels[items[0].dataIndex]||'';
+            return lbl.includes('·')?lbl:lbl; // show full label (MD-4, MD-2, MD)
           },
           label:function(i){
             const task=i.dataset.label;
-            const lbl=labels[i.dataIndex];
+            const lbl=xLabels[i.dataIndex]||'';
             const stimKey=lbl.includes('MD-4')?'-4 MD':lbl.includes('MD-2')?'-2 MD':'MD';
             const unit=metricLabel.includes('km/h')?'km/h':'m';
             const base=task+': '+i.raw+' '+unit;
