@@ -1013,14 +1013,52 @@ function renderTaskBreakdown(){
     data:subjects.map(subj=>{
       const rows=taskRows.filter(r=>r.sel===task&&subj.filter(r));
       if(!rows.length)return 0;
-      const val=rows.reduce((s,r)=>s+(parseFloat(r[microMetric])||0),0);
-      return rows.length?+val.toFixed(1):0;
+      const vals=rows.map(r=>parseFloat(r[microMetric])||0);
+      if(subj.isGroup){
+        const sorted=[...vals].sort((a,b)=>a-b);
+        const mid=Math.floor(sorted.length/2);
+        const median=sorted.length%2?sorted[mid]:(sorted[mid-1]+sorted[mid])/2;
+        return +median.toFixed(1);
+      }
+      return +vals[0].toFixed(1);
     })
   }));
 
   const metricLabel=MICRO_METRIC_LABELS[microMetric];
   document.getElementById('task-chart-title').textContent=metricLabel+' by task — '+mc_info.label;
-  document.getElementById('task-chart-subtitle').textContent='Excluding Drills totals · values = average per player';
+  const subMode2=isMulti?(document.getElementById('m-submode')?document.getElementById('m-submode').value:'team'):mode;
+  const valType=(subMode2==='individual'||subMode2==='compare')?'valor real del jugador':'mediana del grupo';
+  document.getElementById('task-chart-subtitle').textContent='Sin Drills · '+valType;
+
+  // Pre-compute CV stats for group modes (for tooltip)
+  const cvStats={};
+  const isGroupMode=subjects.some(s=>s.isGroup);
+  if(isGroupMode){
+    tasks.forEach(task=>{
+      cvStats[task]={};
+      selectedStims.forEach(stim=>{
+        subjects.forEach(subj=>{
+          if(!subj.isGroup)return;
+          const rows=taskRows.filter(r=>r.sel===task&&subj.filter(r));
+          if(!rows.length)return;
+          const vals=rows.map(r=>parseFloat(r[microMetric])||0);
+          const sorted=[...vals].sort((a,b)=>a-b);
+          const mid=Math.floor(sorted.length/2);
+          const median=sorted.length%2?sorted[mid]:(sorted[mid-1]+sorted[mid])/2;
+          const mean=vals.reduce((a,b)=>a+b,0)/vals.length;
+          const std=Math.sqrt(vals.reduce((s,v)=>s+(v-mean)**2,0)/vals.length);
+          const cv=median>0?Math.round(std/median*100):0;
+          const cvIcon=cv<15?'🟢':cv<30?'🟡':'🔴';
+          cvStats[task][stim]={
+            median:+median.toFixed(1),
+            min:+sorted[0].toFixed(1),
+            max:+sorted[sorted.length-1].toFixed(1),
+            cv,cvIcon,n:vals.length
+          };
+        });
+      });
+    });
+  }
 
   if(tc)tc.destroy();
   tc=new Chart(document.getElementById('tch'),{
@@ -1029,7 +1067,32 @@ function renderTaskBreakdown(){
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{
         legend:{display:true,position:'top',labels:{color:'#7d8590',font:{size:11},boxWidth:12}},
-        tooltip:{callbacks:{label:function(i){return i.dataset.label+': '+i.raw+' '+(metricLabel.split(' ').pop());}}}
+        tooltip:{callbacks:{
+          title:function(items){
+            if(!items.length)return'';
+            const lbl=labels[items[0].dataIndex];
+            // Determine stim from label
+            const stimKey=lbl.includes('MD-4')?'-4 MD':lbl.includes('MD-2')?'-2 MD':'MD';
+            const stimDisplay=lbl.includes('MD-4')?'MD-4':lbl.includes('MD-2')?'MD-2':'MD';
+            return stimDisplay;
+          },
+          label:function(i){
+            const task=i.dataset.label;
+            const lbl=labels[i.dataIndex];
+            const stimKey=lbl.includes('MD-4')?'-4 MD':lbl.includes('MD-2')?'-2 MD':'MD';
+            const unit=metricLabel.includes('km/h')?'km/h':'m';
+            const base=task+': '+i.raw+' '+unit;
+            if(isGroupMode && cvStats[task] && cvStats[task][stimKey]){
+              const s=cvStats[task][stimKey];
+              return[base,
+                'Mediana: '+s.median+' '+unit,
+                'Rango: ('+s.min+' – '+s.max+')',
+                'CV: '+s.cv+'% '+s.cvIcon,
+                'n = '+s.n+' jugadores'];
+            }
+            return base;
+          }
+        }}
       },
       scales:{
         x:{stacked:true,ticks:{color:'#e6edf3',font:{size:11}},grid:{display:false},border:{color:'#30363d'}},
