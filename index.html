@@ -1039,7 +1039,7 @@ function renderTaskBreakdown(){
       selectedStims.forEach(stim=>{
         subjects.forEach(subj=>{
           if(!subj.isGroup)return;
-          const rows=taskRows.filter(r=>r.sel===task&&subj.filter(r));
+          const rows=taskRows.filter(r=>r.sel===task&&r.md===stim&&subj.filter(r));
           if(!rows.length)return;
           const vals=rows.map(r=>parseFloat(r[microMetric])||0);
           const sorted=[...vals].sort((a,b)=>a-b);
