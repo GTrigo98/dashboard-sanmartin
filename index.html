@@ -78,6 +78,16 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 .no-data{text-align:center;padding:2rem;color:#484f58;font-size:13px}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media(max-width:900px){.two-col{grid-template-columns:1fr}.z-hdr,.z-row{grid-template-columns:120px 70px repeat(6,1fr)}}
+.bip-cols{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
+.bip-col-title{font-size:12px;font-weight:700;color:#e6edf3;margin-bottom:.75rem;padding-bottom:.5rem;border-bottom:1px solid #21262d;display:flex;align-items:center;gap:6px}
+.bip-row{display:flex;justify-content:space-between;align-items:baseline;padding:7px 2px;border-bottom:1px solid #0d1117;font-size:12px}
+.bip-metric{color:#7d8590}
+.bip-value{color:#e6edf3;font-weight:600;font-variant-numeric:tabular-nums;font-family:'SF Mono','Fira Mono',monospace}
+.bip-badge-live{background:#1a3a5c;color:#58a6ff}
+.bip-badge-avg{background:#3a2510;color:#e0934a}
+.bip-badge-max{background:#1a4731;color:#3fb950}
+.bip-badge{font-size:9px;padding:1px 6px;border-radius:3px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+@media(max-width:900px){.bip-cols{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -91,6 +101,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
       <button class="tab active" id="btn-c" onclick="setTab('c')">Leaderboard</button>
       <button class="tab" id="btn-z" onclick="setTab('z')">Match Analysis</button>
       <button class="tab" id="btn-m" onclick="setTab('m')">Load Management</button>
+      <button class="tab" id="btn-bip" onclick="setTab('bip')">Ball in Play</button>
     </div>
   </div>
 
@@ -306,6 +317,28 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 
   </div>
 
+  <!-- BALL IN PLAY PANEL -->
+  <div id="panel-bip" style="display:none">
+    <div class="filters">
+      <div class="f-group">
+        <div class="f-label">Partido</div>
+        <select id="bip-match" onchange="renderBip()">
+          <option value="">Cargando...</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="bip-cols" id="bip-cols">
+        <div class="no-data">Cargando datos de Ball in Play...</div>
+      </div>
+    </div>
+
+    <div style="margin-top:.75rem;padding:.6rem 1rem;background:#0d1117;border-radius:6px;border:1px solid #21262d;font-size:11px;color:#7d8590">
+      Datos contextuales de Ball in Play — no dependen de la carga de trabajo del staff, sirven como referencia para programar sesiones de entrenamiento según el ritmo de juego esperado del próximo rival.
+    </div>
+  </div>
+
   <div id="loading" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(13,17,23,.85);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:12px">
     <div style="width:40px;height:40px;border:3px solid #30363d;border-top-color:#1f6feb;border-radius:50%;animation:spin .8s linear infinite"></div>
     <div style="color:#7d8590;font-size:13px">Loading data from Google Sheets...</div>
@@ -314,6 +347,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ_u4pAxUSP94hzf6T5afS5TGa7mFotJ-9ngpEZ9QG2QqF-FHzEaiysadZ6A1a31A/pub?gid=175231250&single=true&output=csv";
+const BIP_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ_u4pAxUSP94hzf6T5afS5TGa7mFotJ-9ngpEZ9QG2QqF-FHzEaiysadZ6A1a31A/pub?gid=522741115&single=true&output=csv";
 const SORTS=[{k:'ms',l:'Top Speed'},{k:'dist',l:'Distance'},{k:'ha',l:'HSR Abs'},{k:'hr',l:'HSR Rel'}];
 const POS_GROUPS={'GROUP_FW':['PROP','HOOKER','SECOND ROW'],'GROUP_BR':['FLANKER','NUMBER 8'],'GROUP_BK':['SCRUM-HALF','FLY-HALF','CENTRE','WING','FULLBACK']};
 const MICRO_METRIC_LABELS={dist:'Distance (m)',ha:'HSR Abs (m)',hr:'HSR Rel (m)',ac:'HI Acc',dc:'HI Dec',pl:'Player Load',ms:'Top Speed (km/h)'};
@@ -1119,15 +1153,126 @@ function renderTaskBreakdown(){
   ).join('');
 }
 
+// ── BALL IN PLAY (BIP) ────────────────────────────────────────────────────────
+let BIP_DATA={matchNames:[],metricRows:[],perMatch:{},promedio:{},historico:{}};
+
+const BIP_LABELS={
+  'Ball in play total':'Ball in Play Total',
+  'BIP 1tiempo':'BIP 1er Tiempo',
+  'BIP 2tiempo':'BIP 2do Tiempo',
+  'BOP':'Ball Out of Play (BOP)',
+  'Rel BOP:BIP':'Relación BOP:BIP',
+  'Secuencias (count)':'Secuencias (cantidad)',
+  'Secuencias (prom)':'Secuencias (promedio)',
+  'Secuencia (max)':'Secuencia (máxima)',
+  'Total A':'Total Ataque',
+  'Total D':'Total Defensa',
+  'Secuencias A':'Secuencias en Ataque',
+  'Secuencias D':'Secuencias en Defensa'
+};
+
+function parseBipCSV(text){
+  const lines=text.trim().split('\n').map(l=>parseCSVLine(l));
+  if(!lines.length)return{matchNames:[],metricRows:[],perMatch:{},promedio:{},historico:{}};
+
+  const matchNames=lines[0].slice(1).map(m=>m.trim()).filter(m=>m!=='');
+  const perMatch={};
+  matchNames.forEach(m=>perMatch[m]={});
+
+  const metricRows=[];
+  let i=1;
+  while(i<lines.length && lines[i][0] && lines[i][0].trim()!=='' && lines[i][0].trim().toUpperCase()!=='PROMEDIO'){
+    const metric=lines[i][0].trim();
+    metricRows.push(metric);
+    matchNames.forEach((m,idx)=>{ perMatch[m][metric]=(lines[i][idx+1]||'').trim(); });
+    i++;
+  }
+
+  while(i<lines.length && (!lines[i][0] || lines[i][0].trim().toUpperCase()!=='PROMEDIO'))i++;
+  i++;
+  const promedio={};
+  metricRows.forEach(metric=>{
+    if(i<lines.length && lines[i][0] && lines[i][0].trim()===metric){
+      promedio[metric]=(lines[i][1]||'').trim();
+      i++;
+    }
+  });
+
+  while(i<lines.length && (!lines[i][0] || !lines[i][0].trim().toUpperCase().includes('HISTORIC')))i++;
+  i++;
+  const historico={};
+  metricRows.forEach(metric=>{
+    if(i<lines.length && lines[i][0] && lines[i][0].trim()===metric){
+      historico[metric]=(lines[i][1]||'').trim();
+      i++;
+    }
+  });
+
+  return{matchNames,metricRows,perMatch,promedio,historico};
+}
+
+async function loadBipData(){
+  try{
+    const resp=await fetch(BIP_CSV_URL);
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    const text=await resp.text();
+    BIP_DATA=parseBipCSV(text);
+    const sel=document.getElementById('bip-match');
+    sel.innerHTML='';
+    BIP_DATA.matchNames.forEach(m=>{
+      const opt=document.createElement('option');
+      opt.value=m; opt.textContent=m;
+      sel.appendChild(opt);
+    });
+    if(BIP_DATA.matchNames.length){
+      sel.value=BIP_DATA.matchNames[BIP_DATA.matchNames.length-1];
+    }
+    if(tab==='bip')renderBip();
+  }catch(e){
+    const cols=document.getElementById('bip-cols');
+    if(cols)cols.innerHTML='<div class="no-data">⚠ Error cargando datos de Ball in Play: '+e.message+'</div>';
+  }
+}
+
+function renderBip(){
+  const cols=document.getElementById('bip-cols');
+  if(!BIP_DATA.matchNames.length){
+    cols.innerHTML='<div class="no-data">No hay datos de Ball in Play disponibles</div>';
+    return;
+  }
+  const selectedMatch=document.getElementById('bip-match').value;
+  const metricRows=BIP_DATA.metricRows;
+
+  function buildColumn(title, badgeClass, badgeText, dataObj){
+    const rows=metricRows.map(metric=>{
+      const label=BIP_LABELS[metric]||metric;
+      const val=(dataObj[metric]!==undefined && dataObj[metric]!=='')?dataObj[metric]:'—';
+      return '<div class="bip-row"><span class="bip-metric">'+label+'</span><span class="bip-value">'+val+'</span></div>';
+    }).join('');
+    return '<div><div class="bip-col-title">'+title+' <span class="bip-badge '+badgeClass+'">'+badgeText+'</span></div>'+rows+'</div>';
+  }
+
+  const matchData=BIP_DATA.perMatch[selectedMatch]||{};
+  const html3=
+    buildColumn(selectedMatch||'Partido', 'bip-badge-live', 'Partido', matchData) +
+    buildColumn('Promedio Temporada', 'bip-badge-avg', 'Avg', BIP_DATA.promedio) +
+    buildColumn('Histórico (Máx)', 'bip-badge-max', 'Max', BIP_DATA.historico);
+
+  cols.innerHTML=html3;
+}
+
 function setTab(t){
   tab=t;
-  ['c','z','m'].forEach(x=>{document.getElementById('btn-'+x).className='tab'+(t===x?' active':'');document.getElementById('panel-'+x).style.display=t===x?'':'none';});
-  // Hide global filters in Load Management tab
+  ['c','z','m','bip'].forEach(x=>{document.getElementById('btn-'+x).className='tab'+(t===x?' active':'');document.getElementById('panel-'+x).style.display=t===x?'':'none';});
+  // Hide global filters in Load Management and Ball in Play tabs
   const globalFilters=document.querySelector('.filters');
   const activePills=document.getElementById('af');
-  if(globalFilters){globalFilters.style.display=t==='m'?'none':'';}
-  if(activePills){activePills.style.display=t==='m'?'none':'';}
-  if(t==='m')renderMicro();else render();
+  const hideFilters=(t==='m'||t==='bip');
+  if(globalFilters){globalFilters.style.display=hideFilters?'none':'';}
+  if(activePills){activePills.style.display=hideFilters?'none':'';}
+  if(t==='m')renderMicro();
+  else if(t==='bip')renderBip();
+  else render();
 }
 function setSk(k){sk=k;render();}
 function render(){
@@ -1138,6 +1283,7 @@ function render(){
 }
 
 loadData();
+loadBipData();
 </script>
 </body>
 </html>
