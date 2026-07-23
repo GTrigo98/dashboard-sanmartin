@@ -10,6 +10,47 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0d1117;color:#e6edf3;font-size:14px}
+/* ── SIDEBAR LAYOUT ── */
+.app{display:flex;min-height:100vh}
+.sidebar{width:210px;background:#161b22;border-right:1px solid #21262d;position:fixed;top:0;left:0;height:100vh;z-index:200;display:flex;flex-direction:column;transition:width .2s ease}
+.sidebar.collapsed{width:58px}
+.sb-head{display:flex;align-items:center;gap:10px;padding:16px 14px;border-bottom:1px solid #21262d;min-height:60px}
+.sb-logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,#006633,#003087);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;color:#fff;flex-shrink:0}
+.sb-title{font-size:13px;font-weight:700;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;transition:opacity .15s}
+.sidebar.collapsed .sb-title{opacity:0;width:0}
+.sb-toggle{margin-left:auto;background:transparent;border:none;color:#7d8590;cursor:pointer;font-size:14px;padding:4px;border-radius:4px;flex-shrink:0}
+.sb-toggle:hover{background:#21262d;color:#e6edf3}
+.sidebar.collapsed .sb-toggle{margin-left:0}
+.sidebar.collapsed .sb-head{justify-content:center;padding:16px 8px}
+.sidebar.collapsed .sb-logo{display:none}
+.sb-nav{display:flex;flex-direction:column;gap:2px;padding:10px 8px;flex:1}
+.sb-item{display:flex;align-items:center;gap:11px;padding:9px 11px;border-radius:7px;cursor:pointer;color:#7d8590;font-size:13px;border:none;background:transparent;font-family:inherit;text-align:left;white-space:nowrap;overflow:hidden;transition:all .12s}
+.sb-item:hover{background:#1c2128;color:#e6edf3}
+.sb-item.active{background:#1f6feb;color:#fff;font-weight:600}
+.sb-icon{font-size:16px;flex-shrink:0;width:20px;text-align:center}
+.sb-label{transition:opacity .15s}
+.sidebar.collapsed .sb-label{opacity:0;width:0}
+.sidebar.collapsed .sb-item{justify-content:center;padding:9px 0}
+.sb-foot{padding:12px 14px;border-top:1px solid #21262d;font-size:10px;color:#484f58;white-space:nowrap;overflow:hidden}
+.sidebar.collapsed .sb-foot{opacity:0}
+.main{margin-left:210px;flex:1;transition:margin .2s ease;min-width:0}
+.main.expanded{margin-left:58px}
+/* ── HOME ── */
+.home-hero{background:linear-gradient(135deg,#006633 0%,#003087 100%);border-radius:12px;padding:2rem;margin-bottom:1.25rem}
+.home-hero h1{font-size:24px;font-weight:800;letter-spacing:-.02em;margin-bottom:6px}
+.home-hero p{font-size:13px;opacity:.85}
+.home-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.25rem}
+.home-stat{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:1.1rem}
+.home-stat-label{font-size:10px;font-weight:600;color:#7d8590;text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px}
+.home-stat-value{font-size:22px;font-weight:700;font-variant-numeric:tabular-nums}
+.home-stat-sub{font-size:11px;color:#7d8590;margin-top:3px}
+.home-links{display:grid;grid-template-columns:repeat(2,1fr);gap:1rem}
+.home-link{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:1.1rem;cursor:pointer;transition:border-color .15s;display:flex;align-items:flex-start;gap:12px}
+.home-link:hover{border-color:#58a6ff}
+.home-link-icon{font-size:22px}
+.home-link-title{font-size:14px;font-weight:600;margin-bottom:3px}
+.home-link-desc{font-size:11.5px;color:#7d8590;line-height:1.5}
+@media(max-width:1000px){.home-grid{grid-template-columns:repeat(2,1fr)}.home-links{grid-template-columns:1fr}}
 .dash{max-width:1500px;margin:0 auto;padding:1.5rem}
 .hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid #21262d}
 .hdr-title{font-size:20px;font-weight:700;letter-spacing:-.02em}
@@ -91,17 +132,31 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 </style>
 </head>
 <body>
+<div class="app">
+  <!-- SIDEBAR -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sb-head">
+      <div class="sb-logo">SM</div>
+      <div class="sb-title">Performance HUB</div>
+      <button class="sb-toggle" onclick="toggleSidebar()" title="Colapsar menú">◀</button>
+    </div>
+    <div class="sb-nav">
+      <button class="sb-item active" id="btn-home" onclick="setTab('home')"><span class="sb-icon">🏠</span><span class="sb-label">Home</span></button>
+      <button class="sb-item" id="btn-c" onclick="setTab('c')"><span class="sb-icon">🏆</span><span class="sb-label">Leaderboard</span></button>
+      <button class="sb-item" id="btn-z" onclick="setTab('z')"><span class="sb-icon">📊</span><span class="sb-label">Match Analysis</span></button>
+      <button class="sb-item" id="btn-m" onclick="setTab('m')"><span class="sb-icon">⚡</span><span class="sb-label">Load Management</span></button>
+      <button class="sb-item" id="btn-bip" onclick="setTab('bip')"><span class="sb-icon">🏉</span><span class="sb-label">Ball in Play</span></button>
+    </div>
+    <div class="sb-foot">Club San Martín · 2026</div>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="main" id="main">
 <div class="dash">
   <div class="hdr">
     <div>
-      <div class="hdr-title" style="text-transform:uppercase">Club San Martín · Performance Dashboard</div>
+      <div class="hdr-title" style="text-transform:uppercase">Club San Martín · Performance HUB</div>
       <div class="hdr-sub" id="hdr-range">Season 2026 · GPS Data</div>
-    </div>
-    <div class="tabs">
-      <button class="tab active" id="btn-c" onclick="setTab('c')">Leaderboard</button>
-      <button class="tab" id="btn-z" onclick="setTab('z')">Match Analysis</button>
-      <button class="tab" id="btn-m" onclick="setTab('m')">Load Management</button>
-      <button class="tab" id="btn-bip" onclick="setTab('bip')">Ball in Play</button>
     </div>
   </div>
 
@@ -181,7 +236,39 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 
   <div class="active-filters" id="af"></div>
 
-  <div id="panel-c">
+  <!-- HOME PANEL -->
+  <div id="panel-home">
+    <div class="home-hero">
+      <h1>Club San Martín · Performance HUB</h1>
+      <p>Centro de análisis de datos GPS del plantel · Pacific 2026</p>
+    </div>
+    <div class="home-grid" id="home-stats">
+      <div class="home-stat"><div class="home-stat-label">Última sesión</div><div class="home-stat-value" id="hs-last-session">—</div><div class="home-stat-sub" id="hs-last-session-sub"></div></div>
+      <div class="home-stat"><div class="home-stat-label">Último partido</div><div class="home-stat-value" id="hs-last-match">—</div><div class="home-stat-sub" id="hs-last-match-sub"></div></div>
+      <div class="home-stat"><div class="home-stat-label">Jugadores monitoreados</div><div class="home-stat-value" id="hs-players">—</div><div class="home-stat-sub">con datos GPS esta temporada</div></div>
+      <div class="home-stat"><div class="home-stat-label">Microciclos registrados</div><div class="home-stat-value" id="hs-microcycles">—</div><div class="home-stat-sub" id="hs-microcycles-sub"></div></div>
+    </div>
+    <div class="home-links">
+      <div class="home-link" onclick="setTab('c')">
+        <div class="home-link-icon">🏆</div>
+        <div><div class="home-link-title">Leaderboard</div><div class="home-link-desc">Ranking de máximos registrados por jugador: Top Speed, Distancia, HSR Abs y Rel. Con evolución de KPIs en el tiempo.</div></div>
+      </div>
+      <div class="home-link" onclick="setTab('z')">
+        <div class="home-link-icon">📊</div>
+        <div><div class="home-link-title">Match Analysis</div><div class="home-link-desc">Z-Scores del último partido de cada jugador comparado contra sus 4 partidos previos, con indicador de confiabilidad.</div></div>
+      </div>
+      <div class="home-link" onclick="setTab('m')">
+        <div class="home-link-icon">⚡</div>
+        <div><div class="home-link-title">Load Management</div><div class="home-link-desc">Análisis de microciclos: distribución de carga MD-4 → MD-2 → MD, comparación entre semanas y desglose por tareas.</div></div>
+      </div>
+      <div class="home-link" onclick="setTab('bip')">
+        <div class="home-link-icon">🏉</div>
+        <div><div class="home-link-title">Ball in Play</div><div class="home-link-desc">Datos contextuales de tiempo de juego efectivo por partido: BIP, BOP, secuencias de ataque y defensa.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="panel-c" style="display:none">
     <div class="two-col">
       <div class="card">
         <div class="card-title">Ranking — Max. Recorded</div>
@@ -344,6 +431,8 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
     <div style="color:#7d8590;font-size:13px">Loading data from Google Sheets...</div>
   </div>
 </div>
+  </div><!-- /main -->
+</div><!-- /app -->
 
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ_u4pAxUSP94hzf6T5afS5TGa7mFotJ-9ngpEZ9QG2QqF-FHzEaiysadZ6A1a31A/pub?gid=175231250&single=true&output=csv";
@@ -363,7 +452,7 @@ function getTaskColor(task,idx){
 const PC=['#e8b84b','#d29922','#e85151','#a371f7','#ffa657','#ff7b72','#bc8cff','#e3b341','#ff6b6b','#ffe566','#b69bf8','#7ec8e3','#ff9999','#ffc56d','#c9a84c','#e07b54','#c084fc','#fbbf24','#fb923c','#f472b6','#a78bfa','#34d399','#f87171','#60a5fa','#818cf8'];
 const METRIC_CFG={ms:{key:'ms',label:'Top Speed',unit:'km/h',color:'#a371f7'},dist:{key:'dist',label:'Distance',unit:'m',color:'#1f6feb'},ha:{key:'ha',label:'HSR Abs',unit:'m',color:'#1f6feb'},hr:{key:'hr',label:'HSR Rel',unit:'m',color:'#2ea043'}};
 
-let tab='c', sk='ms', bc=null, lc2=null, mc=null, tc=null;
+let tab='home', sk='ms', bc=null, lc2=null, mc=null, tc=null;
 let dateFrom=null, dateTo=null;
 let S=[], Z=[];
 let currentPosVal='All';
@@ -539,7 +628,7 @@ async function loadData(){
     buildMicrocycles();
     document.getElementById('loading').style.display='none';
     syncTasks();
-    render();
+    setTab(tab);
   }catch(e){
     document.getElementById('loading').innerHTML=`<div style="text-align:center;color:#f85149"><div style="font-size:18px;margin-bottom:8px">⚠ Error loading data</div><div style="font-size:13px;color:#7d8590">${e.message}</div><button onclick="loadData()" style="margin-top:12px;padding:8px 16px;background:#1f6feb;border:none;border-radius:6px;color:#fff;cursor:pointer;font-size:13px">Retry</button></div>`;
   }
@@ -1263,16 +1352,61 @@ function renderBip(){
 
 function setTab(t){
   tab=t;
-  ['c','z','m','bip'].forEach(x=>{document.getElementById('btn-'+x).className='tab'+(t===x?' active':'');document.getElementById('panel-'+x).style.display=t===x?'':'none';});
-  // Hide global filters in Load Management and Ball in Play tabs
+  ['home','c','z','m','bip'].forEach(x=>{
+    const btn=document.getElementById('btn-'+x);
+    const panel=document.getElementById('panel-'+x);
+    if(btn)btn.className='sb-item'+(t===x?' active':'');
+    if(panel)panel.style.display=t===x?'':'none';
+  });
+  // Global filters only visible in Leaderboard and Match Analysis
   const globalFilters=document.querySelector('.filters');
   const activePills=document.getElementById('af');
-  const hideFilters=(t==='m'||t==='bip');
-  if(globalFilters){globalFilters.style.display=hideFilters?'none':'';}
-  if(activePills){activePills.style.display=hideFilters?'none':'';}
-  if(t==='m')renderMicro();
+  const showFilters=(t==='c'||t==='z');
+  if(globalFilters){globalFilters.style.display=showFilters?'':'none';}
+  if(activePills){activePills.style.display=showFilters?'':'none';}
+  if(t==='home')renderHome();
+  else if(t==='m')renderMicro();
   else if(t==='bip')renderBip();
   else render();
+}
+
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar');
+  const main=document.getElementById('main');
+  sb.classList.toggle('collapsed');
+  main.classList.toggle('expanded');
+  const btn=sb.querySelector('.sb-toggle');
+  btn.textContent=sb.classList.contains('collapsed')?'▶':'◀';
+}
+
+function renderHome(){
+  if(!S.length)return;
+  // Last session
+  const allDates=[...new Set(S.map(r=>r.d))].filter(d=>d).sort((a,b)=>pd(a)-pd(b));
+  const lastDate=allDates[allDates.length-1];
+  const lastRows=S.filter(r=>r.d===lastDate);
+  const lastSample=lastRows[0];
+  document.getElementById('hs-last-session').textContent=lastDate?lastDate.slice(0,5):'—';
+  if(lastSample){
+    const ts=lastSample.ts==='Official game'?'Partido oficial':lastSample.ts==='Friendly game'?'Amistoso':'Entrenamiento';
+    document.getElementById('hs-last-session-sub').textContent=ts+(lastSample.md?' · '+lastSample.md:'');
+  }
+  // Last match
+  const matches=S.filter(r=>r.md==='MD'&&r.sel==='Drills');
+  const matchDates=[...new Set(matches.map(r=>r.d))].sort((a,b)=>pd(a)-pd(b));
+  const lastMatchDate=matchDates[matchDates.length-1];
+  const lastMatch=matches.find(r=>r.d===lastMatchDate);
+  document.getElementById('hs-last-match').textContent=lastMatchDate?lastMatchDate.slice(0,5):'—';
+  document.getElementById('hs-last-match-sub').textContent=lastMatch&&lastMatch.rival?'vs '+lastMatch.rival:'';
+  // Players
+  const players=[...new Set(S.map(r=>r.p))].filter(p=>p);
+  document.getElementById('hs-players').textContent=players.length;
+  // Microcycles
+  const nMicro=Object.keys(MICROCYCLES).length;
+  document.getElementById('hs-microcycles').textContent=nMicro;
+  const officialCount=Object.values(MICROCYCLES).filter(m=>m.fn&&m.fn.startsWith('F')).length;
+  const friendlyCount=nMicro-officialCount;
+  document.getElementById('hs-microcycles-sub').textContent=officialCount+' oficiales · '+friendlyCount+' amistosos';
 }
 function setSk(k){sk=k;render();}
 function render(){
