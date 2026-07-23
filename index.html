@@ -79,7 +79,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .active-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.75rem;min-height:20px}
 .af-pill{font-size:11px;padding:2px 8px;border-radius:10px;background:#1c2128;border:1px solid #30363d;color:#7d8590;display:flex;align-items:center;gap:4px}
 .af-pill span{cursor:pointer;color:#484f58}.af-pill span:hover{color:#f85149}
-.two-col{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:1rem}
+.two-col{display:grid;grid-template-columns:1fr;gap:1rem}
 .card{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:1rem}
 .card-title{font-size:11px;font-weight:600;color:#7d8590;text-transform:uppercase;letter-spacing:.08em;margin-bottom:.75rem}
 .sort-btns{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:.6rem}
@@ -98,7 +98,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 .pill{font-size:10px;padding:1px 6px;border-radius:4px;background:#21262d;color:#7d8590;white-space:nowrap}
 .src-md{font-size:10px;padding:1px 5px;border-radius:3px;background:#1a3a5c;color:#58a6ff;font-weight:600}
 .src-tr{font-size:10px;padding:1px 5px;border-radius:3px;background:#1a3a1a;color:#3fb950;font-weight:600}
-.bar-wrap{position:relative;height:280px}
+.bar-wrap{position:relative;height:320px}
 .line-wrap{position:relative;height:240px;margin-bottom:.75rem}
 .legend{display:flex;flex-wrap:wrap;gap:5px 12px;font-size:11px;color:#7d8590;margin-top:.5rem}
 .leg-item{display:flex;align-items:center;gap:4px}
@@ -776,6 +776,16 @@ function renderBar(){
 }
 
 function renderLine(){
+  // Empty by default: require a player or position selection
+  const fpSel=document.getElementById('f-player').value;
+  if(fpSel==='All'&&currentPosVal==='All'){
+    if(lc2)lc2.destroy();
+    lc2=null;
+    const ctx=document.getElementById('lch2');
+    if(ctx){const c=ctx.getContext('2d');c.clearRect(0,0,ctx.width,ctx.height);}
+    document.getElementById('spleg2').innerHTML='<span style="color:#484f58;font-size:12px">👆 Seleccioná un jugador o una posición en los filtros de arriba para ver la evolución</span>';
+    return;
+  }
   const rows=filt();
   const mdD=rows.filter(r=>r.sel==='Drills'&&r.dist>0);
   if(!mdD.length){if(lc2)lc2.destroy();document.getElementById('spleg2').innerHTML='';return;}
