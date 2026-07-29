@@ -418,6 +418,14 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
           <option value="">Cargando...</option>
         </select>
       </div>
+      <div class="f-group">
+        <div class="f-label">Datos</div>
+        <button class="reset-btn" onclick="loadBipData()" title="Volver a leer la pestaña BIP del Sheet">&#8635; Actualizar</button>
+      </div>
+      <div class="f-group">
+        <div class="f-label">&nbsp;</div>
+        <div id="bip-updated" style="font-size:11px;color:#484f58;height:32px;display:flex;align-items:center"></div>
+      </div>
     </div>
 
     <div class="card">
@@ -624,7 +632,7 @@ function mapRow(r){
 async function loadData(){
   document.getElementById('loading').style.display='flex';
   try{
-    const resp=await fetch(CSV_URL);
+    const resp=await fetch(CSV_URL+'&_t='+Date.now(),{cache:'no-store'});
     if(!resp.ok)throw new Error('HTTP '+resp.status);
     const text=await resp.text();
     const rows=parseCSV(text).filter(r=>r['Player']&&r['Player']!=='Club San Martin'&&r['Selection']!=='Session');
@@ -1276,65 +1284,78 @@ const BIP_LABELS={
 };
 
 function parseBipCSV(text){
-  const lines=text.trim().split('\n').map(l=>parseCSVLine(l));
-  if(!lines.length)return{matchNames:[],metricRows:[],perMatch:{},promedio:{},historico:{}};
+  const empty={matchNames:[],metricRows:[],perMatch:{},promedio:{},historico:{}};
+  if(!text)return empty;
+  const lines=text.replace(/\r/g,'').trim().split('\n').map(l=>parseCSVLine(l));
+  if(!lines.length)return empty;
 
-  const matchNames=lines[0].slice(1).map(m=>m.trim()).filter(m=>m!=='');
-  const perMatch={};
-  matchNames.forEach(m=>perMatch[m]={});
+  // Fila de encabezado: primera fila con celda A vacia y al menos un partido a la derecha
+  let hIdx=lines.findIndex(r=>r&&(r[0]||'').trim()===''&&r.slice(1).some(c=>(c||'').trim()!==''));
+  if(hIdx<0)hIdx=0;
 
-  const metricRows=[];
-  let i=1;
-  while(i<lines.length && lines[i][0] && lines[i][0].trim()!=='' && lines[i][0].trim().toUpperCase()!=='PROMEDIO'){
-    const metric=lines[i][0].trim();
-    metricRows.push(metric);
-    matchNames.forEach((m,idx)=>{ perMatch[m][metric]=(lines[i][idx+1]||'').trim(); });
-    i++;
+  // Guardamos el indice REAL de columna de cada partido (soporta columnas vacias intercaladas)
+  const matchCols=[];
+  (lines[hIdx]||[]).forEach((v,idx)=>{ if(idx>0&&(v||'').trim()!=='')matchCols.push({name:(v||'').trim(),idx}); });
+  const matchNames=matchCols.map(c=>c.name);
+  const perMatch={}; matchNames.forEach(m=>perMatch[m]={});
+
+  const metricRows=[], promedio={}, historico={};
+  let section='matches';
+
+  for(let i=hIdx+1;i<lines.length;i++){
+    const row=lines[i]||[];
+    const label=(row[0]||'').trim();
+    if(label==='')continue;
+    const up=label.toUpperCase();
+    const hasData=row.slice(1).some(c=>(c||'').trim()!=='');
+    // Titulo de seccion: etiqueta sola, sin datos en la fila
+    if(!hasData&&(up.includes('PROMEDIO')||up.includes('HISTORIC'))){
+      section=up.includes('PROMEDIO')?'promedio':'historico';
+      continue;
+    }
+    if(!metricRows.includes(label))metricRows.push(label);
+    if(section==='matches'){
+      matchCols.forEach(c=>{ perMatch[c.name][label]=(row[c.idx]||'').trim(); });
+    }else if(section==='promedio'){
+      promedio[label]=(row[1]||'').trim();
+    }else{
+      historico[label]=(row[1]||'').trim();
+    }
   }
-
-  while(i<lines.length && (!lines[i][0] || lines[i][0].trim().toUpperCase()!=='PROMEDIO'))i++;
-  i++;
-  const promedio={};
-  metricRows.forEach(metric=>{
-    if(i<lines.length && lines[i][0] && lines[i][0].trim()===metric){
-      promedio[metric]=(lines[i][1]||'').trim();
-      i++;
-    }
-  });
-
-  while(i<lines.length && (!lines[i][0] || !lines[i][0].trim().toUpperCase().includes('HISTORIC')))i++;
-  i++;
-  const historico={};
-  metricRows.forEach(metric=>{
-    if(i<lines.length && lines[i][0] && lines[i][0].trim()===metric){
-      historico[metric]=(lines[i][1]||'').trim();
-      i++;
-    }
-  });
-
   return{matchNames,metricRows,perMatch,promedio,historico};
 }
 
 async function loadBipData(){
+  const stamp=document.getElementById('bip-updated');
+  if(stamp)stamp.textContent='actualizando...';
   try{
-    const resp=await fetch(BIP_CSV_URL);
+    const resp=await fetch(BIP_CSV_URL+'&_t='+Date.now(),{cache:'no-store'});
     if(!resp.ok)throw new Error('HTTP '+resp.status);
     const text=await resp.text();
     BIP_DATA=parseBipCSV(text);
     const sel=document.getElementById('bip-match');
-    sel.innerHTML='';
-    BIP_DATA.matchNames.forEach(m=>{
-      const opt=document.createElement('option');
-      opt.value=m; opt.textContent=m;
-      sel.appendChild(opt);
-    });
-    if(BIP_DATA.matchNames.length){
-      sel.value=BIP_DATA.matchNames[BIP_DATA.matchNames.length-1];
+    const prev=sel?sel.value:'';
+    if(sel){
+      sel.innerHTML='';
+      BIP_DATA.matchNames.forEach(m=>{
+        const opt=document.createElement('option');
+        opt.value=m; opt.textContent=m;
+        sel.appendChild(opt);
+      });
+      // Mantiene el partido elegido si sigue existiendo; si no, va al ultimo
+      if(prev&&BIP_DATA.matchNames.includes(prev))sel.value=prev;
+      else if(BIP_DATA.matchNames.length)sel.value=BIP_DATA.matchNames[BIP_DATA.matchNames.length-1];
+    }
+    if(stamp){
+      const n=new Date();
+      stamp.textContent=BIP_DATA.matchNames.length+' partidos · leido '+
+        String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
     }
     if(tab==='bip')renderBip();
   }catch(e){
     const cols=document.getElementById('bip-cols');
-    if(cols)cols.innerHTML='<div class="no-data">⚠ Error cargando datos de Ball in Play: '+e.message+'</div>';
+    if(cols)cols.innerHTML='<div class="no-data">Error cargando datos de Ball in Play: '+e.message+'</div>';
+    if(stamp)stamp.textContent='error al leer';
   }
 }
 
