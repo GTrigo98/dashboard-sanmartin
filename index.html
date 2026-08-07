@@ -53,6 +53,41 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .home-link-title{font-size:14px;font-weight:600;margin-bottom:3px}
 .home-link-desc{font-size:11.5px;color:#7d8590;line-height:1.5}
 @media(max-width:1000px){.home-grid{grid-template-columns:repeat(2,1fr)}.home-links{grid-template-columns:1fr}}
+
+/* ── PLAYER PROFILES ── */
+.pp-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.1rem;align-items:center}
+.pp-fbtn{padding:5px 14px;border-radius:6px;border:1px solid #30363d;background:transparent;color:#7d8590;cursor:pointer;font-size:12px;font-family:inherit;transition:all .15s}
+.pp-fbtn:hover{border-color:#58a6ff;color:#e6edf3}
+.pp-fbtn.active{background:#1f6feb;border-color:#1f6feb;color:#fff;font-weight:600}
+.pp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:1.15rem}
+.pp-card{position:relative;aspect-ratio:5/6.35;background:linear-gradient(160deg,#0a3d22 0%,#006633 32%,#004a7a 68%,#003087 100%);
+  clip-path:polygon(0% 11%,7% 6%,16% 0%,84% 0%,93% 6%,100% 11%,100% 86%,50% 100%,0% 86%);
+  padding:15px 15px 0;display:flex;flex-direction:column;transition:transform .18s ease}
+.pp-card:hover{transform:translateY(-5px)}
+.pp-card::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 72% 22%,rgba(255,255,255,.10),transparent 55%);pointer-events:none;
+  clip-path:polygon(0% 11%,7% 6%,16% 0%,84% 0%,93% 6%,100% 11%,100% 86%,50% 100%,0% 86%)}
+.pp-top{display:flex;gap:9px;flex:0 0 auto}
+.pp-left{display:flex;flex-direction:column;align-items:center;width:52px;flex-shrink:0;padding-top:4px}
+.pp-arrow{font-size:22px;line-height:1;font-weight:700;letter-spacing:-3px;text-shadow:0 2px 5px rgba(0,0,0,.45);height:24px;display:flex;align-items:center}
+.pp-num{font-size:20px;font-weight:800;color:#fff;line-height:1;margin-top:7px;letter-spacing:-.02em}
+.pp-divider{width:26px;height:1px;background:rgba(255,255,255,.35);margin:6px 0}
+.pp-poslabel{font-size:8px;font-weight:700;color:rgba(255,255,255,.72);letter-spacing:.06em;text-align:center;line-height:1.15}
+.pp-photo{flex:1;min-width:0;display:flex;align-items:center;justify-content:center}
+.pp-initials{font-size:38px;font-weight:800;color:rgba(255,255,255,.90);letter-spacing:-.03em;text-shadow:0 3px 9px rgba(0,0,0,.35)}
+.pp-name{text-align:center;font-size:12.5px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.02em;
+  padding:8px 2px 7px;margin-top:6px;border-top:1px solid rgba(255,255,255,.28);line-height:1.15}
+.pp-stats{display:grid;grid-template-columns:1fr 1px 1fr;gap:0 11px;padding:3px 4px 0}
+.pp-vline{background:rgba(255,255,255,.22)}
+.pp-stat{display:flex;align-items:baseline;gap:7px;padding:4.5px 0}
+.pp-sval{font-size:13px;font-weight:800;color:#fff;min-width:20px;font-variant-numeric:tabular-nums}
+.pp-skey{font-size:10px;font-weight:700;color:rgba(255,255,255,.80);letter-spacing:.04em}
+.pp-foot{margin-top:auto;padding-bottom:15%;display:flex;justify-content:center;align-items:center;gap:5px}
+.pp-badge{font-size:8.5px;font-weight:700;letter-spacing:.05em;color:rgba(255,255,255,.60);text-transform:uppercase}
+.pp-nodata{opacity:.5}
+.pp-legend{margin-top:1.15rem;padding:.75rem 1rem;background:#0d1117;border:1px solid #21262d;border-radius:8px;font-size:11px;color:#7d8590;line-height:1.75}
+.pp-legend b{color:#e6edf3}
+.pp-lrow{display:flex;flex-wrap:wrap;gap:14px;margin-top:.4rem}
+.pp-litem{display:flex;align-items:center;gap:5px}
 .dash{max-width:1500px;margin:0 auto;padding:1.5rem}
 .hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid #21262d}
 .hdr-title{font-size:20px;font-weight:700;letter-spacing:-.02em}
@@ -147,6 +182,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
       <button class="sb-item" id="btn-c" onclick="setTab('c')"><span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M7 6H4a2 2 0 0 0 2 4h1M17 6h3a2 2 0 0 1-2 4h-1"/></svg></span><span class="sb-label">Leaderboard</span></button>
       <button class="sb-item" id="btn-z" onclick="setTab('z')"><span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 20v-8M11 20V5M17 20v-5M2 20h20"/></svg></span><span class="sb-label">Match Analysis</span></button>
       <button class="sb-item" id="btn-m" onclick="setTab('m')"><span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg></span><span class="sb-label">Load Management</span></button>
+      <button class="sb-item" id="btn-pp" onclick="setTab('pp')"><span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.2 3.6-7 8-7s8 2.8 8 7"/></svg></span><span class="sb-label">Player Profiles</span></button>
       <button class="sb-item" id="btn-bip" onclick="setTab('bip')"><span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><ellipse cx="12" cy="12" rx="8.5" ry="5.2" transform="rotate(-35 12 12)"/><path d="M9.8 13.6l4.4-3.2M11 15l2-1.45M8.6 12.2l2-1.45" stroke-width="1.4"/></svg></span><span class="sb-label">Ball in Play</span></button>
     </div>
     <div class="sb-foot">by Germán Trigo · 2026</div>
@@ -407,6 +443,40 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
       <div class="legend" id="task-legend" style="margin-top:.5rem"></div>
     </div>
 
+  </div>
+
+  <!-- PLAYER PROFILES PANEL -->
+  <div id="panel-pp" style="display:none">
+    <div class="pp-filters" id="pp-filters">
+      <span style="font-size:10px;font-weight:600;color:#7d8590;text-transform:uppercase;letter-spacing:.06em;margin-right:4px">Grupo</span>
+      <button class="pp-fbtn active" data-g="ALL" onclick="setPPGroup(this,'ALL')">Todos</button>
+      <button class="pp-fbtn" data-g="GROUP_FW" onclick="setPPGroup(this,'GROUP_FW')">1&ndash;5 FW</button>
+      <button class="pp-fbtn" data-g="GROUP_BR" onclick="setPPGroup(this,'GROUP_BR')">Back Row</button>
+      <button class="pp-fbtn" data-g="GROUP_BK" onclick="setPPGroup(this,'GROUP_BK')">Backs</button>
+      <span id="pp-count" style="font-size:11px;color:#484f58;margin-left:8px"></span>
+    </div>
+    <div class="pp-grid" id="pp-grid"></div>
+    <div class="pp-legend">
+      <div><b>Stats (0&ndash;99)</b> &mdash; perfil f&iacute;sico del jugador comparado <b>dentro de su grupo posicional</b>. Se calculan con la mediana de sus partidos de la temporada, as&iacute; que cambian lento.</div>
+      <div class="pp-lrow">
+        <span class="pp-litem"><b>VEL</b> velocidad m&aacute;xima</span>
+        <span class="pp-litem"><b>INT</b> intensidad (HSR)</span>
+        <span class="pp-litem"><b>ACE</b> aceleraciones</span>
+        <span class="pp-litem"><b>FRE</b> frenado (desacel.)</span>
+        <span class="pp-litem"><b>VOL</b> volumen (distancia)</span>
+        <span class="pp-litem"><b>CAR</b> carga mec&aacute;nica</span>
+      </div>
+      <div style="margin-top:.6rem"><b>Flecha</b> &mdash; readiness del &uacute;ltimo microciclo, le&iacute;do en la &uacute;ltima sesi&oacute;n previa al partido. Combina agudeza neuromuscular (% de su velocidad m&aacute;xima alcanzado), frescura (carga de la semana vs. su carga habitual) y continuidad (sesiones de las &uacute;ltimas 3 semanas).</div>
+      <div class="pp-lrow">
+        <span class="pp-litem"><span style="color:#3fb950;font-size:14px">&#9650;&#9650;</span> &Oacute;ptimo</span>
+        <span class="pp-litem"><span style="color:#7ee8a2;font-size:14px">&#9650;</span> Bueno</span>
+        <span class="pp-litem"><span style="color:#c9d1d9;font-size:14px">&#9654;</span> Normal</span>
+        <span class="pp-litem"><span style="color:#e0934a;font-size:14px">&#9660;</span> Atenci&oacute;n</span>
+        <span class="pp-litem"><span style="color:#f85149;font-size:14px">&#9660;&#9660;</span> Alerta</span>
+        <span class="pp-litem"><span style="color:#484f58;font-size:14px">&#8212;</span> Sin datos en el microciclo</span>
+      </div>
+      <div style="margin-top:.6rem;color:#484f58">El GPS mide carga externa, no readiness real. Es un proxy f&iacute;sico &mdash; para readiness completo har&iacute;a falta wellness (sue&ntilde;o, dolor muscular) o CMJ.</div>
+    </div>
   </div>
 
   <!-- BALL IN PLAY PANEL -->
@@ -1386,12 +1456,221 @@ function renderBip(){
   cols.innerHTML=html3;
 }
 
-const TAB_TITLES={home:'Home',c:'Leaderboard',z:'Match Analysis',m:'Load Management',bip:'Ball in Play'};
+const TAB_TITLES={home:'Home',c:'Leaderboard',z:'Match Analysis',m:'Load Management',pp:'Player Profiles',bip:'Ball in Play'};
+
+// ── PLAYER PROFILES ──────────────────────────────────────────────────────────
+const JERSEY={
+ 'Roman Osella':1,'Luca Guadagno':1,
+ 'Franco Cammarata':2,'Ignacio Marino':2,'Marcos Stanic':2,
+ 'Julian Papa':3,'Lautaro Guerrero Toia':3,
+ 'Tomas Alonso':4,'Gonzalo Guillani':4,
+ 'Gianluca Gianolli':5,'Diego Lorenzo':5,'Ignacio Rodriguez Ricci':5,
+ 'Tomas Aguirre':6,'Santiago Aguilera':6,
+ 'Lucca Santero':7,'Agustin Ferraro':7,
+ 'Mateo Gonzalez':8,'Ignacio Lisica':8,
+ 'Franco Sgroi':9,'Bruno Zurniewicz':9,'Juan Ignacio Maschietto':9,
+ 'Santiago Speroni':10,'Agustin Arone':10,'Federico Ban':10,'Julian Lezczynski':10,
+ 'Bernardo Novak':11,'Franco Feltrinelli':11,
+ 'Ian Verba':12,
+ 'Santiago Berdomas':13,'Tomas Lemes':13,'Ian Stratico':13,
+ 'Juan Cruz Prokopic':14,'Juan Bugge':14,
+ 'Juan Pollet Lo Cane':15,'Manuel Bianco':15,'Juan Almandoz':15
+};
+const POS_SHORT={'PROP':'PILAR','HOOKER':'HOOKER','SECOND ROW':'2DA LINEA','FLANKER':'ALA',
+ 'NUMBER 8':'OCTAVO','SCRUM-HALF':'MEDIO','FLY-HALF':'APERTURA','CENTRE':'CENTRO',
+ 'WING':'WING','FULLBACK':'FULLBACK'};
+let ppGroup='ALL';
+
+function setPPGroup(btn,g){
+  ppGroup=g;
+  document.querySelectorAll('#pp-filters .pp-fbtn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderPlayerProfiles();
+}
+function groupOf(pos){
+  for(const k in POS_GROUPS){ if(POS_GROUPS[k].includes(pos))return k; }
+  return null;
+}
+function median(a){
+  if(!a.length)return 0;
+  const s=[...a].sort((x,y)=>x-y), m=Math.floor(s.length/2);
+  return s.length%2?s[m]:(s[m-1]+s[m])/2;
+}
+function initials(name){
+  const p=name.trim().split(/\s+/);
+  return ((p[0]||'')[0]||'')+((p[1]||'')[0]||'');
+}
+
+// Perfil fisico: mediana de partidos (Drills+MD). Fallback: entrenamientos.
+function buildPlayerStats(){
+  const out={};
+  const players=[...new Set(S.map(r=>r.p))].filter(Boolean);
+  players.forEach(p=>{
+    const rows=S.filter(r=>r.p===p&&r.sel==='Drills');
+    const matches=rows.filter(r=>r.md==='MD'&&r.dist>0);
+    // Perfil SOLO con partidos (misma metodologia que los umbrales internos).
+    // Con menos de 3 partidos no hay muestra confiable: la card se muestra sin stats.
+    const base=matches;
+    if(!rows.length)return;
+    const pos=(rows.find(r=>r.pos)||{}).pos||'';
+    const g=groupOf(pos);
+    const useRel=(g==='GROUP_FW'||g==='GROUP_BR');
+    out[p]={
+      player:p,pos:pos,grp:g,
+      nMatch:matches.length,
+      lowSample:matches.length<3,
+      noStats:matches.length<3,
+      VEL:matches.length<3?0:Math.max(...S.filter(r=>r.p===p&&r.ms>0).map(r=>r.ms),0),
+      INT:median(base.map(r=>useRel?r.hr:r.ha)),
+      ACE:median(base.map(r=>r.ac)),
+      FRE:median(base.map(r=>r.dc)),
+      VOL:median(base.map(r=>r.dist)),
+      CAR:median(base.map(r=>r.pl))
+    };
+  });
+  // Normalizacion 45-99 por Z-SCORE dentro del grupo posicional.
+  // A diferencia del percentil, respeta las distancias REALES entre jugadores:
+  // dos jugadores parejos quedan parejos, y el que se despega se despega.
+  // Escala: media del grupo = 72 | +1 DE = 86 | +2 DE = 99 (recortado)
+  ['GROUP_FW','GROUP_BR','GROUP_BK'].forEach(g=>{
+    const grp=Object.values(out).filter(o=>o.grp===g&&!o.noStats);
+    if(!grp.length)return;
+    ['VEL','INT','ACE','FRE','VOL','CAR'].forEach(k=>{
+      const vals=grp.map(o=>o[k]).filter(v=>v>0);
+      if(vals.length<2){grp.forEach(o=>{o[k+'_n']=(o[k]>0)?72:null;});return;}
+      const mean=vals.reduce((a,b)=>a+b,0)/vals.length;
+      const sd=Math.sqrt(vals.reduce((s,v)=>s+(v-mean)**2,0)/vals.length);
+      grp.forEach(o=>{
+        if(!(o[k]>0)){o[k+'_n']=null;return;}
+        if(sd===0){o[k+'_n']=72;return;}
+        o[k+'_n']=Math.max(45,Math.min(99,Math.round(72+((o[k]-mean)/sd)*14)));
+      });
+    });
+  });
+  Object.values(out).forEach(o=>{
+    if(o.noStats)['VEL','INT','ACE','FRE','VOL','CAR'].forEach(k=>{o[k+'_n']=null;});
+  });
+  return out;
+}
+
+// Readiness: agudeza + frescura + continuidad, sobre el ultimo microciclo
+function buildReadiness(){
+  const out={};
+  const wmds=[...new Set(S.filter(r=>r.wmd>0).map(r=>r.wmd))].sort((a,b)=>a-b);
+  const lastW=wmds[wmds.length-1];
+  if(!lastW)return out;
+  const allDates=S.map(r=>pd(r.d)).filter(Boolean);
+  const maxDate=allDates.length?new Date(Math.max(...allDates)):null;
+  const players=[...new Set(S.map(r=>r.p))].filter(Boolean);
+
+  players.forEach(p=>{
+    const drills=S.filter(r=>r.p===p&&r.sel==='Drills');
+    // ultima sesion NO-partido del ultimo microciclo
+    const pre=drills.filter(r=>r.wmd===lastW&&r.md!=='MD'&&r.dist>0)
+                    .sort((a,b)=>pd(a.d)-pd(b.d));
+    if(!pre.length){ out[p]={score:null}; return; }
+    const last=pre[pre.length-1];
+
+    // 1) Agudeza: % de su velocidad maxima personal
+    const pb=Math.max(...S.filter(r=>r.p===p&&r.ms>0).map(r=>r.ms),0);
+    let sharp=null;
+    if(pb>0&&last.ms>0){
+      const pct=last.ms/pb*100;
+      sharp=Math.max(0,Math.min(100,(pct-72)/(97-72)*100));
+    }
+    // 2) Frescura: carga de la semana vs su carga habitual (invertido)
+    const wkLoad=drills.filter(r=>r.wmd===lastW&&r.md!=='MD')
+                       .reduce((s,r)=>s+r.dist+r.hr*3,0);
+    const hist={};
+    drills.filter(r=>r.md!=='MD'&&r.wmd>0&&r.wmd!==lastW)
+          .forEach(r=>{hist[r.wmd]=(hist[r.wmd]||0)+r.dist+r.hr*3;});
+    const hv=Object.values(hist).filter(v=>v>0);
+    let fresh=null;
+    if(hv.length>=2&&wkLoad>0){
+      const ratio=wkLoad/median(hv);
+      fresh=Math.max(0,Math.min(100,100-(ratio-0.85)/(1.45-0.85)*100));
+    }
+    // 3) Continuidad: sesiones distintas en los ultimos 21 dias
+    let cont=null;
+    if(maxDate){
+      const lim=new Date(maxDate); lim.setDate(lim.getDate()-21);
+      const n=new Set(drills.filter(r=>{const d=pd(r.d);return d&&d>=lim;}).map(r=>r.d)).size;
+      cont=Math.max(0,Math.min(100,n/7*100));
+    }
+    const parts=[[sharp,0.45],[fresh,0.30],[cont,0.25]].filter(x=>x[0]!==null);
+    if(!parts.length){ out[p]={score:null}; return; }
+    const wsum=parts.reduce((s,x)=>s+x[1],0);
+    const score=parts.reduce((s,x)=>s+x[0]*x[1],0)/wsum;
+    out[p]={score,sharp,fresh,cont,date:last.d,session:last.md};
+  });
+  return out;
+}
+
+function arrowFor(score){
+  if(score===null||score===undefined)return{ch:'\u2014',col:'#484f58',txt:'Sin datos en el microciclo'};
+  if(score>=72)return{ch:'\u25B2\u25B2',col:'#3fb950',txt:'\u00D3ptimo'};
+  if(score>=58)return{ch:'\u25B2',col:'#7ee8a2',txt:'Bueno'};
+  if(score>=42)return{ch:'\u25B6',col:'#c9d1d9',txt:'Normal'};
+  if(score>=28)return{ch:'\u25BC',col:'#e0934a',txt:'Atenci\u00F3n'};
+  return{ch:'\u25BC\u25BC',col:'#f85149',txt:'Alerta'};
+}
+
+function renderPlayerProfiles(){
+  const grid=document.getElementById('pp-grid');
+  if(!grid)return;
+  if(!S.length){grid.innerHTML='<div class="no-data">Cargando datos...</div>';return;}
+  const stats=buildPlayerStats();
+  const ready=buildReadiness();
+  let list=Object.values(stats).filter(o=>o.grp);
+  if(ppGroup!=='ALL')list=list.filter(o=>o.grp===ppGroup);
+  // Orden: por numero de camiseta, luego por nombre
+  list.sort((a,b)=>{
+    const na=JERSEY[a.player]||99, nb=JERSEY[b.player]||99;
+    return na-nb||a.player.localeCompare(b.player);
+  });
+  document.getElementById('pp-count').textContent=list.length+' jugadores';
+  if(!list.length){grid.innerHTML='<div class="no-data">Sin jugadores en este grupo</div>';return;}
+
+  const KEYS=[['VEL','INT'],['ACE','FRE'],['VOL','CAR']];
+  grid.innerHTML=list.map(o=>{
+    const r=ready[o.player]||{score:null};
+    const ar=arrowFor(r.score);
+    const num=JERSEY[o.player]||'';
+    const tip=r.score!==null
+      ? ar.txt+' \u00B7 '+(r.date||'')+(r.sharp!==null?' \u00B7 agudeza '+Math.round(r.sharp):'')
+        +(r.fresh!==null?' \u00B7 frescura '+Math.round(r.fresh):'')
+        +(r.cont!==null?' \u00B7 continuidad '+Math.round(r.cont):'')
+      : 'Sin sesiones registradas en el \u00FAltimo microciclo';
+    const cell=k=>{
+      const v=o[k+'_n'];
+      return '<div class="pp-stat"><span class="pp-sval">'+(v===null?'\u2013':v)+'</span><span class="pp-skey">'+k+'</span></div>';
+    };
+    return '<div class="pp-card'+(o.noStats?' pp-nodata':'')+'" title="'+tip.replace(/"/g,'')+'">'
+      +'<div class="pp-top">'
+        +'<div class="pp-left">'
+          +'<div class="pp-arrow" style="color:'+ar.col+'">'+ar.ch+'</div>'
+          +'<div class="pp-num">'+num+'</div>'
+          +'<div class="pp-divider"></div>'
+          +'<div class="pp-poslabel">'+(POS_SHORT[o.pos]||o.pos)+'</div>'
+        +'</div>'
+        +'<div class="pp-photo"><div class="pp-initials">'+initials(o.player)+'</div></div>'
+      +'</div>'
+      +'<div class="pp-name">'+o.player+'</div>'
+      +'<div class="pp-stats">'
+        +'<div>'+KEYS.map(k=>cell(k[0])).join('')+'</div>'
+        +'<div class="pp-vline"></div>'
+        +'<div>'+KEYS.map(k=>cell(k[1])).join('')+'</div>'
+      +'</div>'
+      +'<div class="pp-foot"><span class="pp-badge">'+(o.noStats?(o.nMatch===0?'sin partidos':o.nMatch+' partido'+(o.nMatch>1?'s':'')+' \u00B7 muestra insuf.'):(o.nMatch+' partidos'))+'</span></div>'
+    +'</div>';
+  }).join('');
+}
+
 function setTab(t){
   tab=t;
   const ht=document.getElementById('hdr-title');
   if(ht)ht.textContent=TAB_TITLES[t]||'';
-  ['home','c','z','m','bip'].forEach(x=>{
+  ['home','c','z','m','pp','bip'].forEach(x=>{
     const btn=document.getElementById('btn-'+x);
     const panel=document.getElementById('panel-'+x);
     if(btn)btn.className='sb-item'+(t===x?' active':'');
@@ -1404,6 +1683,7 @@ function setTab(t){
   if(globalFilters){globalFilters.style.display=showFilters?'':'none';}
   if(activePills){activePills.style.display=showFilters?'':'none';}
   if(t==='home')renderHome();
+  else if(t==='pp')renderPlayerProfiles();
   else if(t==='m')renderMicro();
   else if(t==='bip')renderBip();
   else render();
