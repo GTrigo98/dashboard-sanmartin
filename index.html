@@ -53,6 +53,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .home-link-title{font-size:14px;font-weight:600;margin-bottom:3px}
 .home-link-desc{font-size:11.5px;color:#7d8590;line-height:1.5}
 @media(max-width:1000px){.home-grid{grid-template-columns:repeat(2,1fr)}.home-links{grid-template-columns:1fr}}
+
 .dash{max-width:1500px;margin:0 auto;padding:1.5rem}
 .hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid #21262d}
 .hdr-title{font-size:20px;font-weight:700;letter-spacing:-.02em}
@@ -131,6 +132,37 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 .bip-badge-max{background:#1a4731;color:#3fb950}
 .bip-badge{font-size:9px;padding:1px 6px;border-radius:3px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
 @media(max-width:900px){.bip-cols{grid-template-columns:1fr}}
+/* ── WELLNESS ── */
+.wl-summary{font-size:12px;color:#7d8590;margin-bottom:1rem}
+.wl-row{display:flex;align-items:center;gap:12px;padding:9px 4px;cursor:pointer;border-radius:6px;transition:background .12s}
+.wl-row:hover{background:#1c2128}
+.wl-name{font-size:13px;width:170px;flex-shrink:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wl-track-wrap{flex:1;position:relative;height:10px}
+.wl-track-bg{position:absolute;inset:0;background:#0d1117;border-radius:5px}
+.wl-track-fill{position:absolute;left:0;top:0;height:100%;border-radius:5px;overflow:hidden}
+.wl-track-grad{height:100%;background:linear-gradient(90deg,#e5484d 0%,#e5484d 26%,#f5d90a 36%,#f5d90a 64%,#3fb950 74%,#3fb950 100%)}
+.wl-score{font-size:13px;font-weight:700;width:22px;text-align:right;flex-shrink:0}
+.wl-trend{font-size:11px;width:16px;text-align:center;flex-shrink:0}
+.wl-missing{margin-top:1.25rem;padding-top:1rem;border-top:1px solid #21262d}
+.wl-missing-title{font-size:11px;font-weight:600;color:#7d8590;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.6rem}
+.wl-missing-pills{display:flex;flex-wrap:wrap;gap:6px}
+.wl-missing-pill{font-size:11px;padding:3px 10px;border-radius:10px;background:#1c2128;border:1px solid #30363d;color:#7d8590}
+.wl-back{display:flex;align-items:center;gap:6px;font-size:12px;color:#58a6ff;cursor:pointer;margin-bottom:1rem;background:transparent;border:none;font-family:inherit;padding:0}
+.wl-back:hover{text-decoration:underline}
+.wl-detail-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.wl-detail-id{display:flex;align-items:center;gap:12px}
+.wl-avatar{width:44px;height:44px;border-radius:50%;background:#1a3a5c;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;color:#58a6ff;flex-shrink:0}
+.wl-detail-name{font-weight:600;font-size:15px}
+.wl-detail-sub{font-size:12px;color:#7d8590;margin-top:2px}
+.wl-badge{font-size:13px;font-weight:600;padding:5px 12px;border-radius:6px}
+.wl-item-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.wl-item-label{font-size:12px;color:#7d8590;width:140px;flex-shrink:0}
+.wl-item-track{flex:1;position:relative;height:8px;background:#0d1117;border-radius:4px}
+.wl-item-fill{position:absolute;left:0;top:0;height:100%;background:#2ea043;border-radius:4px}
+.wl-item-avg{position:absolute;top:-2px;width:2px;height:12px;background:#e6edf3}
+.wl-item-val{font-size:13px;font-weight:600;width:16px;text-align:right}
+.wl-legend{display:flex;gap:16px;font-size:11px;color:#7d8590;margin:.5rem 0 1rem}
+
 </style>
 </head>
 <body>
@@ -147,6 +179,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
       <button class="sb-item" id="btn-c" onclick="setTab('c')"><span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M7 6H4a2 2 0 0 0 2 4h1M17 6h3a2 2 0 0 1-2 4h-1"/></svg></span><span class="sb-label">Leaderboard</span></button>
       <button class="sb-item" id="btn-z" onclick="setTab('z')"><span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 20v-8M11 20V5M17 20v-5M2 20h20"/></svg></span><span class="sb-label">Match Analysis</span></button>
       <button class="sb-item" id="btn-m" onclick="setTab('m')"><span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"/></svg></span><span class="sb-label">Load Management</span></button>
+      <button class="sb-item" id="btn-wellness" onclick="setTab('wellness')"><span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 4.5c-2.5-2-6-1.3-7.5 1.2C11.5 3.2 8 2.5 5.5 4.5 3 6.5 3 10 5.5 12.5L13 20l7.5-7.5c2.5-2.5 2.5-6 0-8z" transform="scale(0.75) translate(4,3)"/><path d="M12 8v4M12 12l-1.5 2"/></svg></span><span class="sb-label">Wellness</span></button>
       <button class="sb-item" id="btn-bip" onclick="setTab('bip')"><span class="sb-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><ellipse cx="12" cy="12" rx="8.5" ry="5.2" transform="rotate(-35 12 12)"/><path d="M9.8 13.6l4.4-3.2M11 15l2-1.45M8.6 12.2l2-1.45" stroke-width="1.4"/></svg></span><span class="sb-label">Ball in Play</span></button>
     </div>
     <div class="sb-foot">by Germán Trigo · 2026</div>
@@ -409,6 +442,8 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 
   </div>
 
+  
+
   <!-- BALL IN PLAY PANEL -->
   <div id="panel-bip" style="display:none">
     <div class="filters">
@@ -439,6 +474,42 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
     </div>
   </div>
 
+  <!-- WELLNESS PANEL -->
+  <div id="panel-wellness" style="display:none">
+    <div id="wl-main">
+      <div class="card">
+        <div class="card-title">Wellness &middot; Última sesión</div>
+        <div class="wl-summary" id="wl-summary">Cargando...</div>
+        <div id="wl-rows"></div>
+        <div class="wl-missing" id="wl-missing-wrap" style="display:none">
+          <div class="wl-missing-title">No completaron</div>
+          <div class="wl-missing-pills" id="wl-missing"></div>
+        </div>
+      </div>
+    </div>
+    <div id="wl-detail" style="display:none">
+      <button class="wl-back" onclick="wlShowMain()">&larr; Volver a Wellness</button>
+      <div class="card">
+        <div class="wl-detail-head">
+          <div class="wl-detail-id">
+            <div class="wl-avatar" id="wl-d-avatar"></div>
+            <div>
+              <div class="wl-detail-name" id="wl-d-name"></div>
+              <div class="wl-detail-sub" id="wl-d-sub"></div>
+            </div>
+          </div>
+          <div class="wl-badge" id="wl-d-badge"></div>
+        </div>
+        <div style="position:relative;height:200px;margin:1.25rem 0 .5rem"><canvas id="wl-chart"></canvas></div>
+        <div class="wl-legend" id="wl-d-legend"></div>
+        <div style="border-top:1px solid #21262d;padding-top:12px">
+          <div style="font-size:11px;color:#484f58;margin-bottom:10px">Hoy, por ítem &middot; línea = su media personal</div>
+          <div id="wl-d-items"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="loading" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(13,17,23,.85);z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:12px">
     <div style="width:40px;height:40px;border:3px solid #30363d;border-top-color:#1f6feb;border-radius:50%;animation:spin .8s linear infinite"></div>
     <div style="color:#7d8590;font-size:13px">Loading data from Google Sheets...</div>
@@ -450,6 +521,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums;font-family:'SF Mono',
 <script>
 const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ_u4pAxUSP94hzf6T5afS5TGa7mFotJ-9ngpEZ9QG2QqF-FHzEaiysadZ6A1a31A/pub?gid=175231250&single=true&output=csv";
 const BIP_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ_u4pAxUSP94hzf6T5afS5TGa7mFotJ-9ngpEZ9QG2QqF-FHzEaiysadZ6A1a31A/pub?gid=522741115&single=true&output=csv";
+const WELLNESS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ_u4pAxUSP94hzf6T5afS5TGa7mFotJ-9ngpEZ9QG2QqF-FHzEaiysadZ6A1a31A/pub?gid=1320510393&single=true&output=csv";
 const SORTS=[{k:'ms',l:'Top Speed'},{k:'dist',l:'Distance'},{k:'ha',l:'HSR Abs'},{k:'hr',l:'HSR Rel'}];
 const POS_GROUPS={'GROUP_FW':['PROP','HOOKER','SECOND ROW'],'GROUP_BR':['FLANKER','NUMBER 8'],'GROUP_BK':['SCRUM-HALF','FLY-HALF','CENTRE','WING','FULLBACK']};
 const MICRO_METRIC_LABELS={dist:'Distance (m)',ha:'HSR Abs (m)',hr:'HSR Rel (m)',ac:'HI Acc',dc:'HI Dec',pl:'Player Load',ms:'Top Speed (km/h)'};
@@ -1386,12 +1458,178 @@ function renderBip(){
   cols.innerHTML=html3;
 }
 
-const TAB_TITLES={home:'Home',c:'Leaderboard',z:'Match Analysis',m:'Load Management',bip:'Ball in Play'};
+const TAB_TITLES={home:'Home',c:'Leaderboard',z:'Match Analysis',m:'Load Management',wellness:'Wellness',bip:'Ball in Play'};
+
+// ── WELLNESS ─────────────────────────────────────────────────────────────────
+let WL_DATA=[]; // [{fecha, jugador, fatiga, sueno, dolor, estres, animo, score}]
+let wlSelectedPlayer=null;
+
+function parseWellnessCSV(text){
+  const lines=text.replace(/\r/g,'').trim().split('\n').map(l=>parseCSVLine(l));
+  if(lines.length<2)return[];
+  // El encabezado real puede no estar en la fila 1 (IMPORTRANGE a veces deja una fila en blanco arriba)
+  let hIdx=lines.findIndex(r=>r.some(c=>(c||'').trim()==='Nombre y Apellido'));
+  if(hIdx<0)hIdx=0;
+  const rows=[];
+  for(let i=hIdx+1;i<lines.length;i++){
+    const r=lines[i];
+    const jugador=(r[2]||'').trim().replace(/\s+/g,' ');
+    if(!jugador)continue;
+    const marca=r[1]||'';
+    const fatiga=parseFloat(r[3])||0, sueno=parseFloat(r[4])||0, dolor=parseFloat(r[5])||0,
+          estres=parseFloat(r[6])||0, animo=parseFloat(r[7])||0;
+    if(!fatiga&&!sueno&&!dolor&&!estres&&!animo)continue;
+    // Fecha de sesion = fecha de la marca temporal (solo dd/mm/yyyy)
+    const fechaPart=marca.split(' ')[0]||'';
+    const p=fechaPart.split('/');
+    const fecha=p.length===3?(p[0].padStart(2,'0')+'/'+p[1].padStart(2,'0')+'/'+p[2]):fechaPart;
+    rows.push({fecha,marca,jugador,fatiga,sueno,dolor,estres,animo,score:fatiga+sueno+dolor+estres+animo});
+  }
+  // Si hay duplicado jugador+fecha, se queda con la marca temporal mas reciente
+  const dedup={};
+  rows.forEach(r=>{
+    const k=r.fecha+'|'+r.jugador;
+    if(!dedup[k]||r.marca>dedup[k].marca)dedup[k]=r;
+  });
+  return Object.values(dedup);
+}
+
+async function loadWellnessData(){
+  try{
+    const resp=await fetch(WELLNESS_CSV_URL+'&_t='+Date.now(),{cache:'no-store'});
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    const text=await resp.text();
+    WL_DATA=parseWellnessCSV(text);
+    if(tab==='wellness')renderWellness();
+  }catch(e){
+    const el=document.getElementById('wl-summary');
+    if(el)el.textContent='Error cargando Wellness: '+e.message;
+  }
+}
+
+function wlDateKey(f){ // dd/mm/yyyy -> yyyymmdd para ordenar
+  const p=f.split('/'); return p.length===3?p[2]+p[1].padStart(2,'0')+p[0].padStart(2,'0'):'';
+}
+
+function wlGrade(score){
+  if(score<=11)return{label:'atenci\u00f3n',cls:'style="background:#3d1c1c;color:#f85149"'};
+  if(score<=18)return{label:'normal',cls:'style="background:#3a2510;color:#e0934a"'};
+  return{label:'\u00f3ptimo',cls:'style="background:#1a4731;color:#3fb950"'};
+}
+
+function renderWellness(){
+  if(!WL_DATA.length){document.getElementById('wl-summary').textContent='Sin datos de wellness todav\u00eda';return;}
+  const dates=[...new Set(WL_DATA.map(r=>r.fecha))].sort((a,b)=>wlDateKey(a).localeCompare(wlDateKey(b)));
+  const lastDate=dates[dates.length-1];
+  const todayRows=WL_DATA.filter(r=>r.fecha===lastDate).sort((a,b)=>a.jugador.localeCompare(b.jugador));
+
+  const allPlayers=[...new Set(S.map(r=>r.p))].filter(p=>p);
+  const responded=new Set(todayRows.map(r=>r.jugador));
+  const missing=allPlayers.filter(p=>!responded.has(p)).sort((a,b)=>a.localeCompare(b));
+
+  document.getElementById('wl-summary').textContent=
+    lastDate+' \u00b7 '+todayRows.length+' de '+allPlayers.length+' respondieron';
+
+  document.getElementById('wl-rows').innerHTML=todayRows.map(r=>{
+    const pct=Math.max(0,Math.min(100,(r.score-5)/(25-5)*100));
+    return '<div class="wl-row" onclick="wlShowDetail(\''+r.jugador.replace(/'/g,"\\'")+'\')">'+
+      '<span class="wl-name">'+r.jugador+'</span>'+
+      '<div class="wl-track-wrap"><div class="wl-track-bg"></div>'+
+        '<div class="wl-track-fill" style="width:'+pct+'%"><div class="wl-track-grad" style="width:'+(100/pct*100)+'%"></div></div>'+
+      '</div>'+
+      '<span class="wl-score">'+r.score+'</span>'+
+    '</div>';
+  }).join('');
+
+  const mw=document.getElementById('wl-missing-wrap');
+  if(missing.length){
+    mw.style.display='';
+    document.getElementById('wl-missing').innerHTML=missing.map(p=>'<span class="wl-missing-pill">'+p+'</span>').join('');
+  } else { mw.style.display='none'; }
+}
+
+function wlShowMain(){
+  document.getElementById('wl-main').style.display='';
+  document.getElementById('wl-detail').style.display='none';
+}
+
+let wlChart=null;
+function wlShowDetail(player){
+  wlSelectedPlayer=player;
+  document.getElementById('wl-main').style.display='none';
+  document.getElementById('wl-detail').style.display='';
+
+  const rows=WL_DATA.filter(r=>r.jugador===player).sort((a,b)=>wlDateKey(a.fecha).localeCompare(wlDateKey(b.fecha)));
+  const last=rows[rows.length-1];
+  const n=rows.length;
+  const avg=n?+(rows.reduce((s,r)=>s+r.score,0)/n).toFixed(1):0;
+
+  const parts=player.split(' ');
+  document.getElementById('wl-d-avatar').textContent=(parts[0][0]+(parts[1]?parts[1][0]:'')).toUpperCase();
+  document.getElementById('wl-d-name').textContent=player;
+  const pos=(S.find(r=>r.p===player)||{}).pos||'';
+  document.getElementById('wl-d-sub').textContent=(pos?pos+' \u00b7 ':'')+n+' registro'+(n===1?'':'s')+(n>=4?' \u00b7 media personal '+avg:'');
+  const g=wlGrade(last.score);
+  const badge=document.getElementById('wl-d-badge');
+  badge.textContent=last.score+' \u00b7 '+g.label;
+  badge.setAttribute('style',g.cls.replace('style=',''));
+
+  const dates=rows.map(r=>r.fecha.slice(0,5));
+  const scores=rows.map(r=>r.score);
+  const gradeColor=s=>s<=11?'#e5484d':s<=18?'#f5d90a':'#3fb950';
+  const showAvgLine=n>=4;
+
+  const bandsPlugin={
+    id:'wlBands',
+    beforeDraw(chart){
+      const {ctx,chartArea,scales}=chart, y=scales.y;
+      const zones=[[5,11,'rgba(229,72,77,0.08)'],[12,18,'rgba(245,217,10,0.08)'],[19,25,'rgba(63,185,80,0.08)']];
+      ctx.save();
+      zones.forEach(([lo,hi,color])=>{
+        const top=y.getPixelForValue(hi), bottom=y.getPixelForValue(lo);
+        ctx.fillStyle=color;
+        ctx.fillRect(chartArea.left,top,chartArea.right-chartArea.left,bottom-top);
+      });
+      ctx.restore();
+    }
+  };
+
+  const datasets=[{label:'Score',data:scores,borderColor:'#7d8590',borderWidth:2,tension:0.25,
+    pointRadius:6,pointBackgroundColor:scores.map(gradeColor),pointBorderColor:'#161b22',pointBorderWidth:2,order:0}];
+  if(showAvgLine)datasets.unshift({label:'Media personal',data:dates.map(()=>avg),borderColor:'#484f58',borderDash:[5,4],borderWidth:1.5,pointRadius:0,order:1});
+
+  if(wlChart)wlChart.destroy();
+  wlChart=new Chart(document.getElementById('wl-chart'),{
+    type:'line',data:{labels:dates,datasets},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label==='Score'?('Score: '+c.raw):null}}},
+      scales:{
+        y:{min:5,max:25,ticks:{stepSize:5,color:'#7d8590',font:{size:10}},grid:{color:'rgba(255,255,255,.05)'},border:{display:false}},
+        x:{ticks:{color:'#7d8590',font:{size:10}},grid:{display:false},border:{display:false}}
+      }},
+    plugins:[bandsPlugin]
+  });
+
+  document.getElementById('wl-d-legend').innerHTML=
+    (showAvgLine?'<span style="display:flex;align-items:center;gap:4px"><span style="width:14px;height:2px;border-top:2px dashed #484f58;display:inline-block"></span>media personal</span>':'')+
+    '<span>zonas: 5\u201311 rojo \u00b7 12\u201318 amarillo \u00b7 19\u201325 verde</span>';
+
+  const items=[['Fatiga f\u00edsica','fatiga'],['Calidad del sue\u00f1o','sueno'],['Dolor muscular','dolor'],['Nivel de estr\u00e9s','estres'],['Estado de \u00e1nimo','animo']];
+  document.getElementById('wl-d-items').innerHTML=items.map(([label,key])=>{
+    const today=last[key];
+    const avgItem=n?+(rows.reduce((s,r)=>s+r[key],0)/n).toFixed(1):today;
+    return '<div class="wl-item-row"><span class="wl-item-label">'+label+'</span>'+
+      '<div class="wl-item-track"><div class="wl-item-fill" style="width:'+(today/5*100)+'%"></div>'+
+      '<div class="wl-item-avg" style="left:'+(avgItem/5*100)+'%"></div></div>'+
+      '<span class="wl-item-val">'+today+'</span></div>';
+  }).join('');
+}
+
 function setTab(t){
   tab=t;
   const ht=document.getElementById('hdr-title');
   if(ht)ht.textContent=TAB_TITLES[t]||'';
-  ['home','c','z','m','bip'].forEach(x=>{
+  ['home','c','z','m','wellness','bip'].forEach(x=>{
     const btn=document.getElementById('btn-'+x);
     const panel=document.getElementById('panel-'+x);
     if(btn)btn.className='sb-item'+(t===x?' active':'');
@@ -1404,6 +1642,7 @@ function setTab(t){
   if(globalFilters){globalFilters.style.display=showFilters?'':'none';}
   if(activePills){activePills.style.display=showFilters?'':'none';}
   if(t==='home')renderHome();
+  else if(t==='wellness'){wlShowMain();renderWellness();}
   else if(t==='m')renderMicro();
   else if(t==='bip')renderBip();
   else render();
@@ -1457,6 +1696,7 @@ function render(){
 
 loadData();
 loadBipData();
+loadWellnessData();
 </script>
 </body>
 </html>
