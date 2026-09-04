@@ -1497,6 +1497,10 @@ function median(a){
   const s=[...a].sort((x,y)=>x-y), m=Math.floor(s.length/2);
   return s.length%2?s[m]:(s[m-1]+s[m])/2;
 }
+function ppPhotoLoaded(img){
+  img.previousElementSibling.style.display='none';
+  img.style.display='block';
+}
 function photoSlug(name){
   return name.normalize('NFD').replace(/[\u0300-\u036f]/g,'')
              .toLowerCase().trim().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-');
@@ -1658,7 +1662,7 @@ function renderPlayerProfiles(){
           +'<div class="pp-divider"></div>'
           +'<div class="pp-poslabel">'+(POS_SHORT[o.pos]||o.pos)+'</div>'
         +'</div>'
-        +'<div class="pp-photo">'+'<div class="pp-initials">'+initials(o.player)+'</div>'+'<img class="pp-img" src="fotos/'+photoSlug(o.player)+'.png" alt="" loading="lazy" '+'onload="this.previousElementSibling.style.display=\'none\';this.style.display=\'block\'">'+'</div>'
+        +'<div class="pp-photo">'+'<div class="pp-initials">'+initials(o.player)+'</div>'+'<img class="pp-img" src="fotos/'+photoSlug(o.player)+'.png" alt="" loading="lazy" onload="ppPhotoLoaded(this)">'+'</div>'
       +'</div>'
       +'<div class="pp-name">'+o.player+'</div>'
       +'<div class="pp-stats">'
