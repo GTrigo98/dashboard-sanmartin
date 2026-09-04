@@ -64,25 +64,27 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   clip-path:polygon(0% 11%,7% 6%,16% 0%,84% 0%,93% 6%,100% 11%,100% 86%,50% 100%,0% 86%);
   padding:15px 15px 0;display:flex;flex-direction:column;transition:transform .18s ease}
 .pp-card:hover{transform:translateY(-5px)}
-.pp-card::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 72% 22%,rgba(255,255,255,.10),transparent 55%);pointer-events:none;
+.pp-card::after{content:'';position:absolute;inset:0;z-index:3;background:radial-gradient(circle at 72% 22%,rgba(255,255,255,.10),transparent 55%);pointer-events:none;
   clip-path:polygon(0% 11%,7% 6%,16% 0%,84% 0%,93% 6%,100% 11%,100% 86%,50% 100%,0% 86%)}
-.pp-top{display:flex;gap:9px;flex:0 0 auto}
+.pp-top{display:flex;gap:9px;flex:0 0 auto;position:relative;z-index:2}
 .pp-left{display:flex;flex-direction:column;align-items:center;width:52px;flex-shrink:0;padding-top:4px}
 .pp-arrow{font-size:22px;line-height:1;font-weight:700;letter-spacing:-3px;text-shadow:0 2px 5px rgba(0,0,0,.45);height:24px;display:flex;align-items:center}
 .pp-num{font-size:20px;font-weight:800;color:#fff;line-height:1;margin-top:7px;letter-spacing:-.02em}
 .pp-divider{width:26px;height:1px;background:rgba(255,255,255,.35);margin:6px 0}
 .pp-poslabel{font-size:8px;font-weight:700;color:rgba(255,255,255,.72);letter-spacing:.06em;text-align:center;line-height:1.15}
-.pp-photo{flex:1;min-width:0;position:relative;display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
-.pp-initials{font-size:38px;font-weight:800;color:rgba(255,255,255,.90);letter-spacing:-.03em;text-shadow:0 3px 9px rgba(0,0,0,.35)}
-.pp-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;display:none}
+.pp-photobg{position:absolute;inset:0;z-index:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pp-initials-bg{font-size:56px;font-weight:800;color:rgba(255,255,255,.20);letter-spacing:-.03em}
+.pp-bgphoto{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top center;display:none}
+.pp-overlay{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,.60) 0%,rgba(0,0,0,.10) 26%,rgba(0,0,0,.08) 55%,rgba(0,0,0,.72) 100%)}
 .pp-name{text-align:center;font-size:12.5px;font-weight:800;color:#fff;text-transform:uppercase;letter-spacing:.02em;
-  padding:8px 2px 7px;margin-top:6px;border-top:1px solid rgba(255,255,255,.28);line-height:1.15}
-.pp-stats{display:grid;grid-template-columns:1fr 1px 1fr;gap:0 11px;padding:3px 4px 0}
+  padding:8px 2px 7px;margin-top:6px;border-top:1px solid rgba(255,255,255,.28);line-height:1.15;position:relative;z-index:2}
+.pp-stats{display:grid;grid-template-columns:1fr 1px 1fr;gap:0 11px;padding:3px 4px 0;position:relative;z-index:2}
 .pp-vline{background:rgba(255,255,255,.22)}
 .pp-stat{display:flex;align-items:baseline;gap:7px;padding:4.5px 0}
 .pp-sval{font-size:13px;font-weight:800;color:#fff;min-width:20px;font-variant-numeric:tabular-nums}
 .pp-skey{font-size:10px;font-weight:700;color:rgba(255,255,255,.80);letter-spacing:.04em}
-.pp-foot{margin-top:auto;padding-bottom:15%;display:flex;justify-content:center;align-items:center;gap:5px}
+.pp-foot{margin-top:auto;padding-bottom:15%;display:flex;justify-content:center;align-items:center;gap:5px;position:relative;z-index:2}
 .pp-badge{font-size:8.5px;font-weight:700;letter-spacing:.05em;color:rgba(255,255,255,.60);text-transform:uppercase}
 .pp-nodata{opacity:.5}
 .pp-legend{margin-top:1.15rem;padding:.75rem 1rem;background:#0d1117;border:1px solid #21262d;border-radius:8px;font-size:11px;color:#7d8590;line-height:1.75}
@@ -1655,6 +1657,8 @@ function renderPlayerProfiles(){
       return '<div class="pp-stat"><span class="pp-sval">'+(v===null?'\u2013':v)+'</span><span class="pp-skey">'+k+'</span></div>';
     };
     return '<div class="pp-card'+(o.noStats?' pp-nodata':'')+'" title="'+tip.replace(/"/g,'')+'">'
+      +'<div class="pp-photobg">'+'<div class="pp-initials-bg">'+initials(o.player)+'</div>'+'<img class="pp-bgphoto" src="fotos/'+photoSlug(o.player)+'.png" alt="" onload="ppPhotoLoaded(this)">'+'</div>'
+      +'<div class="pp-overlay"></div>'
       +'<div class="pp-top">'
         +'<div class="pp-left">'
           +'<div class="pp-arrow" style="color:'+ar.col+'">'+ar.ch+'</div>'
@@ -1662,7 +1666,6 @@ function renderPlayerProfiles(){
           +'<div class="pp-divider"></div>'
           +'<div class="pp-poslabel">'+(POS_SHORT[o.pos]||o.pos)+'</div>'
         +'</div>'
-        +'<div class="pp-photo">'+'<div class="pp-initials">'+initials(o.player)+'</div>'+'<img class="pp-img" src="fotos/'+photoSlug(o.player)+'.png" alt="" onload="ppPhotoLoaded(this)">'+'</div>'
       +'</div>'
       +'<div class="pp-name">'+o.player+'</div>'
       +'<div class="pp-stats">'
